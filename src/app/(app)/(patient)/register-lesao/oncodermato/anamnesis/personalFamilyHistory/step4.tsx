@@ -6,7 +6,7 @@ import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { GeneralHealthProps } from "@/types/forms";
+import { PersonalFamilyHistoryProps } from "@/types/forms";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -20,53 +20,33 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-const CHRONIC_DISEASES = [
-  "Hipertensão arterial",
-  "Diabetes mellitus tipo 1",
-  "Diabetes mellitus tipo 2",
-  "Asma brônquica",
-  "Doença pulmonar obstrutiva crônica (DPOC)",
-  "Insuficiência cardíaca",
-  "Doença arterial coronariana",
-  "Arritmia cardíaca",
-  "Doença renal crônica",
-  "Doença hepática crônica",
-  "Doença de Alzheimer",
-  "Doença de Parkinson",
-  "Artrite reumatoide",
-  "Osteoartrite",
-  "Lúpus eritematoso sistêmico",
-  "Esclerose múltipla",
-  "Hipotireoidismo",
-  "Hipertireoidismo",
-  "Doença celíaca",
-  "Fibrose cística",
-  "Fibromialgia",
-  "Depressão maior",
-  "Transtorno bipolar",
-  "Transtorno de ansiedade generalizada",
-  "Epilepsia",
-  "Doença de Crohn",
-  "Retocolite ulcerativa",
-  "Gota",
-  "Anemia falciforme",
-  "Talassemia",
-  "Hemofilia",
-  "HIV/Aids",
-  "Câncer de mama (crônico)",
-  "Câncer de próstata (crônico)",
-  "Câncer colorretal (crônico)",
-  "Esôfago de Barrett",
-  "Doença arterial periférica",
-  "Glaucoma",
-  "Catarata",
-  "Psoríase",
-]
+const LESION_TREATMENTS = [
+  "Crioterapia",
+  "Eletrocoagulação",
+  "Curetagem",
+  "Excisão cirúrgica",
+  "Biópsia excisional",
+  "Biópsia incisional",
+  "Laserterapia",
+  "Terapia fotodinâmica",
+  "Tratamento tópico com 5-fluorouracil",
+  "Tratamento tópico com imiquimode",
+  "Radioterapia",
+  "Quimioterapia tópica",
+  "Infiltração intralesional",
+  "Microagulhamento",
+  "Retirada com shaving",
+  "Observação clínica",
+  "Uso de antibióticos tópicos",
+  "Drenagem de abscesso",
+  "Cauterização química",
+  "Criocirurgia"
+];
 
-export default function GeneralHealthStep1() {
-  const [isDiseasesOpen, setIsDiseasesOpen] = useState(false);
+export default function PersonalFamilyHistoryStep4() {
+  const [isTreatmentOpen, setIsTreatmentOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
-  const [isOtherDiseasesOpen, setIsOtherDiseasesOpen] = useState(false);
+  const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
   
   const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
@@ -76,7 +56,7 @@ export default function GeneralHealthStep1() {
   const measuredHeight = useSharedValue(0);
   const animatedHeight = useDerivedValue(() => 
     withTiming(
-      isDiseasesOpen ? measuredHeight.value : 0, 
+      isTreatmentOpen ? measuredHeight.value : 0, 
       { duration: 300 }
     )
   );
@@ -86,51 +66,51 @@ export default function GeneralHealthStep1() {
   }));
 
   // formulario
-  const { control, handleSubmit } = useForm<GeneralHealthProps>();
+  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>();
   const onChangeRef = useRef<(value: string[]) => void>(() => {});
   const valueRef = useRef<string[]>([]);
-  const chronicDiseasesValue = useWatch({ control, name: "chronic_diseases" });
+  const treatmentsValue = useWatch({ control, name: "injuries_treatment" });
 
   const {
-    list: diseasesList,
+    list: treatmentsList,
     searchText,
     filteredData,
     addItemToList,
     removeItemFromList,
     handleSearch,
   } = useTagListModal({
-    baseList: CHRONIC_DISEASES,
-    currentValue: chronicDiseasesValue ?? [],
+    baseList: LESION_TREATMENTS,
+    currentValue: treatmentsValue ?? [],
     onChange: (v) => onChangeRef.current(v),
     setNotEmpty,
   });
 
   
 
-  const handleNext = (data: GeneralHealthProps) => {
-    if (data.chronic_diseases && data.chronic_diseases.length > 0 && notEmpty) {
+  const handleNext = (data: PersonalFamilyHistoryProps) => {
+    if (data.injuries_treatment && data.injuries_treatment.length > 0 && notEmpty) {
       console.log(data);
-      updateGeneralHealthData(data);
-      router.push('/(app)/register-patient/general-health/step2');
+      //updateGeneralHealthData(data);
+      //router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step4');
     } else {
       return;
     }
   }
 
   const handleCancel = () => {
-    setGeneralHealthData({});
-    router.push('/(app)/register-patient/step9');
+    //setGeneralHealthData({});
+    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
   useEffect(() => {
-    const isOutrosSelected = isOtherDiseasesOpen;
-    const current = chronicDiseasesValue || [];
-    valueRef.current = chronicDiseasesValue || [];
+    const isOutrosSelected = isOtherOpen;
+    const current = treatmentsValue || [];
+    valueRef.current = treatmentsValue || [];
     const hasOtherSelections = current.length > 0;
-    const hasDiseasesInList = diseasesList.length > 0;
+    const hasFamilyInList = treatmentsList.length > 0;
 
     if (isOutrosSelected) {
-      if (!hasDiseasesInList) {
+      if (!hasFamilyInList) {
         setNotEmpty(false);
         return;
       }
@@ -139,7 +119,7 @@ export default function GeneralHealthStep1() {
     }
 
     setNotEmpty(hasOtherSelections);
-  }, [chronicDiseasesValue, diseasesList, isOtherDiseasesOpen]);
+  }, [treatmentsValue, treatmentsList, isOtherOpen]);
 
   // useEffect(() => {
   //   console.log(generalHealthData)
@@ -152,9 +132,9 @@ export default function GeneralHealthStep1() {
       className="flex-1 bg-white justify-start items-center p-safe"
     >
       <ModalTagSearch
-        title = 'Outras doenças crônicas'
+        title = 'Outros tratamentos'
         visible={modalSearchOpen}
-        contentList={diseasesList}
+        contentList={treatmentsList}
         filteredData={filteredData}
         searchText={searchText}
         onClose={() => setModalSearchOpen(false)}
@@ -162,26 +142,26 @@ export default function GeneralHealthStep1() {
         onAddItem={addItemToList}
         onRemoveItem={(item) => {
           removeItemFromList(item);
-          const filtered = chronicDiseasesValue?.filter((v: string) => v !== item) || [];
+          const filtered = treatmentsValue?.filter((v: string) => v !== item) || [];
           onChangeRef.current(filtered);
         }}
         onConfirm={() => {
           setModalSearchOpen(false);
-          if (diseasesList.length > 0) {
+          if (treatmentsList.length > 0) {
             setNotEmpty(true);
-            const currentValue = chronicDiseasesValue || [];
-            const unique = diseasesList.filter(item => !currentValue.includes(item));
+            const currentValue = treatmentsValue || [];
+            const unique = treatmentsList.filter(item => !currentValue.includes(item));
             onChangeRef.current([...currentValue, ...unique]);
           }
         }}
       />
 
-      <Header title="Andecedentes clínicos" onPress={handleCancel} />
+      <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={1} totalSteps={6} />
+        <ProgressBar step={1} totalSteps={4} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente tem histórico de alguma doença crônica? </Text>
+        <Text className="text-base text-gray-700 my-8">O paciente tem histórico familiar de câncer de pele?</Text>
 
         <Controller
           control={control}
@@ -193,9 +173,9 @@ export default function GeneralHealthStep1() {
                 <View>
                   <RadioButton
                     label="Sim"
-                    checked={isDiseasesOpen}
+                    checked={isTreatmentOpen}
                     onPress={() => {
-                      setIsDiseasesOpen(true);
+                      setIsTreatmentOpen(true);
                       setNotEmpty(false);
                       if (value.includes("Não")) {
                         onChange(value.filter(v => v !== "Não"));
@@ -205,31 +185,32 @@ export default function GeneralHealthStep1() {
 
                   <Animated.View style={animatedStyle}>
                     <View
-                      style={{ position: 'absolute', width: '100%', visibility: isDiseasesOpen ? 'visible' : 'hidden' }}
+                      style={{ position: 'absolute', width: '100%', visibility: isTreatmentOpen ? 'visible' : 'hidden' }}
                       onLayout={(e) => {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      {["Hipertensão", "Diabetes", "Cardiopatas", "Outros"].map(item => (
+                      <Text className="px-0 mt-4">Qual foi o tratamento?</Text>
+                      {["Cirurgia", "Crioterapia", "Radioterapia", "Outros"].map(item => (
                         <CheckButton
                           key={item}
                           label={item}
                           value={item}
-                          checked={item === "Outros" ? isOtherDiseasesOpen : value.includes(item)}
+                          checked={item === "Outros" ? isOtherOpen : value.includes(item)}
                           onPress={() => {
                             if (item === "Outros") {
-                              const isSelected = isOtherDiseasesOpen;
+                              const isSelected = isOtherOpen;
                               const currentValue = valueRef.current;
 
                               if (isSelected) {
-                                setIsOtherDiseasesOpen(false);
-                                const updatedValue = currentValue.filter(v => !diseasesList.includes(v));
+                                setIsOtherOpen(false);
+                                const updatedValue = currentValue.filter(v => !treatmentsList.includes(v));
                                 onChange(updatedValue);
                                 if (updatedValue.length === 0) setNotEmpty(false);
                               } else {
-                                setIsOtherDiseasesOpen(true);
-                                if (diseasesList.length > 0) {
-                                  const newItems = diseasesList.filter(d => !currentValue.includes(d));
+                                setIsOtherOpen(true);
+                                if (treatmentsList.length > 0) {
+                                  const newItems = treatmentsList.filter(d => !currentValue.includes(d));
                                   onChange([...currentValue, ...newItems]);
                                 }
                               }
@@ -240,8 +221,8 @@ export default function GeneralHealthStep1() {
                               onChange(value.filter(v => v !== item));
                             } else {
                               onChange([...value, item]);
-                              const isSelected = isOtherDiseasesOpen;
-                              if (isSelected && diseasesList.length === 0) {
+                              const isSelected = isOtherOpen;
+                              if (isSelected && treatmentsList.length === 0) {
                                 setNotEmpty(false);
                               } else {
                                 setNotEmpty(true);
@@ -252,7 +233,7 @@ export default function GeneralHealthStep1() {
                         />
                       ))}
 
-                      {isOtherDiseasesOpen && (
+                      {isOtherOpen && (
                         <View className="mx-6 mt-3">
                           <Text>Especifique</Text>
                           <TouchableOpacity
@@ -264,7 +245,7 @@ export default function GeneralHealthStep1() {
                           </TouchableOpacity>
 
                           <View className="gap-2 mb-3">
-                            {diseasesList.map((item) => (
+                            {treatmentsList.map((item) => (
                               <View key={item} className="flex-row gap-2 items-center bg-gray-200 rounded-lg px-3 py-2 self-start">
                                 <Text className="w-auto max-w-[240px]">{item}</Text>
                                 <TouchableOpacity onPress={() => removeItemFromList(item)}>
@@ -287,24 +268,31 @@ export default function GeneralHealthStep1() {
                     const newValue = ["Não"];
                     onChange(newValue);
                     setNotEmpty(true);
-                    setIsDiseasesOpen(false);
-                    updateGeneralHealthData({ chronic_diseases: newValue });
-                    router.push('/(app)/register-patient/general-health/step2');
+                    setIsTreatmentOpen(false);
+                    //updateGeneralHealthData({ chronic_diseases: newValue });
+                    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step4');
                   }}
                 />
               </View>
             );
           }}
-          name="chronic_diseases"
+          name="injuries_treatment"
         />
       </ScrollView>
 
-      <View className="px-6 w-full justify-start mb-4">
+      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+        <Button title="Voltar" 
+          iconLeft 
+          secondary 
+          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step3')} 
+          style={{ flexGrow: 1, width: '47%' }}
+        />
         <Button 
           title="Próximo" 
           iconRight 
           icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
-          style={{ marginTop: 24 }} 
+          style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}
           disabled={notEmpty}

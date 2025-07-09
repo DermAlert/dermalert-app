@@ -42,3 +42,12 @@ export type GeneralHealthProps = {
   medicines_ids?: string[];
   allergies_ids?: string[];
 }
+
+
+export type PersonalFamilyHistoryProps = {
+  family_history?: string[];
+  cancer_type?: string[];
+  diagnosed?: string;
+  removed_injuries?: string;
+  injuries_treatment?: string[];
+}

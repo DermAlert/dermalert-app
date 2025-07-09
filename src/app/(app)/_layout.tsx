@@ -1,4 +1,5 @@
 // /app/(app)/_layout.tsx
+import { GeneralHealthProvider } from '@/contexts/GeneralHealthContext';
 import { PatientProvider } from '@/contexts/PatientContext';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
@@ -18,7 +19,9 @@ export default function AppLayout() {
   
   return (
     <PatientProvider>
-      <Stack screenOptions={{ headerShown: false}} />
+      <GeneralHealthProvider>
+        <Stack screenOptions={{ headerShown: false}} />
+      </GeneralHealthProvider>
     </PatientProvider>
   );
 }

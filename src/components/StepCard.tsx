@@ -15,11 +15,11 @@ export default function StepCard({ steps, title, stepCheck = false,  ...rest }: 
   return (
     <TouchableOpacity 
       activeOpacity={0.7} 
-      className={`flex-row items-center justify-between border border-gray-300 rounded-lg px-4 py-3 mb-4 ${stepCheck ? 'bg-green-100' : 'bg-white'}`}
+      className={`flex-row items-center justify-between border border-gray-300 rounded-lg px-4 py-2 mb-4 ${stepCheck ? 'bg-green-100' : 'bg-white'}`}
       {...rest}
     >
       <Feather name="server" size={24} color="#1E1E1E" />
-      <View className="flex-1 px-4">
+      <View className="flex-1 px-4 py-1">
         <Text className="leading-4 text-xs">{stepCheck ? steps : 0}/{steps} etapas</Text>
         <Text className="leading-6 text-base">{title}</Text>
       </View>

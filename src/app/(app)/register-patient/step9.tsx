@@ -4,11 +4,12 @@ import ModalAddImage from "@/components/ModalAddImage";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import StepCard from "@/components/StepCard";
+import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { AntDesign } from '@expo/vector-icons';
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Text, TextInput, View } from 'react-native';
+import { useEffect, useState } from "react";
+import { Text, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep9() {
@@ -16,22 +17,22 @@ export default function RegisterPatientStep9() {
   const [modalAddImage, setModalAddImage] = useState(false);
   const [generalHealth, setGeneralHealth] = useState(false)
   const { setPatientData } = usePatientForm();
+
+  const { generalHealthData, setGeneralHealthData } = useGeneralHealthForm();
   
   const handleCancel = () => {
     setPatientData({});
+    setGeneralHealthData({});
     setModalAlert(!modalAlert);
     router.push('/(app)/home');
   }
 
-  const inputFocus = useRef<TextInput>(null);
-
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      inputFocus.current?.focus();
-    }, 300);
-  
-    return () => clearTimeout(timeout);
-  }, []);
+    if (generalHealthData) {
+      const hasData = Object.keys(generalHealthData).length > 0;
+      setGeneralHealth(hasData);
+    }
+  }, [generalHealthData]);
 
   return (
     <Animated.View 

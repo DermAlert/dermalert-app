@@ -9,7 +9,7 @@ const { height } = Dimensions.get('window');
 
 type Props = {
   visible: boolean;
-  title?: string;
+  title: string;
   contentList: string[];
   filteredData: string[];
   searchText: string;
@@ -22,7 +22,7 @@ type Props = {
 
 export default function ModalTagSearch({
   visible,
-  title = 'Outras doenças crônicas',
+  title,
   contentList,
   filteredData,
   searchText,

@@ -2,7 +2,7 @@ import Header from '@/components/Header';
 import { router } from "expo-router";
 import { Text, View } from 'react-native';
 
-export default function AntecedentesClinicos() {
+export default function GeneralHealth() {
 
   return (
     <View className="flex-1 bg-white p-safe relative">

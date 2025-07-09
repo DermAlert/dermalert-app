@@ -40,7 +40,7 @@ export default function Patient() {
           <View className="border-b border-gray-400">
             <TouchableOpacity 
               className="flex-row justify-start px-5 py-3 items-center gap-5"
-              onPress={()=> router.push("/(app)/(patient)/antecedentesClinicos/[id]")}
+              onPress={()=> router.push("/(app)/(patient)/GeneralHealth/[id]")}
             >
               <FontAwesome5 name="clipboard" size={20} color="#B3B3B3" />
               <Text className='text-base text-gray-800 flex-1'>Antecedentes clínicos</Text>
@@ -104,7 +104,7 @@ export default function Patient() {
       </View>
 
       <View className="absolute bottom-0 m-auto w-full justify-center items-center mb-12 z-10">
-        <Button title="Registrar nova lesão" style={{ width: 194 }} iconLeft icon={(<Feather name="plus" size={14} color="white" />)} />
+        <Button title="Registrar nova lesão" style={{ width: 194 }} iconLeft icon={(<Feather name="plus" size={14} color="white" />)} onPress={()=> router.push("/(app)/(patient)/register-lesao/select")} />
       </View>
 
     </View>

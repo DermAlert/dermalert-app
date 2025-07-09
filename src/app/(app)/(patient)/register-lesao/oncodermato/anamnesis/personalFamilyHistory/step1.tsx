@@ -6,7 +6,7 @@ import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { GeneralHealthProps } from "@/types/forms";
+import { PersonalFamilyHistoryProps } from "@/types/forms";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -20,53 +20,25 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-const CHRONIC_DISEASES = [
-  "Hipertensão arterial",
-  "Diabetes mellitus tipo 1",
-  "Diabetes mellitus tipo 2",
-  "Asma brônquica",
-  "Doença pulmonar obstrutiva crônica (DPOC)",
-  "Insuficiência cardíaca",
-  "Doença arterial coronariana",
-  "Arritmia cardíaca",
-  "Doença renal crônica",
-  "Doença hepática crônica",
-  "Doença de Alzheimer",
-  "Doença de Parkinson",
-  "Artrite reumatoide",
-  "Osteoartrite",
-  "Lúpus eritematoso sistêmico",
-  "Esclerose múltipla",
-  "Hipotireoidismo",
-  "Hipertireoidismo",
-  "Doença celíaca",
-  "Fibrose cística",
-  "Fibromialgia",
-  "Depressão maior",
-  "Transtorno bipolar",
-  "Transtorno de ansiedade generalizada",
-  "Epilepsia",
-  "Doença de Crohn",
-  "Retocolite ulcerativa",
-  "Gota",
-  "Anemia falciforme",
-  "Talassemia",
-  "Hemofilia",
-  "HIV/Aids",
-  "Câncer de mama (crônico)",
-  "Câncer de próstata (crônico)",
-  "Câncer colorretal (crônico)",
-  "Esôfago de Barrett",
-  "Doença arterial periférica",
-  "Glaucoma",
-  "Catarata",
-  "Psoríase",
-]
+const FAMILY_MEMBERS = [
+  "Tio",
+  "Tia",
+  "Tio-avô",
+  "Tia-avó",
+  "Primo",
+  "Prima",
+  "Filho",
+  "Filha",
+  "Sobrinho",
+  "Sobrinha",
+  "Bisavô",
+  "Bisavó"
+];
 
-export default function GeneralHealthStep1() {
-  const [isDiseasesOpen, setIsDiseasesOpen] = useState(false);
+export default function PersonalFamilyHistoryStep1() {
+  const [isFamilyOpen, setIsFamilyOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
-  const [isOtherDiseasesOpen, setIsOtherDiseasesOpen] = useState(false);
+  const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
   
   const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
@@ -76,7 +48,7 @@ export default function GeneralHealthStep1() {
   const measuredHeight = useSharedValue(0);
   const animatedHeight = useDerivedValue(() => 
     withTiming(
-      isDiseasesOpen ? measuredHeight.value : 0, 
+      isFamilyOpen ? measuredHeight.value : 0, 
       { duration: 300 }
     )
   );
@@ -86,51 +58,51 @@ export default function GeneralHealthStep1() {
   }));
 
   // formulario
-  const { control, handleSubmit } = useForm<GeneralHealthProps>();
+  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>();
   const onChangeRef = useRef<(value: string[]) => void>(() => {});
   const valueRef = useRef<string[]>([]);
-  const chronicDiseasesValue = useWatch({ control, name: "chronic_diseases" });
+  const familyHistoryValue = useWatch({ control, name: "family_history" });
 
   const {
-    list: diseasesList,
+    list: familyList,
     searchText,
     filteredData,
     addItemToList,
     removeItemFromList,
     handleSearch,
   } = useTagListModal({
-    baseList: CHRONIC_DISEASES,
-    currentValue: chronicDiseasesValue ?? [],
+    baseList: FAMILY_MEMBERS,
+    currentValue: familyHistoryValue ?? [],
     onChange: (v) => onChangeRef.current(v),
     setNotEmpty,
   });
 
   
 
-  const handleNext = (data: GeneralHealthProps) => {
-    if (data.chronic_diseases && data.chronic_diseases.length > 0 && notEmpty) {
+  const handleNext = (data: PersonalFamilyHistoryProps) => {
+    if (data.family_history && data.family_history.length > 0 && notEmpty) {
       console.log(data);
-      updateGeneralHealthData(data);
-      router.push('/(app)/register-patient/general-health/step2');
+      //updateGeneralHealthData(data);
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2');
     } else {
       return;
     }
   }
 
   const handleCancel = () => {
-    setGeneralHealthData({});
-    router.push('/(app)/register-patient/step9');
+    //setGeneralHealthData({});
+    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
   useEffect(() => {
-    const isOutrosSelected = isOtherDiseasesOpen;
-    const current = chronicDiseasesValue || [];
-    valueRef.current = chronicDiseasesValue || [];
+    const isOutrosSelected = isOtherOpen;
+    const current = familyHistoryValue || [];
+    valueRef.current = familyHistoryValue || [];
     const hasOtherSelections = current.length > 0;
-    const hasDiseasesInList = diseasesList.length > 0;
+    const hasFamilyInList = familyList.length > 0;
 
     if (isOutrosSelected) {
-      if (!hasDiseasesInList) {
+      if (!hasFamilyInList) {
         setNotEmpty(false);
         return;
       }
@@ -139,7 +111,7 @@ export default function GeneralHealthStep1() {
     }
 
     setNotEmpty(hasOtherSelections);
-  }, [chronicDiseasesValue, diseasesList, isOtherDiseasesOpen]);
+  }, [familyHistoryValue, familyList, isOtherOpen]);
 
   // useEffect(() => {
   //   console.log(generalHealthData)
@@ -152,9 +124,9 @@ export default function GeneralHealthStep1() {
       className="flex-1 bg-white justify-start items-center p-safe"
     >
       <ModalTagSearch
-        title = 'Outras doenças crônicas'
+        title = 'Outros membros da familia'
         visible={modalSearchOpen}
-        contentList={diseasesList}
+        contentList={familyList}
         filteredData={filteredData}
         searchText={searchText}
         onClose={() => setModalSearchOpen(false)}
@@ -162,26 +134,26 @@ export default function GeneralHealthStep1() {
         onAddItem={addItemToList}
         onRemoveItem={(item) => {
           removeItemFromList(item);
-          const filtered = chronicDiseasesValue?.filter((v: string) => v !== item) || [];
+          const filtered = familyHistoryValue?.filter((v: string) => v !== item) || [];
           onChangeRef.current(filtered);
         }}
         onConfirm={() => {
           setModalSearchOpen(false);
-          if (diseasesList.length > 0) {
+          if (familyList.length > 0) {
             setNotEmpty(true);
-            const currentValue = chronicDiseasesValue || [];
-            const unique = diseasesList.filter(item => !currentValue.includes(item));
+            const currentValue = familyHistoryValue || [];
+            const unique = familyList.filter(item => !currentValue.includes(item));
             onChangeRef.current([...currentValue, ...unique]);
           }
         }}
       />
 
-      <Header title="Andecedentes clínicos" onPress={handleCancel} />
+      <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={1} totalSteps={6} />
+        <ProgressBar step={1} totalSteps={4} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente tem histórico de alguma doença crônica? </Text>
+        <Text className="text-base text-gray-700 my-8">O paciente tem histórico familiar de câncer de pele?</Text>
 
         <Controller
           control={control}
@@ -193,9 +165,9 @@ export default function GeneralHealthStep1() {
                 <View>
                   <RadioButton
                     label="Sim"
-                    checked={isDiseasesOpen}
+                    checked={isFamilyOpen}
                     onPress={() => {
-                      setIsDiseasesOpen(true);
+                      setIsFamilyOpen(true);
                       setNotEmpty(false);
                       if (value.includes("Não")) {
                         onChange(value.filter(v => v !== "Não"));
@@ -205,31 +177,32 @@ export default function GeneralHealthStep1() {
 
                   <Animated.View style={animatedStyle}>
                     <View
-                      style={{ position: 'absolute', width: '100%', visibility: isDiseasesOpen ? 'visible' : 'hidden' }}
+                      style={{ position: 'absolute', width: '100%', visibility: isFamilyOpen ? 'visible' : 'hidden' }}
                       onLayout={(e) => {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      {["Hipertensão", "Diabetes", "Cardiopatas", "Outros"].map(item => (
+                      <Text className="px-0 mt-4">Qual grau de parentesco?</Text>
+                      {["Mãe", "Pai", "Avô/Avó", "Irmão/Irmã", "Outros"].map(item => (
                         <CheckButton
                           key={item}
                           label={item}
                           value={item}
-                          checked={item === "Outros" ? isOtherDiseasesOpen : value.includes(item)}
+                          checked={item === "Outros" ? isOtherOpen : value.includes(item)}
                           onPress={() => {
                             if (item === "Outros") {
-                              const isSelected = isOtherDiseasesOpen;
+                              const isSelected = isOtherOpen;
                               const currentValue = valueRef.current;
 
                               if (isSelected) {
-                                setIsOtherDiseasesOpen(false);
-                                const updatedValue = currentValue.filter(v => !diseasesList.includes(v));
+                                setIsOtherOpen(false);
+                                const updatedValue = currentValue.filter(v => !familyList.includes(v));
                                 onChange(updatedValue);
                                 if (updatedValue.length === 0) setNotEmpty(false);
                               } else {
-                                setIsOtherDiseasesOpen(true);
-                                if (diseasesList.length > 0) {
-                                  const newItems = diseasesList.filter(d => !currentValue.includes(d));
+                                setIsOtherOpen(true);
+                                if (familyList.length > 0) {
+                                  const newItems = familyList.filter(d => !currentValue.includes(d));
                                   onChange([...currentValue, ...newItems]);
                                 }
                               }
@@ -240,8 +213,8 @@ export default function GeneralHealthStep1() {
                               onChange(value.filter(v => v !== item));
                             } else {
                               onChange([...value, item]);
-                              const isSelected = isOtherDiseasesOpen;
-                              if (isSelected && diseasesList.length === 0) {
+                              const isSelected = isOtherOpen;
+                              if (isSelected && familyList.length === 0) {
                                 setNotEmpty(false);
                               } else {
                                 setNotEmpty(true);
@@ -252,7 +225,7 @@ export default function GeneralHealthStep1() {
                         />
                       ))}
 
-                      {isOtherDiseasesOpen && (
+                      {isOtherOpen && (
                         <View className="mx-6 mt-3">
                           <Text>Especifique</Text>
                           <TouchableOpacity
@@ -264,7 +237,7 @@ export default function GeneralHealthStep1() {
                           </TouchableOpacity>
 
                           <View className="gap-2 mb-3">
-                            {diseasesList.map((item) => (
+                            {familyList.map((item) => (
                               <View key={item} className="flex-row gap-2 items-center bg-gray-200 rounded-lg px-3 py-2 self-start">
                                 <Text className="w-auto max-w-[240px]">{item}</Text>
                                 <TouchableOpacity onPress={() => removeItemFromList(item)}>
@@ -287,15 +260,15 @@ export default function GeneralHealthStep1() {
                     const newValue = ["Não"];
                     onChange(newValue);
                     setNotEmpty(true);
-                    setIsDiseasesOpen(false);
-                    updateGeneralHealthData({ chronic_diseases: newValue });
-                    router.push('/(app)/register-patient/general-health/step2');
+                    setIsFamilyOpen(false);
+                    //updateGeneralHealthData({ chronic_diseases: newValue });
+                    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2');
                   }}
                 />
               </View>
             );
           }}
-          name="chronic_diseases"
+          name="family_history"
         />
       </ScrollView>
 
