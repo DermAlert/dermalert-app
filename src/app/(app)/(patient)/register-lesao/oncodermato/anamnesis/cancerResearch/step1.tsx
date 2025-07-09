@@ -2,8 +2,8 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
-import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
-import { PersonalFamilyHistoryProps } from "@/types/forms";
+import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
+import { CancerResearchProps } from "@/types/forms";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -11,43 +11,26 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
-  SlideInRight, SlideOutLeft, useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withTiming
+  SlideInRight, SlideOutLeft
 } from 'react-native-reanimated';
 
-export default function PersonalFamilyHistoryStep3() {
-  const [isYesOpen, setIsYesOpen] = useState(false);
+export default function CancerResearchStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   
-  const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
+  const { cancerResearchData, setCancerResearchData, updateCancerResearchData } = useCancerResearchForm();
 
-
-  // animação accordion
-  const measuredHeight = useSharedValue(0);
-  const animatedHeight = useDerivedValue(() => 
-    withTiming(
-      isYesOpen ? measuredHeight.value : 0, 
-      { duration: 300 }
-    )
-  );
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: animatedHeight.value,
-    overflow: 'hidden',
-  }));
 
   // formulario
-  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>();
-  const cancerTypeValue = useWatch({ control, name: "removed_injuries" });
+  const { control, handleSubmit } = useForm<CancerResearchProps>();
+  const cancerTypeValue = useWatch({ control, name: "suspicious_moles" });
 
 
   
 
-  const handleNext = (data: PersonalFamilyHistoryProps) => {
-    if (data.removed_injuries && data.removed_injuries.length > 0 && notEmpty) {
+  const handleNext = (data: CancerResearchProps) => {
+    if (data.suspicious_moles && data.suspicious_moles.length > 0 && notEmpty) {
       console.log(data);
-      updateFamilyHistoryData(data);
+      updateCancerResearchData(data);
       //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
     } else {
       return;
@@ -55,7 +38,7 @@ export default function PersonalFamilyHistoryStep3() {
   }
 
   const handleCancel = () => {
-    setFamilyHistoryData({});
+    setCancerResearchData({});
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -67,7 +50,7 @@ export default function PersonalFamilyHistoryStep3() {
   }, [cancerTypeValue]);
 
   useEffect(() => {
-    console.log(familyHistoryData)
+    console.log(cancerResearchData)
   }, []);
 
   return (
@@ -77,12 +60,12 @@ export default function PersonalFamilyHistoryStep3() {
       className="flex-1 bg-white justify-start items-center p-safe"
     >
 
-      <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
+      <Header title="Investigação de CA e Lesões" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={3} totalSteps={5} />
+        <ProgressBar step={1} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente já teve lesões removidas que foram identificadas como pré-cancerígenas?</Text>
+        <Text className="text-base text-gray-700 my-8">O paciente tem pintas ou manchas que mudaram de cor, tamanho ou formato recentemente?</Text>
 
         <Controller
           control={control}
@@ -92,36 +75,29 @@ export default function PersonalFamilyHistoryStep3() {
                 const newValue = "Sim";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateFamilyHistoryData({ removed_injuries: newValue });
-                router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step4')
+                updateCancerResearchData({ suspicious_moles: newValue });
+                router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step2')
               }} />
               <RadioButton label="Não" value="Não" checked={value === 'Não'} onPress={() => {
                 const newValue = "Não";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateFamilyHistoryData({ removed_injuries: newValue });
-                router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step4')
+                updateCancerResearchData({ suspicious_moles: newValue });
+                router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step2')
               }} />
             </View>
           )}
-          name="removed_injuries"
+          name="suspicious_moles"
         /> 
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
-        <Button title="Voltar" 
-          iconLeft 
-          secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2')} 
-          style={{ flexGrow: 1, width: '47%' }}
-        />
+      <View className="px-6 w-full justify-start mb-4">
         <Button 
           title="Próximo" 
           iconRight 
           icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
-          style={{ flexGrow: 1, width: '47%' }} 
+          style={{ marginTop: 24 }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}
           disabled={notEmpty}

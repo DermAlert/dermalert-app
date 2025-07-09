@@ -1,62 +1,64 @@
 import Button from "@/components/Button";
-import CheckButton from "@/components/CheckButton";
 import Header from "@/components/Header";
+import Input from "@/components/Input";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
-import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
-import { PersonalFamilyHistoryProps } from "@/types/forms";
+import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
+import { CancerResearchProps } from "@/types/forms";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
-  SlideInRight, SlideOutLeft, useAnimatedStyle,
+  SlideInRight, SlideOutLeft,
+  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming
 } from 'react-native-reanimated';
 
-export default function PersonalFamilyHistoryStep2() {
+export default function CancerResearchStep5() {
   const [isYesOpen, setIsYesOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   
-  const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
+  const { cancerResearchData, setCancerResearchData, updateCancerResearchData } = useCancerResearchForm();
 
+   // animação accordion
+    const measuredHeight = useSharedValue(0);
+    const animatedHeight = useDerivedValue(() => 
+      withTiming(
+        isYesOpen ? measuredHeight.value : 0, 
+        { duration: 300 }
+      )
+    );
+    const animatedStyle = useAnimatedStyle(() => ({
+      height: animatedHeight.value,
+      overflow: 'hidden',
+    }));
 
-  // animação accordion
-  const measuredHeight = useSharedValue(0);
-  const animatedHeight = useDerivedValue(() => 
-    withTiming(
-      isYesOpen ? measuredHeight.value : 0, 
-      { duration: 300 }
-    )
-  );
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: animatedHeight.value,
-    overflow: 'hidden',
-  }));
 
   // formulario
-  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>();
-  const cancerTypeValue = useWatch({ control, name: "cancer_type" });
+  const { control, handleSubmit, formState: { errors } } = useForm<CancerResearchProps>();
+    const onChangeRef = useRef<(value: string[]) => void>(() => {});
+  const cancerTypeValue = useWatch({ control, name: "lesion_aspect" });
 
 
   
 
-  const handleNext = (data: PersonalFamilyHistoryProps) => {
-    if (data.cancer_type && data.cancer_type.length > 0 && notEmpty) {
+  const handleNext = (data: CancerResearchProps) => {
+    if (data.lesion_aspect && data.lesion_aspect.length > 0 && notEmpty) {
       console.log(data);
-      updateFamilyHistoryData(data);
-      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step3');
+      updateCancerResearchData(data);
+      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
     } else {
       return;
     }
   }
 
   const handleCancel = () => {
-    setFamilyHistoryData({});
+    setCancerResearchData({});
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -68,7 +70,7 @@ export default function PersonalFamilyHistoryStep2() {
   }, [cancerTypeValue]);
 
   useEffect(() => {
-    console.log(familyHistoryData)
+    console.log(cancerResearchData)
   }, []);
 
   return (
@@ -78,17 +80,18 @@ export default function PersonalFamilyHistoryStep2() {
       className="flex-1 bg-white justify-start items-center p-safe"
     >
 
-      <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
+      <Header title="Investigação de CA e Lesões" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={2} totalSteps={5} />
+        <ProgressBar step={5} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente já foi diagnosticado com câncer de pele?</Text>
+        <Text className="text-base text-gray-700 my-8">O paciente já procurou um médico para avaliar essas lesões?</Text>
 
         <Controller
           control={control}
-          defaultValue={[]}
+          defaultValue={""}
           render={({ field: { onChange, value = [] } }) => {
+            onChangeRef.current = onChange;
             return (
               <View className="gap-3">
                 <View>
@@ -98,9 +101,6 @@ export default function PersonalFamilyHistoryStep2() {
                     onPress={() => {
                       setIsYesOpen(true);
                       setNotEmpty(false);
-                      if (value.includes("Não")) {
-                        onChange(value.filter(v => v !== "Não"));
-                      }
                     }}
                   />
 
@@ -111,25 +111,25 @@ export default function PersonalFamilyHistoryStep2() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <Text className="px-0 mt-4">Qual tipo de câncer?</Text>
-                      {["Melanoma", "Carcinoma Basocelular", "Carcinoma Espinocelular"].map(item => (
-                        <CheckButton
-                          key={item}
-                          label={item}
-                          value={item}
-                          checked={value.includes(item)}
-                          onPress={() => {
-
-                            if (value.includes(item)) {
-                              onChange(value.filter(v => v !== item));
-                            } else {
-                              onChange([...value, item]);
-                              setNotEmpty(true);
-                            }
-                          }}
-                          indented
-                        />
-                      ))}
+                      <View className="mx-6 mt-3">
+                          <Text className="mb-2">Qual foi o diagnóstico?</Text>
+                          
+                          <Input 
+                            error={errors.doctor_assistance?.message}
+                            formProps={{ 
+                              name: 'doctor_assistance', 
+                              control, 
+                              rules: { required: 'O campo é obrigatório.' } 
+                            }}
+                            inputProps={{
+                              placeholder: "Especifique o diagnóstico do médico que avaliou as lesões",
+                              returnKeyType: "next",
+                              multiline: true,
+                              numberOfLines: 3,
+                              style: { textAlignVertical: 'top', height: 80 },
+                            }}
+                          />
+                        </View>
                     </View>
                   </Animated.View>
                 </View>
@@ -137,21 +137,21 @@ export default function PersonalFamilyHistoryStep2() {
                 <RadioButton
                   label="Não"
                   value="Não"
-                  checked={value.includes("Não")}
+                  checked={value === "Não"}
                   onPress={() => {
-                    const newValue = ["Não"];
+                    const newValue = "Não";
                     onChange(newValue);
                     setNotEmpty(true);
-                    setIsYesOpen(false);
-                    updateFamilyHistoryData({ cancer_type: newValue });
-                    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step3');
+                    updateCancerResearchData({ doctor_assistance: newValue });
+                    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step6');
                   }}
                 />
               </View>
             );
           }}
-          name="cancer_type"
+          name="doctor_assistance"
         />
+
       </ScrollView>
 
       <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
@@ -159,7 +159,7 @@ export default function PersonalFamilyHistoryStep2() {
           iconLeft 
           secondary 
           icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step1')} 
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step4')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 

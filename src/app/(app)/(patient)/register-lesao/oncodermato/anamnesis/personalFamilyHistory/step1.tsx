@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
-import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
+import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
 import { PersonalFamilyHistoryProps } from "@/types/forms";
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -41,7 +41,7 @@ export default function PersonalFamilyHistoryStep1() {
   const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
   
-  const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
+  const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
 
 
   // animação accordion
@@ -82,7 +82,7 @@ export default function PersonalFamilyHistoryStep1() {
   const handleNext = (data: PersonalFamilyHistoryProps) => {
     if (data.family_history && data.family_history.length > 0 && notEmpty) {
       console.log(data);
-      //updateGeneralHealthData(data);
+      updateFamilyHistoryData(data);
       router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2');
     } else {
       return;
@@ -90,7 +90,7 @@ export default function PersonalFamilyHistoryStep1() {
   }
 
   const handleCancel = () => {
-    //setGeneralHealthData({});
+    setFamilyHistoryData({});
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -113,9 +113,9 @@ export default function PersonalFamilyHistoryStep1() {
     setNotEmpty(hasOtherSelections);
   }, [familyHistoryValue, familyList, isOtherOpen]);
 
-  // useEffect(() => {
-  //   console.log(generalHealthData)
-  // }, []);
+  useEffect(() => {
+    console.log(familyHistoryData)
+  }, []);
 
   return (
     <Animated.View 
@@ -151,7 +151,7 @@ export default function PersonalFamilyHistoryStep1() {
       <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={1} totalSteps={4} />
+        <ProgressBar step={1} totalSteps={5} />
 
         <Text className="text-base text-gray-700 my-8">O paciente tem histórico familiar de câncer de pele?</Text>
 
@@ -261,7 +261,7 @@ export default function PersonalFamilyHistoryStep1() {
                     onChange(newValue);
                     setNotEmpty(true);
                     setIsFamilyOpen(false);
-                    //updateGeneralHealthData({ chronic_diseases: newValue });
+                    updateFamilyHistoryData({ family_history: newValue });
                     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2');
                   }}
                 />

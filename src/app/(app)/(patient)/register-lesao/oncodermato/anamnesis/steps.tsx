@@ -3,9 +3,13 @@ import Header from "@/components/Header";
 import ModalAddImage from "@/components/ModalAddImage";
 import ModalAlert from "@/components/ModalAlert";
 import StepCard from "@/components/StepCard";
+import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
+import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
+import { usePhototypeAssessmentForm } from "@/hooks/Oncodermato/usePhototypeAssessmentForm";
+import { useRiskProtectiveFactorsForm } from "@/hooks/Oncodermato/useRiskProtectiveFactorsForm";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
@@ -19,21 +23,39 @@ export default function RegisterAnamnesisOncodermato() {
 
   const isFullFilled = personalFamilyHistory && phototypeAssessment && riskProtectiveFactors && cancerResearch;
 
- // const { generalHealthData, setGeneralHealthData } = useGeneralHealthForm();
+  const { familyHistoryData, setFamilyHistoryData  } = useFamilyHistoryForm();
+  const { phototypeAssessmentData, setPhototypeAssessmentData  } = usePhototypeAssessmentForm();
+  const { riskProtectiveFactorsData, setRiskProtectiveFactorsData  } = useRiskProtectiveFactorsForm();
+  const { cancerResearchData, setCancerResearchData  } = useCancerResearchForm();
+ 
   
   const handleCancel = () => {
-    //setPatientData({});
-    //setGeneralHealthData({});
+    setFamilyHistoryData({});
+    setPhototypeAssessmentData({});
+    setRiskProtectiveFactorsData({});
+    setCancerResearchData({});
     setModalAlert(!modalAlert);
     router.push('/(app)/(patient)/register-lesao/select');
   }
 
-  // useEffect(() => {
-  //   if (generalHealthData) {
-  //     const hasData = Object.keys(generalHealthData).length > 0;
-  //     setGeneralHealth(hasData);
-  //   }
-  // }, [generalHealthData]);
+  useEffect(() => {
+    if (familyHistoryData) {
+      const hasData = Object.keys(familyHistoryData).length > 0;
+      setPersonalFamilyHistory(hasData);
+    }
+    if (phototypeAssessmentData) {
+      const hasData = Object.keys(phototypeAssessmentData).length > 0;
+      setPhototypeAssessment(hasData);
+    }
+    if (riskProtectiveFactorsData) {
+      const hasData = Object.keys(riskProtectiveFactorsData).length > 0;
+      setRiskProtectiveFactors(hasData);
+    }
+    if (cancerResearchData) {
+      const hasData = Object.keys(cancerResearchData).length > 0;
+      setCancerResearch(hasData);
+    }
+  }, [familyHistoryData, phototypeAssessmentData, riskProtectiveFactorsData, cancerResearchData]);
 
   return (
     <Animated.View 
@@ -62,13 +84,13 @@ export default function RegisterAnamnesisOncodermato() {
 
         <Text className="text-base text-gray-500 mt-4 mb-8">Preencha as fichas de anamnese de oncodermato do paciente para registrar a lesão.</Text>
 
-        <StepCard steps={6} title="Histórico Familiar e Pessoal de Câncer de Pele" stepCheck={personalFamilyHistory} onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step1')} />
+        <StepCard steps={5} title="Histórico Familiar e Pessoal de Câncer de Pele" stepCheck={personalFamilyHistory} onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step1')} />
 
-        <StepCard steps={8} title="Avaliação de Fototipo" stepCheck={phototypeAssessment} onPress={()=> router.push('/(app)/register-patient/general-health/step1')} />
+        <StepCard steps={8} title="Avaliação de Fototipo" stepCheck={phototypeAssessment} onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step1')} />
 
-        <StepCard steps={8} title="Fatores de Risco e Proteção para Câncer de Pele" stepCheck={riskProtectiveFactors} onPress={()=> router.push('/(app)/register-patient/general-health/step1')} />
+        <StepCard steps={8} title="Fatores de Risco e Proteção para Câncer de Pele" stepCheck={riskProtectiveFactors} onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/riskProtectiveFactors/step1')} />
 
-        <StepCard steps={6} title="Investigação de Câncer de Pele e Lesões Suspeitas" stepCheck={cancerResearch} onPress={() => { router.push('/(app)/register-patient/general-health/step1'); }} />
+        <StepCard steps={6} title="Investigação de Câncer de Pele e Lesões Suspeitas" stepCheck={cancerResearch} onPress={() =>  router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step1')} />
         
       
       </View>

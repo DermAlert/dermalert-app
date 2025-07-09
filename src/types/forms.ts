@@ -47,7 +47,36 @@ export type GeneralHealthProps = {
 export type PersonalFamilyHistoryProps = {
   family_history?: string[];
   cancer_type?: string[];
-  diagnosed?: string;
   removed_injuries?: string;
   injuries_treatment?: string[];
+}
+
+export type PhototypeAssessmentProps = {
+  skin_color?: string;
+  eyes_color?: string;
+  hair_color?: string;
+  freckles?: string;
+  sun_exposed?: string;
+  tanned_skin?: string;
+  sun_sensitive_skin?: string;
+}
+
+
+export type RiskProtectiveFactorsProps = {
+  sun_exposure_period?: string;
+  sun_burn?: string;
+  uv_protection?: string;
+  hat_use?: string;
+  artifitial_tan?: string;
+  checkups_frequency?: string;
+  cancer_campaigns?: string;
+}
+
+
+export type CancerResearchProps = {
+  suspicious_moles?: string;
+  bleed_itch?: string;
+  how_long?: string;
+  lesion_aspect?: string;
+  doctor_assistance?: string;
 }
