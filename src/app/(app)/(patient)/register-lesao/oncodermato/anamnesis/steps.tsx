@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import ModalAddImage from "@/components/ModalAddImage";
 import ModalAlert from "@/components/ModalAlert";
 import StepCard from "@/components/StepCard";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
@@ -15,7 +14,6 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterAnamnesisOncodermato() {
   const [modalAlert, setModalAlert] = useState(false);
-  const [modalAddImage, setModalAddImage] = useState(false);
   const [personalFamilyHistory, setPersonalFamilyHistory] = useState(false)
   const [phototypeAssessment, setPhototypeAssessment] = useState(false)
   const [riskProtectiveFactors, setRiskProtectiveFactors] = useState(false)
@@ -73,8 +71,6 @@ export default function RegisterAnamnesisOncodermato() {
         btnYesText="Sim, cancelar"
       />
 
-      <ModalAddImage modalAddImage={modalAddImage} setModalAddImage={setModalAddImage} />
-
       <Header title="Registrar lesão" onPress={() => setModalAlert(!modalAlert)} />
 
       <View className="px-6 w-full justify-start flex-1">
@@ -99,7 +95,7 @@ export default function RegisterAnamnesisOncodermato() {
         <Button title="Salvar e avançar" 
           iconRight
           icon={<AntDesign name="arrowright" size={14} color={`${isFullFilled ? 'white' : '#B3B3B3'}`} />} 
-          onPress={()=> {isFullFilled && router.push("/(app)/(patient)/patient/[id]")}} 
+          onPress={()=> {isFullFilled && router.push("/(app)/(patient)/register-lesao/oncodermato/anamnesis/success")}} 
           style={{ marginTop: 24 }} 
           activeOpacity={isFullFilled ? 0.2 : 1}
           disabled={isFullFilled}

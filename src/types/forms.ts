@@ -46,6 +46,7 @@ export type GeneralHealthProps = {
 
 export type PersonalFamilyHistoryProps = {
   family_history?: string[];
+  family_history_cancer?: string[];
   cancer_type?: string[];
   removed_injuries?: string;
   injuries_treatment?: string[];
@@ -79,4 +80,15 @@ export type CancerResearchProps = {
   how_long?: string;
   lesion_aspect?: string;
   doctor_assistance?: string;
+}
+
+
+export type LesaoOncodermatoProps = {
+  lesion_local?: string;
+  lesion_images?: string[];
+  symmetry?: string;
+  borders?: string;
+  color_variation?: string;
+  size?: string;
+  changed?: string;
 }

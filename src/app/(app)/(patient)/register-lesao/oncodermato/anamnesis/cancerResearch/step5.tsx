@@ -42,16 +42,16 @@ export default function CancerResearchStep5() {
   // formulario
   const { control, handleSubmit, formState: { errors } } = useForm<CancerResearchProps>();
     const onChangeRef = useRef<(value: string[]) => void>(() => {});
-  const cancerTypeValue = useWatch({ control, name: "lesion_aspect" });
+  const cancerTypeValue = useWatch({ control, name: "doctor_assistance" });
 
 
   
 
   const handleNext = (data: CancerResearchProps) => {
-    if (data.lesion_aspect && data.lesion_aspect.length > 0 && notEmpty) {
+    if (data.doctor_assistance && data.doctor_assistance.length > 0 && notEmpty) {
       console.log(data);
       updateCancerResearchData(data);
-      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step6');
     } else {
       return;
     }

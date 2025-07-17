@@ -224,7 +224,6 @@ export default function PersonalFamilyHistoryStep1() {
                           indented
                         />
                       ))}
-
                       {isOtherOpen && (
                         <View className="mx-6 mt-3">
                           <Text>Especifique</Text>
@@ -248,6 +247,25 @@ export default function PersonalFamilyHistoryStep1() {
                           </View>
                         </View>
                       )}
+
+                      <Text className="px-0 mt-4">Qual tipo de câncer de pele?</Text>
+                      {["Melanoma", "Carcinoma Basocelular", "Carcinoma Espinocelular"].map(item => (
+                        <CheckButton
+                          key={item}
+                          label={item}
+                          value={item}
+                          checked={value.includes(item)}
+                          onPress={() => {
+                            if (value.includes(item)) {
+                              onChange(value.filter(v => v !== item));
+                            } else {
+                              onChange([...value, item]);
+                              setNotEmpty(true);
+                            }
+                          }}
+                          indented
+                        />
+                      ))}
                     </View>
                   </Animated.View>
                 </View>
