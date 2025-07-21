@@ -38,8 +38,8 @@ export default function RegisterLesaoSelect() {
         <TouchableOpacity 
           activeOpacity={0.7} 
           className="flex-row items-center justify-between border border-gray-300 rounded-lg px-4 py-4 bg-white"
-          //onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps')}
-          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/step1')}
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps')}
+          //onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/step1')}
         >
           <Feather name="crosshair" size={24} color="#1E1E1E" />
           <View className="flex-1 px-4 py-1">
@@ -52,6 +52,8 @@ export default function RegisterLesaoSelect() {
         <TouchableOpacity 
           activeOpacity={0.7} 
           className="flex-row items-center justify-between border border-gray-300 rounded-lg px-4 py-4 bg-white"
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/ulcera/step1')}
+
         >
           <Feather name="crosshair" size={24} color="#1E1E1E" />
           <View className="flex-1 px-4 py-1">

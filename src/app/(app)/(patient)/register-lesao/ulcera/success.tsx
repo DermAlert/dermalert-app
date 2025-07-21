@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-export default function RegisterLesaoOncodermatoSuccess() {
+export default function RegisterLesaoUlceraSuccess() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {

@@ -36,10 +36,9 @@ export default function RegisterLesaoOncodermatoStep4() {
       return;
     }
   }
-
   const handleCancel = () => {
     setRegisterLesionData({});
-    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
+    router.push('/(app)/(patient)/register-lesao/select');
   }
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather';
+import { router } from 'expo-router';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
 export default function LesaoCard({...rest}: TouchableOpacityProps) {
@@ -7,7 +8,9 @@ export default function LesaoCard({...rest}: TouchableOpacityProps) {
     <TouchableOpacity 
       className="border border-gray-300 rounded-lg flex-row justify-start px-4 py-5 items-center gap-4"
       activeOpacity={0.6}
-      onPress={()=> {}}
+      onPress={()=> {
+        router.push('/(app)/(patient)/lesao/[id]');
+      }}
       {...rest}
     >
 

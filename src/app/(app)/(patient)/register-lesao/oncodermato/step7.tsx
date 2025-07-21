@@ -40,7 +40,7 @@ export default function RegisterLesaoOncodermatoStep7() {
 
   const handleCancel = () => {
     setRegisterLesionData({});
-    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
+    router.push('/(app)/(patient)/register-lesao/select');
   }
 
   useEffect(() => {

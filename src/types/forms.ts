@@ -92,3 +92,15 @@ export type LesaoOncodermatoProps = {
   size?: string;
   changed?: string;
 }
+
+
+export type LesaoUlceraProps = {
+  lesion_local?: string;
+  lesion_images?: string[];
+  lesion_dimension?: string;
+  depth?: string;
+  bordos?: string;
+  skin_type?: string;
+  exsudato?: string;
+  inflamacao?: string[];
+}

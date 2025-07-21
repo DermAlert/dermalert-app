@@ -3,8 +3,8 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
-import { useRegisterLesionForm } from "@/hooks/Oncodermato/useRegisterLesionForm";
-import { LesaoOncodermatoProps } from "@/types/forms";
+import { useRegisterLesionUlceraForm } from "@/hooks/Ulcera/useRegisterLesionUlceraForm";
+import { LesaoUlceraProps } from "@/types/forms";
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -15,34 +15,34 @@ import Animated, {
   SlideInRight, SlideOutLeft
 } from 'react-native-reanimated';
 
-export default function RegisterLesaoOncodermatoStep1() {
+export default function RegisterLesaoUlceraStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [openAccordionIndented, setOpenAccordionIndented] = useState<string | null>(null);
 
-  const { registerLesionData, setRegisterLesionData, updateRegisterLesionData } = useRegisterLesionForm();
+  const { registerLesionUlceraData, setRegisterLesionUlceraData, updateRegisterLesionUlceraData } = useRegisterLesionUlceraForm();
   
   
 
   // formulario
-  const { control, handleSubmit } = useForm<LesaoOncodermatoProps>();
+  const { control, handleSubmit } = useForm<LesaoUlceraProps>();
   const lesionLocalValue = useWatch({ control, name: "lesion_local" });
 
 
   
 
-  const handleNext = (data: LesaoOncodermatoProps) => {
+  const handleNext = (data: LesaoUlceraProps) => {
     if (data.lesion_local && data.lesion_local.length > 0 && notEmpty) {
       console.log(data);
-      updateRegisterLesionData(data);
-      router.push('/(app)/(patient)/register-lesao/oncodermato/step2');
+      updateRegisterLesionUlceraData(data);
+      router.push('/(app)/(patient)/register-lesao/ulcera/step2');
     } else {
       return;
     }
   }
 
   const handleCancel = () => {
-    setRegisterLesionData({});
+    setRegisterLesionUlceraData({});
     router.push('/(app)/(patient)/register-lesao/select');
   }
 
@@ -54,7 +54,7 @@ export default function RegisterLesaoOncodermatoStep1() {
   }, [lesionLocalValue]);
 
   useEffect(() => {
-    console.log(registerLesionData)
+    console.log(registerLesionUlceraData)
   }, []);
 
   return (
@@ -67,7 +67,7 @@ export default function RegisterLesaoOncodermatoStep1() {
       <Header title="Registrar lesão" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={1} totalSteps={8} />
+        <ProgressBar step={1} totalSteps={9} />
 
         <Text className="text-base text-gray-700 my-8">Informe o local da lesão</Text>
 

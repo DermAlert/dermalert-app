@@ -2,7 +2,7 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ModalAddImage from "@/components/ModalAddImage";
 import ProgressBar from "@/components/ProgressBar";
-import { LesaoOncodermatoProps } from "@/types/forms";
+import { LesaoUlceraProps } from "@/types/forms";
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from "expo-router";
@@ -14,21 +14,21 @@ import Animated, {
   SlideInRight, SlideOutLeft
 } from 'react-native-reanimated';
 
-export default function RegisterLesaoOncodermatoStep2() {
+export default function RegisterLesaoUlceraStep2() {
   const [notEmpty, setNotEmpty] = useState(false);
   const [modalAddImage, setModalAddImage] = useState(false);
   
   
 
   // formulario
-  const { control, handleSubmit } = useForm<LesaoOncodermatoProps>();
+  const { control, handleSubmit } = useForm<LesaoUlceraProps>();
   const lesionLocalValue = useWatch({ control, name: "lesion_images" });
 
 
   
 
-  const handleNext = (data: LesaoOncodermatoProps) => {
-    router.push('/(app)/(patient)/register-lesao/oncodermato/step3');
+  const handleNext = (data: LesaoUlceraProps) => {
+    router.push('/(app)/(patient)/register-lesao/ulcera/step3');
   }
 
   const handleCancel = () => {
@@ -59,7 +59,7 @@ export default function RegisterLesaoOncodermatoStep2() {
       <Header title="Registrar lesão" onPress={handleCancel} />
 
       <ScrollView className="px-6 w-full flex-1">
-        <ProgressBar step={2} totalSteps={8} />
+        <ProgressBar step={2} totalSteps={9} />
 
         <Text className="text-2xl font-semibold mt-6">Coleta de imagem da lesão</Text>
 
@@ -139,7 +139,7 @@ export default function RegisterLesaoOncodermatoStep2() {
           iconLeft 
           secondary 
           icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push("/(app)/(patient)/register-lesao/oncodermato/step1")} 
+          onPress={()=> router.push("/(app)/(patient)/register-lesao/ulcera/step1")} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button title="Próximo" 

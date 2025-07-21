@@ -17,12 +17,12 @@ export default function RegisterLesaoOncodermatoStep8() {
   const { registerLesionData, setRegisterLesionData } = useRegisterLesionForm();
 
   const handleNext = () => {
-    router.push('/(app)/(patient)/register-lesao/oncodermato/step8');
+    router.push('/(app)/(patient)/register-lesao/oncodermato/success')
   }
   
   const handleCancel = () => {
     setRegisterLesionData({});
-    router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
+    router.push('/(app)/(patient)/register-lesao/select');
   }
 
 
@@ -100,7 +100,7 @@ export default function RegisterLesaoOncodermatoStep8() {
           iconLeft 
           secondary 
           icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/success')} 
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/step7')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button title="Salvar" 
