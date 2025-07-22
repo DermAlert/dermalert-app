@@ -1,20 +1,34 @@
+import AddPhotoButton from "@/components/AddPhotoButton";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ModalAddImage from "@/components/ModalAddImage";
 import ModalAlert from "@/components/ModalAlert";
+import PhotoCard from "@/components/PhotoCard";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
-import { AntDesign, Feather } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { PatientProps } from "@/types/forms";
+import { AntDesign } from '@expo/vector-icons';
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useState } from "react";
+import { Text, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep8() {
   const [modalAlert, setModalAlert] = useState(false);
   const [modalAddImage, setModalAddImage] = useState(false);
-  const { setPatientData } = usePatientForm();
+  const [images, setImages] = useState<string[]>([]);
+
+  const { setPatientData, updatePatientData } = usePatientForm();
+
+  const handleNext = (data: PatientProps) => {
+      if (data.terms_photos && data.terms_photos.length > 0 || images.length > 0) {
+        console.log(data);
+        updatePatientData(data);
+        router.push('/(app)/register-patient/step9');
+      } else {
+        return;
+      }
+    }
   
   const handleCancel = () => {
     setPatientData({});
@@ -22,15 +36,9 @@ export default function RegisterPatientStep8() {
     router.push('/(app)/home');
   }
 
-  const inputFocus = useRef<TextInput>(null);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      inputFocus.current?.focus();
-    }, 300);
-  
-    return () => clearTimeout(timeout);
-  }, []);
+  // useEffect(() => {
+  //     console.log("images", images.length)
+  //   }, [images]);
 
   return (
     <Animated.View 
@@ -48,7 +56,12 @@ export default function RegisterPatientStep8() {
         btnYesText="Sim, cancelar"
       />
 
-      <ModalAddImage modalAddImage={modalAddImage} setModalAddImage={setModalAddImage} />
+      <ModalAddImage 
+        modalAddImage={modalAddImage} 
+        setModalAddImage={setModalAddImage} 
+        images={images}
+        setImages={setImages}
+      />
 
       <Header title="Cadastrar paciente" onPress={() => setModalAlert(!modalAlert)} />
 
@@ -61,60 +74,12 @@ export default function RegisterPatientStep8() {
         <Text className="text-base text-gray-500 mt-4">Inclua uma ou mais imagens do termo de consentimento.</Text>
         
         <View className="flex-row flex-wrap gap-4 mt-8">
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
-          >
-            <Image 
-              source={{ uri: "https://thestartlaw.com/wp-content/uploads/2022/10/TERMOS_DE_USO.png" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
-  
-  
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
-          >
-            <Image 
-              source={{ uri: "https://vivaocondominio.com.br/wp-content/uploads/2022/05/Termo-de-responsabilidade.jpg" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
-  
-  
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
-          >
-            <Image 
-              source={{ uri: "https://www.administrefacil.com.br/images/modelos/400x500/1468-83ca0590a2a926a0a605713b1f046071.gif" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm antialiased">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-white relative"
-            onPress={()=> setModalAddImage(!modalAddImage)}
-          >
-            <Feather name="camera" size={22} color="#757575" />
-            <Text className="text-sm mt-3 text-center leading-4">Adicionar imagem</Text>
-          </TouchableOpacity>
+          {images.map(item => (
+            <PhotoCard key={item} image={item} />
+          ))}
+
+          <AddPhotoButton onPress={()=> setModalAddImage(true)} />  
   
         </View>
       
@@ -128,11 +93,14 @@ export default function RegisterPatientStep8() {
           onPress={()=> router.push("/(app)/register-patient/step7")} 
           style={{ flexGrow: 1, width: '47%' }}
         />
-        <Button title="Próximo" 
+        <Button 
+          title="Próximo" 
           iconRight 
-          icon={(<AntDesign name="arrowright" size={14} color="white" />)} 
-          onPress={()=> router.push("/(app)/register-patient/step9")} 
-          style={{ flexGrow: 1, width: '47%' }}
+          icon={<AntDesign name="arrowright" size={14} color={`${images.length > 0 ? 'white' : '#B3B3B3'}`} />} 
+          style={{ flexGrow: 1, width: '47%' }} 
+          onPress={()=> handleNext({ terms_photos: images })} 
+          activeOpacity={images.length > 0 ? 0.2 : 1}
+          disabled={images.length > 0}
         />
       </View>
 

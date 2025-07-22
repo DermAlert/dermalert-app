@@ -11,7 +11,14 @@
 // };
 
 export const formatDate = (date: string) => {
-  // dataBR no formato "dd/mm/aaaa"
   const [dia, mes, ano] = date.split('/');
   return `${ano}-${mes}-${dia}`;
+}
+
+export function formatDateInput(value: string) {
+  const digits = value.replace(/\D/g, '');
+
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4, 8)}`;
 }

@@ -5,7 +5,7 @@ import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
-import { formatDate } from "@/utils/formatDate";
+import { formatDate, formatDateInput } from "@/utils/formatDate";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -78,7 +78,7 @@ export default function RegisterPatientStep3() {
             rules: { 
               required: "Data de nascimento é obrigatória.",
               pattern: {
-                value: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/,
+                value: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
                 message: "Data de nascimento inválido."
               }
             } 
@@ -86,7 +86,7 @@ export default function RegisterPatientStep3() {
           inputProps={{
             placeholder: "dd/mm/aaaa",
             returnKeyType: "next",
-          }}
+          }}onChangeTextFormat={formatDateInput}
         />
 
       </View>

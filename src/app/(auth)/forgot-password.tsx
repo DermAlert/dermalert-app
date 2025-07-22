@@ -56,7 +56,7 @@ export default function ForgotPasswordEmail() {
                 rules: {
                   required: "O CPF é obrigatório.",
                   pattern: {
-                    value: /[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}/,
+                    value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
                     message: "CPF inválido."
                   }
                 }

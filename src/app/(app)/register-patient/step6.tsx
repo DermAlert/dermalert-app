@@ -5,6 +5,7 @@ import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
+import { formatCNS, isValidCNS } from "@/utils/CNS";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -74,13 +75,21 @@ export default function RegisterPatientStep6() {
             name: "sus_number",
             rules: {
               required: "O campo é obrigatório.",
-              maxLength: 11
+              validate: value => {
+                const cleaned = value.replace(/\D/g, '');
+                if (cleaned.length !== 15) return "O CNS deve conter 15 dígitos.";
+                if (!isValidCNS(cleaned)) return "Número do cartão SUS inválido.";
+                return true;
+              }
             }
           }}
           inputProps={{
-            placeholder: "Cartão SUS do paciente.",
+            placeholder: "Cartão SUS do paciente",
             returnKeyType: "next",
+            keyboardType: "numeric",
+            maxLength: 19 // considerando espaços
           }}
+          onChangeTextFormat={formatCNS}
         />
       
       </View>

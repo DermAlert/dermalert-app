@@ -49,7 +49,7 @@ export default function Login() {
                   rules: {
                     required: "O CPF é obrigatório.",
                     pattern: {
-                      value: /[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}/,
+                      value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
                       message: "CPF inválido."
                     }
                   }
@@ -80,8 +80,9 @@ export default function Login() {
             inputProps={{
               placeholder: "Informe sua senha",
               returnKeyType: "send",
-              secureTextEntry: true,
+              //secureTextEntry: true,
             }}
+            password
           />
           <Button title="Entrar" style={{ marginTop: 24 }} onPress={handleSubmit(onSubmit)} />
           <Link push href="/(auth)/forgot-password" className="mt-6 underline">Esqueceu a senha?</Link>

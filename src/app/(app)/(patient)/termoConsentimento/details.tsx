@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import Zoom from 'react-native-zoom-reanimated';
 
+
 export default function TermoConsentimento() {
   //const { width } = Dimensions.get('window');
   const { width, height } = useWindowDimensions()

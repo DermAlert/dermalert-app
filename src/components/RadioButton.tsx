@@ -1,21 +1,10 @@
-import { useForm } from "react-hook-form";
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withTiming
-} from "react-native-reanimated";
-import Input from "./Input";
 
 type Props = TouchableOpacityProps & {
   value?: string;
   label: string;
   checked: boolean;
   onPress?: () => void;
-  openField?: boolean;
-  fieldTitle?: string;
-  fieldPlaceholder?: string;
   indented?: boolean;
 };
 
@@ -24,28 +13,10 @@ export default function RadioButton({
   label, 
   checked, 
   onPress, 
-  openField = false, 
-  fieldTitle, 
-  fieldPlaceholder,
   indented = false,
   ...rest 
 }: Props) {
 
-  const { control } = useForm();
-
-  const measuredHeight = useSharedValue(0);
-
-  const animatedHeight = useDerivedValue(() => 
-    withTiming(
-      openField && checked ? measuredHeight.value : 0, 
-      { duration: 300 }
-    )
-  );
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: animatedHeight.value,
-    overflow: 'hidden',
-  }));
 
   return (
     <View>
@@ -80,33 +51,6 @@ export default function RadioButton({
         </TouchableOpacity>
       )}
       
-
-      {openField && (
-        <Animated.View 
-          className="z-0 rounded-lg"
-          style={animatedStyle}
-        >
-          <View
-            style={{ position: 'absolute', width: '100%' }}
-            onLayout={(e) => {
-              measuredHeight.value = e.nativeEvent.layout.height;
-            }}
-          >
-            <View className="px-4 pb-4 mt-2">
-              <Text className="text-base text-gray-800 mb-2">{fieldTitle}</Text>
-              <Input 
-                formProps={{ 
-                  name: 'gender', 
-                  control
-                }}
-                inputProps={{
-                  placeholder: `${fieldPlaceholder}`,
-                }}
-              />
-            </View>
-          </View>
-        </Animated.View>
-      )}
     </View>
   );
 }

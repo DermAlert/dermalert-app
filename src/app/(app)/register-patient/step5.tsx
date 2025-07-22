@@ -99,7 +99,8 @@ export default function RegisterPatientStep5() {
               rules: {
                 required: "O telefone é obrigatório.",
                 pattern: {
-                  value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
+                  //value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
+                  value: /^\(\d{2}\)\s?\d{4,5}-\d{4}$/,
                   message: "Telefone inválido."
                 }
               }

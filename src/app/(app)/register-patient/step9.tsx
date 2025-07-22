@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import ModalAddImage from "@/components/ModalAddImage";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import StepCard from "@/components/StepCard";
@@ -16,7 +15,7 @@ export default function RegisterPatientStep9() {
   const [modalAlert, setModalAlert] = useState(false);
   const [modalAddImage, setModalAddImage] = useState(false);
   const [generalHealth, setGeneralHealth] = useState(false)
-  const { setPatientData } = usePatientForm();
+  const { setPatientData, patientData } = usePatientForm();
 
   const { generalHealthData, setGeneralHealthData } = useGeneralHealthForm();
   
@@ -34,6 +33,10 @@ export default function RegisterPatientStep9() {
     }
   }, [generalHealthData]);
 
+  useEffect(() => {
+    console.log(patientData)
+  }, []);
+
   return (
     <Animated.View 
       entering={SlideInRight} 
@@ -50,7 +53,6 @@ export default function RegisterPatientStep9() {
         btnYesText="Sim, cancelar"
       />
 
-      <ModalAddImage modalAddImage={modalAddImage} setModalAddImage={setModalAddImage} />
 
       <Header title="Cadastrar paciente" onPress={() => setModalAlert(!modalAlert)} />
 

@@ -30,9 +30,11 @@ export type PatientProps = {
   cpf?: string;
   date_of_birth?: string;
   gender?: string;
+  customGender?: string;
   email?: string;
   phone_number?: string;
   sus_number?: string;
+  terms_photos?: string[]
 }
 
 export type GeneralHealthProps = {

@@ -117,15 +117,19 @@ export default function EditPassword() {
               control,
               name: "newPassword",
               rules: {
-                required: "campo obrigatório.",
-                min: 8
+                required: "Campo obrigatório.",
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{8,}$/,
+                  message: "A senha deve seguir as regras abaixo.",
+                }
+
               }
             }}
             inputProps={{
               placeholder: "Nova atual",
               returnKeyType: "next",
               onSubmitEditing: () => confirmPass.current?.focus(),
-              secureTextEntry: true,
+              //secureTextEntry: true,
             }}
             password
           />
@@ -146,7 +150,7 @@ export default function EditPassword() {
             inputProps={{
               placeholder: "Confirma nova senha",
               returnKeyType: "send",
-              secureTextEntry: true,
+              //secureTextEntry: true,
             }}
             password
           />
