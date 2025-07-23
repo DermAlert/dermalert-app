@@ -75,12 +75,8 @@ export default function RegisterPatientStep6() {
             name: "sus_number",
             rules: {
               required: "O campo é obrigatório.",
-              validate: value => {
-                const cleaned = value.replace(/\D/g, '');
-                if (cleaned.length !== 15) return "O CNS deve conter 15 dígitos.";
-                if (!isValidCNS(cleaned)) return "Número do cartão SUS inválido.";
-                return true;
-              }
+              validate: value =>
+                isValidCNS(value) || "Número do cartão SUS inválido.",
             }
           }}
           inputProps={{

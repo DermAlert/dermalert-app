@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import ModalAlert from '@/components/ModalAlert';
+import { getImageUri } from '@/storage/imageStore';
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -14,6 +15,8 @@ export default function TermoConsentimento() {
   const altura = height-64
   const { deletar } = useLocalSearchParams();
   const [modalAlert, setModalAlert] = useState(false);
+
+  const image = getImageUri();
 
   const handleCancel = () => {
     setModalAlert(!modalAlert);
@@ -51,7 +54,8 @@ export default function TermoConsentimento() {
       <View className="flex-1 bg-gray-800 justify-center items-center">
         <Zoom>
           <Image
-            source={{ uri: "https://img.yumpu.com/52616976/1/500x640/termo-de-ajuste-de-conduta-tac.jpg" }}
+            //source={{ uri: "https://img.yumpu.com/52616976/1/500x640/termo-de-ajuste-de-conduta-tac.jpg" }}
+            source={{ uri: image }}
             contentFit='contain'
             style={{
               width: width,

@@ -1,4 +1,5 @@
 
+import { setImageUri } from '@/storage/imageStore';
 import { Image } from 'expo-image';
 import { router } from "expo-router";
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
@@ -13,7 +14,11 @@ export default function PhotoCard({image, ...rest }: Props) {
   return (
     <TouchableOpacity 
       className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-      onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
+      // onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
+      onPress={() => {
+        setImageUri(image);
+        router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})
+      }}
       {...rest}
     >
       <Image 
