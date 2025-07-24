@@ -1,51 +1,40 @@
+import AddPhotoButton from "@/components/AddPhotoButton";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ModalAddImage from "@/components/ModalAddImage";
+import PhotoCard from "@/components/PhotoCard";
 import ProgressBar from "@/components/ProgressBar";
+import { useRegisterLesionForm } from "@/hooks/Oncodermato/useRegisterLesionForm";
 import { LesaoOncodermatoProps } from "@/types/forms";
 import { AntDesign, Feather } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useState } from "react";
+import { Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
 } from 'react-native-reanimated';
 
 export default function RegisterLesaoOncodermatoStep2() {
-  const [notEmpty, setNotEmpty] = useState(false);
   const [modalAddImage, setModalAddImage] = useState(false);
+
+  const { setRegisterLesionData, updateRegisterLesionData, images, setImages } = useRegisterLesionForm();
   
-  
-
-  // formulario
-  const { control, handleSubmit } = useForm<LesaoOncodermatoProps>();
-  const lesionLocalValue = useWatch({ control, name: "lesion_images" });
-
-
-  
-
   const handleNext = (data: LesaoOncodermatoProps) => {
-    router.push('/(app)/(patient)/register-lesao/oncodermato/step3');
+    if (data.lesion_images && data.lesion_images.length > 0 || images.length > 0) {
+      console.log(data);
+      updateRegisterLesionData(data);
+      router.push('/(app)/(patient)/register-lesao/oncodermato/step3');
+    } else {
+      return;
+    }
   }
 
   const handleCancel = () => {
-    //setRegisterLesionData({});
+    setRegisterLesionData({});
+    setImages([]);
     router.push('/(app)/(patient)/register-lesao/select');
   }
-
-  useEffect(() => {
-    const current = lesionLocalValue || [];
-    const hasValue = current.length > 0;
-
-    setNotEmpty(hasValue);
-  }, [lesionLocalValue]);
-
-  // useEffect(() => {
-  //   console.log(riskProtectiveFactorsData)
-  // }, []);
 
   return (
     <Animated.View 
@@ -54,7 +43,12 @@ export default function RegisterLesaoOncodermatoStep2() {
       className="flex-1 bg-white justify-start items-center p-safe"
     >
 
-      <ModalAddImage modalAddImage={modalAddImage} setModalAddImage={setModalAddImage} />
+      <ModalAddImage 
+        modalAddImage={modalAddImage}
+        setModalAddImage={setModalAddImage} 
+        images={images}
+        setImages={setImages}
+      />
 
       <Header title="Registrar lesão" onPress={handleCancel} />
 
@@ -74,60 +68,12 @@ export default function RegisterLesaoOncodermatoStep2() {
         </View>
 
         <View className="flex-row flex-wrap gap-4 mt-8">
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
-          >
-            <Image 
-              source={{ uri: "https://clinicapatriciaholderbaum.com.br/wp-content/uploads/2021/08/lpele5.jpg" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
 
+          {images.map(item => (
+            <PhotoCard key={item} image={item} isDeletable isOncodermato />
+          ))}
 
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
-          >
-            <Image 
-              source={{ uri: "https://vidasaudavel.einstein.br/wp-content/uploads/2023/05/lesoes-cancer-de-pele-1024x683.jpeg" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
-
-
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
-          >
-            <Image 
-              source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduWHzES3MMxtVG4dGsF-InE49KXNT6TMor_cR0CRpN-pCmwCbiASIhH6tco310wdXScc&usqp=CAU" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm antialiased">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-white relative"
-            onPress={()=> setModalAddImage(!modalAddImage)}
-          >
-            <Feather name="camera" size={22} color="#757575" />
-            <Text className="text-sm mt-3 text-center leading-4">Adicionar imagem</Text>
-          </TouchableOpacity>
+          <AddPhotoButton onPress={()=> setModalAddImage(true)} /> 
 
         </View>
 
@@ -142,11 +88,14 @@ export default function RegisterLesaoOncodermatoStep2() {
           onPress={()=> router.push("/(app)/(patient)/register-lesao/oncodermato/step1")} 
           style={{ flexGrow: 1, width: '47%' }}
         />
-        <Button title="Próximo" 
+        <Button 
+          title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color='#B3B3B3'/>} 
-          onPress={handleSubmit(handleNext)} 
-          style={{ flexGrow: 1, width: '47%' }}
+          icon={<AntDesign name="arrowright" size={14} color={`${images.length > 0 ? 'white' : '#B3B3B3'}`} />} 
+          style={{ flexGrow: 1, width: '47%' }} 
+          onPress={()=> handleNext({ lesion_images: images })} 
+          activeOpacity={images.length > 0 ? 0.2 : 1}
+          disabled={images.length > 0}
         />
       </View>
     </Animated.View>

@@ -1,6 +1,5 @@
 import Feather from '@expo/vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useState } from 'react';
 import { Modal, Text, TouchableHighlightProps, TouchableOpacity, View } from 'react-native';
 
 type Props = TouchableHighlightProps & {
@@ -12,7 +11,6 @@ type Props = TouchableHighlightProps & {
 
 
 export default function ModalAddImage({ setModalAddImage, modalAddImage, images, setImages, ...rest }: Props) {
-  const [image, setImage] = useState<string[]>([]);
 
   async function handlePhotoSelect(){
     const photoSelected = await ImagePicker.launchImageLibraryAsync({
@@ -36,6 +34,7 @@ export default function ModalAddImage({ setModalAddImage, modalAddImage, images,
       mediaTypes: ['images'],
       quality: 1,
       allowsEditing: true,
+      //aspect: [10, 16]
     });
 
     if (photoSelected.canceled) return;
@@ -44,10 +43,6 @@ export default function ModalAddImage({ setModalAddImage, modalAddImage, images,
     setImages(prevImages => [...prevImages, selectedPhoto]);
     setModalAddImage(false);
   }
-
-  useEffect(()=> {
-    console.log(image)
-  }, [image])
 
   return (
     <Modal

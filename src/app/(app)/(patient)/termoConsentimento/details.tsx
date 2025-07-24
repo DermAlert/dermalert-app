@@ -1,5 +1,7 @@
 import Header from '@/components/Header';
 import ModalAlert from '@/components/ModalAlert';
+import { useRegisterLesionForm } from '@/hooks/Oncodermato/useRegisterLesionForm';
+import { usePatientForm } from '@/hooks/usePatientForm';
 import { getImageUri } from '@/storage/imageStore';
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
@@ -13,15 +15,25 @@ export default function TermoConsentimento() {
   //const { width } = Dimensions.get('window');
   const { width, height } = useWindowDimensions()
   const altura = height-64
-  const { deletar } = useLocalSearchParams();
+  const { deletar, isOncodermato, isPatient } = useLocalSearchParams();
   const [modalAlert, setModalAlert] = useState(false);
 
-  const image = getImageUri();
+  const image = getImageUri(); 
+  const { removeImageLesion } = useRegisterLesionForm(); 
+  const { removeImage } = usePatientForm(); 
 
   const handleCancel = () => {
-    setModalAlert(!modalAlert);
-    router.back();
-  }
+    if (image) {
+      if (isOncodermato === 'true') {
+          removeImageLesion(image);
+        } else if (isPatient === 'true') {  
+          removeImage(image);
+        }
+    }
+    setModalAlert(false);
+    router.back(); 
+  };
+  
 
   const isDeleteButton = deletar === 'true';
 
@@ -55,7 +67,7 @@ export default function TermoConsentimento() {
         <Zoom>
           <Image
             //source={{ uri: "https://img.yumpu.com/52616976/1/500x640/termo-de-ajuste-de-conduta-tac.jpg" }}
-            source={{ uri: image }}
+            source={image ? { uri: image } : undefined}
             contentFit='contain'
             style={{
               width: width,

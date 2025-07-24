@@ -6,10 +6,13 @@ import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-nativ
 
 type Props = TouchableOpacityProps & {
   image: string,
+  isDeletable?: boolean
+  isOncodermato?: boolean
+  isPatient?: boolean
 };
 
 
-export default function PhotoCard({image, ...rest }: Props) {
+export default function PhotoCard({image, isDeletable = false, isOncodermato = false, isPatient = false, ...rest }: Props) {
 
   return (
     <TouchableOpacity 
@@ -17,7 +20,7 @@ export default function PhotoCard({image, ...rest }: Props) {
       // onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
       onPress={() => {
         setImageUri(image);
-        router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})
+        router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: isDeletable ? 'true': '', isOncodermato: isOncodermato ? 'true' : '', isPatient: isPatient ? 'true' : '' } })
       }}
       {...rest}
     >

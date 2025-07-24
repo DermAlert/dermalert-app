@@ -24,15 +24,15 @@ export default function ModalLesaoFiltro({ modalLesoesVisible, setModalLesoesVis
             </TouchableOpacity>
           </View>
 
-          <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
+          <TouchableOpacity className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
             <Text>Todos</Text>
-          </View>
-          <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
+          </TouchableOpacity>
+          <TouchableOpacity className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
             <Text>Oncodermato</Text>
-          </View>
-          <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
+          </TouchableOpacity>
+          <TouchableOpacity className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
             <Text>Úlcera venosa</Text>
-          </View>
+          </TouchableOpacity>
           
         </View>
       </View>

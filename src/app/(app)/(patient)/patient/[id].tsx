@@ -1,7 +1,6 @@
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import LesaoCard from '@/components/LesaoCard';
-import ModalLesaoFiltro from '@/components/ModalLesaoFiltro';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -13,10 +12,43 @@ import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 export default function Patient() {
   const [modalLesoesVisible, setModalLesoesVisible] = useState(false);
 
+  const LESOES =[
+    {
+      id: 1,
+      title: 'Margem frontal do couro cabeludo',
+      type: 'Oncodermato',
+    },
+    {
+      id: 2,
+      title: 'Lesão na perna esquerda',
+      type: 'Úlcera venosa',
+    },
+    {
+      id: 3,
+      title: 'Lesão no braço direito',
+      type: 'Oncodermato',
+    },
+    {
+      id: 4,
+      title: 'Lesão na mão esquerda',
+      type: 'Úlcera venosa',
+    },
+    {
+      id: 5,
+      title: 'Lesão no pé direito',
+      type: 'Oncodermato',
+    },
+    {
+      id: 6,
+      title: 'Lesão no rosto',
+      type: 'Úlcera venosa',
+    } 
+]
+
   return (
     <View className="flex-1 bg-white p-safe relative">
 
-      <ModalLesaoFiltro modalLesoesVisible={modalLesoesVisible} setModalLesoesVisible={setModalLesoesVisible} />
+      {/* <ModalLesaoFiltro modalLesoesVisible={modalLesoesVisible} setModalLesoesVisible={setModalLesoesVisible} /> */}
 
       <Header icon="back" title="" onPress={()=> router.push("/(app)/home")} />
 
@@ -60,7 +92,10 @@ export default function Patient() {
           </View>
 
           <View className="border-b border-gray-400">
-            <TouchableOpacity className="flex-row justify-start px-5 py-3 items-center gap-5">
+            <TouchableOpacity 
+              className="flex-row justify-start px-5 py-3 items-center gap-5"
+              onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/anamnesisDetails')}
+            >
               <Feather name="server" size={20} color="#B3B3B3" />
               <Text className='text-base text-gray-800 flex-1'>Anamnese Oncodermato</Text>
               <AntDesign name="caretright" size={10} color="#49454F" />
@@ -80,19 +115,19 @@ export default function Patient() {
         
         <View className="flex-row justify-between items-center">
           <Text className="text-base mb-4 font-semibold mt-8">Lesões registradas</Text>
-          <TouchableOpacity 
+          {/* <TouchableOpacity 
             className="w-10 h-10 justify-center items-center"
             onPress={() => setModalLesoesVisible(!modalLesoesVisible)}
           >
             <Feather name="filter" size={16} color="#1E1E1E" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         
         <View className="flex-1">
           <FlatList
-            data={[1, 2, 3, 4, 5, 6]}
-            keyExtractor={item => item.toString()}
-            renderItem={({item}) => <LesaoCard activeOpacity={1} />}
+            data={LESOES}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => <LesaoCard activeOpacity={1} title={item.title} type={item.type} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom:50,

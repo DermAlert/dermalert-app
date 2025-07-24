@@ -1,5 +1,4 @@
 // /app/(app)/_layout.tsx
-import { RegisterLesionProvider } from '@/contexts/Oncodermato/RegisterLesionContext';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -17,9 +16,7 @@ export default function AppLayout() {
 
   
   return (
-    <RegisterLesionProvider>
       <Stack screenOptions={{ headerShown: false}} />
-    </RegisterLesionProvider>
     
   );
 }

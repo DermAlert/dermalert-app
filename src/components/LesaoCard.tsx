@@ -2,7 +2,12 @@ import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
-export default function LesaoCard({...rest}: TouchableOpacityProps) {
+type LesaoCardProps = TouchableOpacityProps & {
+  title: string;
+  type: string;
+}
+
+export default function LesaoCard({title, type, ...rest}: LesaoCardProps) {
 
   return (
     <TouchableOpacity 
@@ -19,12 +24,12 @@ export default function LesaoCard({...rest}: TouchableOpacityProps) {
       <View>
 
         <Text className='font-semibold text-md self-start mb-1'>
-          Margem frontal do couro cabeludo
+          {title}
         </Text>
 
         <View className="bg-gray-200 rounded-2xl px-2 py-1 self-start">
           <Text className='text-sm font-semibold'>
-            Oncodermato
+            {type}
           </Text>
         </View>
         

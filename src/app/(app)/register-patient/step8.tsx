@@ -16,9 +16,8 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterPatientStep8() {
   const [modalAlert, setModalAlert] = useState(false);
   const [modalAddImage, setModalAddImage] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
 
-  const { setPatientData, updatePatientData } = usePatientForm();
+  const { setPatientData, updatePatientData, images, setImages } = usePatientForm();
 
   const handleNext = (data: PatientProps) => {
       if (data.terms_photos && data.terms_photos.length > 0 || images.length > 0) {
@@ -32,6 +31,7 @@ export default function RegisterPatientStep8() {
   
   const handleCancel = () => {
     setPatientData({});
+    setImages([]);
     setModalAlert(!modalAlert);
     router.push('/(app)/home');
   }
@@ -76,7 +76,7 @@ export default function RegisterPatientStep8() {
         <View className="flex-row flex-wrap gap-4 mt-8">
 
           {images.map(item => (
-            <PhotoCard key={item} image={item} />
+            <PhotoCard key={item} image={item} isDeletable isPatient />
           ))}
 
           <AddPhotoButton onPress={()=> setModalAddImage(true)} />  

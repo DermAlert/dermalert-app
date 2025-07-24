@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
-import { Image } from 'expo-image';
+import PhotoCard from "@/components/PhotoCard";
 import { router } from "expo-router";
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
@@ -28,52 +28,11 @@ export default function LesaoRegistroDetail() {
 
 
         <View className="flex-row flex-wrap gap-4 mt-8">
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details"})}
-          >
-            <Image 
-              source={{ uri: "https://clinicapatriciaholderbaum.com.br/wp-content/uploads/2021/08/lpele5.jpg" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
 
+          <PhotoCard key="1" image="https://clinicapatriciaholderbaum.com.br/wp-content/uploads/2021/08/lpele5.jpg" />
+          <PhotoCard key="2" image="https://vidasaudavel.einstein.br/wp-content/uploads/2023/05/lesoes-cancer-de-pele-1024x683.jpeg" />
+          <PhotoCard key="3" image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduWHzES3MMxtVG4dGsF-InE49KXNT6TMor_cR0CRpN-pCmwCbiASIhH6tco310wdXScc&usqp=CAU" />
 
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details"})}
-          >
-            <Image 
-              source={{ uri: "https://vidasaudavel.einstein.br/wp-content/uploads/2023/05/lesoes-cancer-de-pele-1024x683.jpeg" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
-
-
-          <TouchableOpacity 
-            className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
-            onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details"})}
-          >
-            <Image 
-              source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduWHzES3MMxtVG4dGsF-InE49KXNT6TMor_cR0CRpN-pCmwCbiASIhH6tco310wdXScc&usqp=CAU" }}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              contentPosition="top"
-            />
-            <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-              <Text className="text-white text-sm antialiased">Visualizar</Text>
-            </View>
-          </TouchableOpacity>
 
         </View>
 

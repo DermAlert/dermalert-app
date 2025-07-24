@@ -1,5 +1,6 @@
 // /app/(app)/_layout.tsx
 import { GeneralHealthProvider } from '@/contexts/GeneralHealthContext';
+import { RegisterLesionProvider } from '@/contexts/Oncodermato/RegisterLesionContext';
 import { PatientProvider } from '@/contexts/PatientContext';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
@@ -19,9 +20,11 @@ export default function AppLayout() {
   
   return (
     <PatientProvider>
-      <GeneralHealthProvider>
-        <Stack screenOptions={{ headerShown: false}} />
-      </GeneralHealthProvider>
+      <RegisterLesionProvider>
+        <GeneralHealthProvider>
+          <Stack screenOptions={{ headerShown: false}} />
+        </GeneralHealthProvider>
+      </RegisterLesionProvider>
     </PatientProvider>
   );
 }

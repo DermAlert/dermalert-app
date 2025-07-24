@@ -53,8 +53,9 @@ export default function PatientEditPhone() {
         
           <Text className="text-base mb-2 text-gray-700 mt-8">Telefone de contato</Text>
 
+          
+
           <Input 
-            ref={inputFocus} 
             error={errors.phone?.message}
             formProps={{
               control,
@@ -62,7 +63,8 @@ export default function PatientEditPhone() {
               rules: {
                 required: "O telefone é obrigatório.",
                 pattern: {
-                  value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
+                  //value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
+                  value: /^\(\d{2}\)\s?\d{4,5}-\d{4}$/,
                   message: "Telefone inválido."
                 }
               }

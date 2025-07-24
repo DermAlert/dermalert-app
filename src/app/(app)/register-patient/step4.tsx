@@ -15,6 +15,8 @@ import Animated, { SlideInRight, SlideOutLeft, useAnimatedStyle, useDerivedValue
 
 export default function RegisterPatientStep4() {
   const [modalAlert, setModalAlert] = useState(false);
+  const [notEmpty, setNotEmpty] = useState(false);
+
 
   const { control, handleSubmit, formState: { errors } } = useForm<PatientProps>();
   const { updatePatientData, setPatientData } = usePatientForm();
@@ -33,7 +35,9 @@ export default function RegisterPatientStep4() {
   }));
 
   const handleNext = (data: PatientProps) => {
-    const finalGender = data.gender === 'outro' ? data.customGender : data.gender;
+
+    if (data.gender && data.gender.length > 0 && notEmpty) {
+      const finalGender = data.gender === 'S' ? '' : data.gender === 'outro' ? data.customGender : data.gender;
 
     const cleanedData: PatientProps = {
       ...data,
@@ -45,6 +49,9 @@ export default function RegisterPatientStep4() {
     console.log(cleanedData);
     updatePatientData(cleanedData);
     router.push('/(app)/register-patient/step5');
+    } else {
+      return;
+    }
   }
 
   const handleCancel = () => {
@@ -95,15 +102,30 @@ export default function RegisterPatientStep4() {
 
             return (
               <View className="gap-3">
-                <RadioButton label="Feminino" value="F" checked={value === 'F'} onPress={() => onChange('F')} />
-                <RadioButton label="Masculino" value="M" checked={value === 'M'} onPress={() => onChange('M')} />
-                <RadioButton label="Não binário" value="N" checked={value === 'N'} onPress={() => onChange('N')} />
-                <RadioButton label="Prefiro não responder" value="" checked={value === ''} onPress={() => onChange('')} />
+                <RadioButton label="Feminino" value="F" checked={value === 'F'} onPress={() => {
+                  onChange('F');
+                  setNotEmpty(true);
+                  }} />
+                <RadioButton label="Masculino" value="M" checked={value === 'M'} onPress={() => {
+                  onChange('M');
+                  setNotEmpty(true);
+                  }} />
+                <RadioButton label="Não binário" value="N" checked={value === 'N'} onPress={() => {
+                  onChange('N');
+                  setNotEmpty(true);
+                  }} />
+                <RadioButton label="Prefiro não responder" value="S" checked={value === 'S'} onPress={() => {
+                  onChange('S');
+                  setNotEmpty(true);
+                  }} />
                 <RadioButton
                   label="Outro"
                   value="outro"
                   checked={isYesOpen}
-                  onPress={() => onChange('outro')}
+                  onPress={() => {
+                    onChange('outro');
+                    setNotEmpty(true);
+                    }}
                 />
 
                 {isYesOpen && (
@@ -147,11 +169,14 @@ export default function RegisterPatientStep4() {
           onPress={() => router.push("/(app)/register-patient/step3")}
           style={{ flexGrow: 1, width: '47%' }}
         />
-        <Button title="Próximo"
-          iconRight
-          icon={<AntDesign name="arrowright" size={14} color="white" />}
-          onPress={handleSubmit(handleNext)}
-          style={{ flexGrow: 1, width: '47%' }}
+        <Button 
+          title="Próximo" 
+          iconRight 
+          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          style={{ flexGrow: 1, width: '47%' }} 
+          onPress={handleSubmit(handleNext)} 
+          activeOpacity={notEmpty ? 0.2 : 1}
+          disabled={notEmpty}
         />
       </View>
     </Animated.View>

@@ -5,7 +5,7 @@ import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
-import { formatCPF } from "@/utils/formatCPF";
+import { formatCPF, isValidCPF } from "@/utils/formatCPF";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -77,7 +77,8 @@ export default function RegisterPatientStep2() {
               pattern: {
                 value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
                 message: "CPF inválido."
-              }
+              },
+              validate: value => isValidCPF(value) || "CPF inválido.",
             }
           }}
           inputProps={{
