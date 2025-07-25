@@ -17,11 +17,89 @@ export default function Home() {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const PATIENTS = [
+    {
+      id: '1',
+      name: 'João da Silva',
+      CPF: '123.456.789-12'
+    },
+    {
+      id: '2',
+      name: 'Maria Oliveira',
+      CPF: '987.654.321-00'
+    },
+    {
+      id: '3',
+      name: 'Carlos Pereira',
+      CPF: '456.789.123-45'
+    },
+    {
+      id: '4',
+      name: 'Ana Costa',
+      CPF: '321.654.987-65'
+    },
+    {
+      id: '5',
+      name: 'Fernanda Souza',
+      CPF: '789.123.456-78'
+    },
+    {
+      id: '6',
+      name: 'Pedro Martins',
+      CPF: '111.222.333-44'
+    },
+    {
+      id: '7',
+      name: 'Luciana Ribeiro',
+      CPF: '555.666.777-88'
+    },
+    {
+      id: '8',
+      name: 'Bruno Lima',
+      CPF: '999.888.777-66'
+    },
+    {
+      id: '9',
+      name: 'Camila Fernandes',
+      CPF: '444.555.666-77'
+    },
+    {
+      id: '10',
+      name: 'Rodrigo Alves',
+      CPF: '222.333.444-55'
+    },
+    {
+      id: '11',
+      name: 'Juliana Duarte',
+      CPF: '666.777.888-99'
+    },
+    {
+      id: '12',
+      name: 'Eduardo Rocha',
+      CPF: '333.444.555-11'
+    },
+    {
+      id: '13',
+      name: 'Patrícia Mendes',
+      CPF: '888.999.000-22'
+    },
+    {
+      id: '14',
+      name: 'André Barros',
+      CPF: '777.666.555-33'
+    },
+    {
+      id: '15',
+      name: 'Renata Nogueira',
+      CPF: '000.111.222-34'
+    }
+  ];
+
 
   return (
     <View className="flex-1 bg-white p-safe relative">
 
-      <PatientSearch modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      <PatientSearch modalVisible={modalVisible} setModalVisible={setModalVisible} patientList={PATIENTS} />
 
       <HeaderHome />
 
@@ -40,9 +118,9 @@ export default function Home() {
 
         <View className="flex-1">
           <FlatList
-            data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}
-            keyExtractor={item => item.toString()}
-            renderItem={({item}) => <PatientCard />}
+            data={PATIENTS}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => <PatientCard name={item.name} cpf={item.CPF} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom: 70,

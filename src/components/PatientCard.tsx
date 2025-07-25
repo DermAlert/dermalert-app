@@ -2,7 +2,12 @@ import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
-export default function PatientCard({...rest}: TouchableOpacityProps) {
+type PatientCardProps = TouchableOpacityProps & {
+  name: string;
+  cpf: string;
+}
+
+export default function PatientCard({name, cpf, ...rest}: PatientCardProps) {
 
   return (
     <TouchableOpacity 
@@ -17,8 +22,8 @@ export default function PatientCard({...rest}: TouchableOpacityProps) {
       </View>
 
       <View>
-        <Text className='font-semibold'>Gustavo Andrade de Souza</Text>
-        <Text className='text-sm mt-1'>123.456.789-12</Text>
+        <Text className='font-semibold'>{name}</Text>
+        <Text className='text-sm mt-1'>{cpf}</Text>
       </View>
     </TouchableOpacity>
   )
