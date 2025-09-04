@@ -1,12 +1,14 @@
 import Logo from "@/assets/logo.svg";
 import Button from "@/components/Button";
 import Input from '@/components/Input';
+import { Label } from "@/components/Label";
+import { TitleText } from "@/components/TitleText";
 import { FormLoginData } from "@/types/forms";
 import { formatCPF } from "@/utils/formatCPF";
 import { Link, router } from "expo-router";
 import { useRef } from "react";
 import { useForm } from 'react-hook-form';
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -33,14 +35,16 @@ export default function Login() {
 
   return (
     <SafeAreaView className="flex-1 bg-white p-safe justify-center items-center">
-      <View className="p-6">
+      <View className="px-8 w-full gap-20">
       
-        <Logo width={316} height={83}/>
+        <Logo width={304} />
 
-        <View className="p-6 border border-gray-300 rounded-md mt-14">
+        <View className="gap-8">
+          <TitleText title="Acesse sua conta"/>
+
           {!isLogged && (
-            <View className="mb-6">
-              <Text className="text-base mb-2 text-gray-700">CPF</Text>
+            <View className="">
+              <Label title="CPF" />
               <Input 
                 error={errors.cpf?.message}
                 formProps={{
@@ -66,26 +70,29 @@ export default function Login() {
             </View>
           )}
           
-          <Text className="text-base mb-2 text-gray-700">Senha</Text>
-          <Input 
-            ref={passwordRef} 
-            error={errors.password?.message}
-            formProps={{
-              control,
-              name: "password",
-              rules: {
-                required: "A senha é obrigatória."
-              }
-            }}
-            inputProps={{
-              placeholder: "Informe sua senha",
-              returnKeyType: "send",
-              //secureTextEntry: true,
-            }}
-            password
-          />
-          <Button title="Entrar" style={{ marginTop: 24 }} onPress={handleSubmit(onSubmit)} />
-          <Link push href="/(auth)/forgot-password" className="mt-6 underline">Esqueceu a senha?</Link>
+          <View>
+            <Label title="Senha" />
+            <Input 
+              ref={passwordRef} 
+              error={errors.password?.message}
+              formProps={{
+                control,
+                name: "password",
+                rules: {
+                  required: "A senha é obrigatória."
+                }
+              }}
+              inputProps={{
+                placeholder: "Informe sua senha",
+                returnKeyType: "send",
+                //secureTextEntry: true,
+              }}
+              password
+            />
+          </View>
+          
+          <Button title="Entrar" onPress={handleSubmit(onSubmit)} />
+          <Link push href="/(auth)/forgot-password" className="text-primary-600 font-semibold text-base">Esqueceu a senha?</Link>
         </View>
 
       </View>

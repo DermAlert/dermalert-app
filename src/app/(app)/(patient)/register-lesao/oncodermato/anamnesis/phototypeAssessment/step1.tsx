@@ -3,9 +3,10 @@ import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { usePhototypeAssessmentForm } from "@/hooks/Oncodermato/usePhototypeAssessmentForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { PhototypeAssessmentProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -18,10 +19,17 @@ export default function PhototypeAssessmentStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { phototypeAssessmentData, setPhototypeAssessmentData, updatePhototypeAssessmentData } = usePhototypeAssessmentForm();
+  const { setLesionType } = useLesionType();
 
 
   // formulario
-  const { control, handleSubmit } = useForm<PhototypeAssessmentProps>();
+  const { control, handleSubmit } = useForm<PhototypeAssessmentProps>(
+    {
+      defaultValues: {
+        skin_color: phototypeAssessmentData.skin_color
+      }
+    }
+  );
   const cancerTypeValue = useWatch({ control, name: "skin_color" });
 
 
@@ -31,7 +39,7 @@ export default function PhototypeAssessmentStep1() {
     if (data.skin_color && data.skin_color.length > 0 && notEmpty) {
       console.log(data);
       updatePhototypeAssessmentData(data);
-      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2');
     } else {
       return;
     }
@@ -39,6 +47,7 @@ export default function PhototypeAssessmentStep1() {
 
   const handleCancel = () => {
     setPhototypeAssessmentData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -62,59 +71,59 @@ export default function PhototypeAssessmentStep1() {
 
       <Header title="Avaliação de Fototipo" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={8} />
 
-        <Text className="text-base text-gray-700 my-8">Qual é a cor natural da pele do paciente (áreas não expostas ao sol)?</Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">Qual é a cor natural da pele do paciente (áreas não expostas ao sol)?</Text>
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Branca leitosa" value="Branca leitosa" checked={value === 'Branca leitosa'} onPress={() => {
-                const newValue = "Branca leitosa";
+              <RadioButton label="Branca leitosa" value="milky_white" checked={value === 'milky_white'} onPress={() => {
+                const newValue = "milky_white";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2')
               }} />
-              <RadioButton label="Branca" value="Branca" checked={value === 'Branca'} onPress={() => {
-                const newValue = "Branca";
+              <RadioButton label="Branca" value="white" checked={value === 'white'} onPress={() => {
+                const newValue = "white";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2')
               }} />
-              <RadioButton label="Branca a bege, com base dourada" value="Branca a bege, com base dourada" checked={value === 'Branca a bege, com base dourada'} onPress={() => {
-                const newValue = "Branca a bege, com base dourada";
+              <RadioButton label="Branca a bege, com base dourada" value="white_to_beige_golden" checked={value === 'white_to_beige_golden'} onPress={() => {
+                const newValue = "white_to_beige_golden";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2')
               }} />
-              <RadioButton label="Bege" value="Bege" checked={value === 'Bege'} onPress={() => {
-                const newValue = "Bege";
+              <RadioButton label="Bege" value="beige" checked={value === 'beige'} onPress={() => {
+                const newValue = "beige";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2')
               }} />
-              <RadioButton label="Castanha clara" value="Castanha clara" checked={value === 'Castanha clara'} onPress={() => {
-                const newValue = "Castanha clara";
+              <RadioButton label="Castanha clara" value="light_brown" checked={value === 'light_brown'} onPress={() => {
+                const newValue = "light_brown";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2')
               }} />
-              <RadioButton label="Castanha escura" value="Castanha escura" checked={value === 'Castanha escura'} onPress={() => {
-                const newValue = "Castanha escura";
+              <RadioButton label="Castanha escura" value="dark_brown" checked={value === 'dark_brown'} onPress={() => {
+                const newValue = "dark_brown";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step2')
               }} />
-              <RadioButton label="Negra" value="Negra" checked={value === 'Negra'} onPress={() => {
-                const newValue = "Negra";
+              <RadioButton label="Negra" value="black" checked={value === 'black'} onPress={() => {
+                const newValue = "black";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ skin_color: newValue });
@@ -127,11 +136,11 @@ export default function PhototypeAssessmentStep1() {
 
       </ScrollView>
 
-      <View className="px-6 w-full justify-start mb-4">
+      <View className="px-8 w-full justify-start mb-4">
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#D4D6DF'}`} />}
           style={{ marginTop: 24 }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

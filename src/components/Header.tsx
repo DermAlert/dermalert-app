@@ -1,5 +1,6 @@
 
-import AntDesign from '@expo/vector-icons/AntDesign';
+//import AntDesign from '@expo/vector-icons/AntDesign';
+import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
 
@@ -12,16 +13,19 @@ type Props = TouchableOpacityProps & {
 export default function Header({ title, icon='close' , ...rest}: Props) {
 
   return (
-    <View className="flex-row w-full h-16 pl-1 pr-6 items-center justify-start">
-      <TouchableOpacity activeOpacity={0.7} className="bg-white justify-center items-center w-12 h-12" {...rest}>
+    <View className="flex-row w-full h-16 px-1 py-4 items-center justify-start gap-1">
+        <TouchableOpacity activeOpacity={0.7} className="justify-center items-center w-12 h-12" {...rest}>
         {icon==='close' ? (
-          <AntDesign name="close" size={18} color="#1D1B20" />
+          <XIcon size={18} color="#4052A1" />
         ) : (
-          <AntDesign name="arrowleft" size={18} color="#1D1B20" />
+          <ArrowLeftIcon size={22} color="#4052A1" weight="bold" />
         )}
         
       </TouchableOpacity>
-      <Text className="text-gray-900 ml-1 text-xl">{title}</Text>
+      <Text className="text-neutral-700 font-medium text-lg flex-1 text-center">{title}</Text>
+
+      <View className='justify-center items-center w-12 h-12'></View>
+      
     </View>
     
   )

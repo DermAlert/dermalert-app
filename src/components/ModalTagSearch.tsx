@@ -1,4 +1,4 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { XIcon } from 'phosphor-react-native';
 import React, { useEffect, useRef } from 'react';
 import { Dimensions, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
@@ -54,12 +54,12 @@ export default function ModalTagSearch({
     >
       <Header title={title} onPress={onClose} />
 
-      <View className="flex-row px-4 py-2 flex-wrap gap-2 border-t border-gray-300">
+      <View className="flex-row px-4 py-2 flex-wrap gap-2 border-t border-neutral-300">
         {contentList.map((item) => (
-          <View key={item} className="flex-row gap-2 items-center bg-gray-200 rounded-lg px-3 py-1 h-[32px]">
-            <Text>{item}</Text>
+          <View key={item} className="flex-row gap-2 items-center bg-primary-100 rounded-lg px-3 py-1 h-[32px]">
+            <Text className="text-neutral-700 text-sm font-medium">{item}</Text>
             <TouchableOpacity onPress={() => onRemoveItem(item)}>
-              <AntDesign name="close" size={12} color="#2C2C2C" />
+              <XIcon size={12} color="#7D83A0" weight="bold" />
             </TouchableOpacity>
           </View>
         ))}
@@ -69,7 +69,7 @@ export default function ModalTagSearch({
           value={searchText}
           onChangeText={onSearch}
           textAlignVertical="center"
-          className="bg-white flex-1 h-[32px] p-0 leading-none m-0 border-0 min-w-10"
+          className="bg-white flex-1 h-[32px] p-0 leading-none m-0 border-0 min-w-10 text-neutral-900"
         />
       </View>
 
@@ -79,9 +79,10 @@ export default function ModalTagSearch({
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => onAddItem(item)}
-              className="border-t border-gray-300 px-4 py-3 w-full"
+              className="border-t border-neutral-300 px-4 py-3 w-full"
+              key={item}
             >
-              <Text>{item}</Text>
+              <Text className='text-neutral-900 text-base'>{item}</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item}

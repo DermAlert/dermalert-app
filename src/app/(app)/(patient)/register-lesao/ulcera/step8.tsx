@@ -2,10 +2,11 @@ import Button from "@/components/Button";
 import CheckButton from "@/components/CheckButton";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
+import { TitleText } from "@/components/TitleText";
 import { useRegisterLesionUlceraForm } from "@/hooks/Ulcera/useRegisterLesionUlceraForm";
 import { LesaoUlceraProps } from "@/types/forms";
-import { AntDesign } from '@expo/vector-icons';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -22,7 +23,13 @@ export default function RegisterLesaoUlceraStep8() {
   
 
   // formulario
-  const { control, handleSubmit } = useForm<LesaoUlceraProps>();
+  const { control, handleSubmit } = useForm<LesaoUlceraProps>(
+    {
+      defaultValues: {
+        inflamacao: registerLesionUlceraData.inflamacao
+      }
+    }
+  );
   const lesionLocalValue = useWatch({ control, name: "inflamacao" });
 
 
@@ -63,12 +70,11 @@ export default function RegisterLesaoUlceraStep8() {
 
       <Header title="Registrar lesão" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={8} totalSteps={9} />
 
-        <Text className="text-2xl font-semibold mt-6">RESVECH</Text>
-        <Text className="text-base text-gray-600 mt-4">Infecção/Inflamação</Text>
-        <Text className="text-base text-gray-600 mb-8">(0-14 pontos)</Text>
+        <TitleText title="RESVECH" description="Infecção/Inflamação"/>
+        <Text className="text-sm text-neutral-700 mb-6">(0-14 pontos)</Text>
 
 
         <Controller
@@ -100,18 +106,18 @@ export default function RegisterLesaoUlceraStep8() {
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/ulcera/step7')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
-          title="Próximo" 
+          title="Próximo"
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

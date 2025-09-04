@@ -3,9 +3,10 @@ import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { CancerResearchProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -18,10 +19,16 @@ export default function CancerResearchStep3() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { cancerResearchData, setCancerResearchData, updateCancerResearchData } = useCancerResearchForm();
-
+  const { setLesionType } = useLesionType();
 
   // formulario
-  const { control, handleSubmit } = useForm<CancerResearchProps>();
+  const { control, handleSubmit } = useForm<CancerResearchProps>(
+    {
+      defaultValues: {
+        how_long: cancerResearchData.how_long
+      }
+    }
+  );
   const cancerTypeValue = useWatch({ control, name: "how_long" });
 
 
@@ -31,7 +38,7 @@ export default function CancerResearchStep3() {
     if (data.how_long && data.how_long.length > 0 && notEmpty) {
       console.log(data);
       updateCancerResearchData(data);
-      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step4');
     } else {
       return;
     }
@@ -39,6 +46,7 @@ export default function CancerResearchStep3() {
 
   const handleCancel = () => {
     setCancerResearchData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -62,38 +70,38 @@ export default function CancerResearchStep3() {
 
       <Header title="Investigação de CA e Lesões" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={3} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">Há quanto tempo o paciente notou essas alterações?</Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">Há quanto tempo o paciente notou essas alterações?</Text>
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Menos de 1 mês" value="Menos de 1 mês" checked={value === 'Menos de 1 mês'} onPress={() => {
-                const newValue = "Menos de 1 mês";
+              <RadioButton label="Menos de 1 mês" value="lt_1_month" checked={value === 'lt_1_month'} onPress={() => {
+                const newValue = "lt_1_month";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateCancerResearchData({ how_long: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step4')
               }} />
-              <RadioButton label="1-3 meses" value="1-3 meses" checked={value === '1-3 meses'} onPress={() => {
-                const newValue = "1-3 meses";
+              <RadioButton label="1-3 meses" value="1_3_months" checked={value === '1_3_months'} onPress={() => {
+                const newValue = "1_3_months";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateCancerResearchData({ how_long: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step4')
               }} />
-              <RadioButton label="3-6 meses" value="3-6 meses" checked={value === '3-6 meses'} onPress={() => {
-                const newValue = "3-6 meses";
+              <RadioButton label="3-6 meses" value="3_6_months" checked={value === '3_6_months'} onPress={() => {
+                const newValue = "3_6_months";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateCancerResearchData({ how_long: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step4')
               }} />
-              <RadioButton label="Mais de 6 meses" value="Mais de 6 meses" checked={value === 'Mais de 6 meses'} onPress={() => {
-                const newValue = "Mais de 6 meses";
+              <RadioButton label="Mais de 6 meses" value="gt_6_months" checked={value === 'gt_6_months'} onPress={() => {
+                const newValue = "gt_6_months";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateCancerResearchData({ how_long: newValue });
@@ -106,18 +114,18 @@ export default function CancerResearchStep3() {
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)}
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step2')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />}  
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

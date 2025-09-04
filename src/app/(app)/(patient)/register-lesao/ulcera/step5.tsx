@@ -2,10 +2,11 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { TitleText } from "@/components/TitleText";
 import { useRegisterLesionUlceraForm } from "@/hooks/Ulcera/useRegisterLesionUlceraForm";
 import { LesaoUlceraProps } from "@/types/forms";
-import { AntDesign } from '@expo/vector-icons';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -22,14 +23,20 @@ export default function RegisterLesaoUlceraStep5() {
   
 
   // formulario
-  const { control, handleSubmit } = useForm<LesaoUlceraProps>();
-  const lesionLocalValue = useWatch({ control, name: "bordos" });
+  const { control, handleSubmit } = useForm<LesaoUlceraProps>(
+    {
+      defaultValues: {
+        wound_edges: registerLesionUlceraData.wound_edges,
+      }
+    }
+  );
+  const lesionLocalValue = useWatch({ control, name: "wound_edges" });
 
 
   
 
   const handleNext = (data: LesaoUlceraProps) => {
-    if (data.bordos && data.bordos.length > 0 && notEmpty) {
+    if (data.wound_edges && data.wound_edges.length > 0 && notEmpty) {
       console.log(data);
       updateRegisterLesionUlceraData(data);
       router.push('/(app)/(patient)/register-lesao/ulcera/step6');
@@ -63,72 +70,71 @@ export default function RegisterLesaoUlceraStep5() {
 
       <Header title="Registrar lesão" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={9} />
 
-        <Text className="text-2xl font-semibold mt-6">RESVECH</Text>
-        <Text className="text-base text-gray-600 mt-4">Bordos</Text>
-        <Text className="text-base text-gray-600 mb-8">(0-4 pontos)</Text>
+        <TitleText title="RESVECH" description="Bordos"/>
+        <Text className="text-sm text-neutral-700 mb-6">(0-4 pontos)</Text>
 
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Ausência de bordos e ferida" value="Ausência de bordos e ferida" checked={value === 'Ausência de bordos e ferida'} onPress={() => {
-                const newValue = "Ausência de bordos e ferida";
+              <RadioButton label="Ausência de bordos e ferida" value="no_edges" checked={value === 'no_edges'} onPress={() => {
+                const newValue = "no_edges";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ bordos: newValue });
+                updateRegisterLesionUlceraData({ wound_edges: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step6')
               }} />
-              <RadioButton label="Difusos" value="Difusos" checked={value === 'Difusos'} onPress={() => {
-                const newValue = "Difusos";
+              <RadioButton label="Difusos" value="diffuse" checked={value === 'diffuse'} onPress={() => {
+                const newValue = "diffuse";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ bordos: newValue });
+                updateRegisterLesionUlceraData({ wound_edges: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step6')
               }} />
-              <RadioButton label="Delimitados" value="Delimitados" checked={value === 'Delimitados'} onPress={() => {
-                const newValue = "Delimitados";
+              <RadioButton label="Delimitados" value="well_defined" checked={value === 'well_defined'} onPress={() => {
+                const newValue = "well_defined";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ bordos: newValue });
+                updateRegisterLesionUlceraData({ wound_edges: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step6')
               }} />
-              <RadioButton label="Lesados" value="Lesados" checked={value === 'Lesados'} onPress={() => {
-                const newValue = "Lesados";
+              <RadioButton label="Lesados" value="damaged" checked={value === 'damaged'} onPress={() => {
+                const newValue = "damaged";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ bordos: newValue });
+                updateRegisterLesionUlceraData({ wound_edges: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step6')
               }} />
-              <RadioButton label='Espessos ("envelhecimento", "evertidos"' value='Espessos ("envelhecimento", "evertidos"' checked={value === 'Espessos ("envelhecimento", "evertidos"'} onPress={() => {
-                const newValue = 'Espessos ("envelhecimento", "evertidos"';
+              <RadioButton label='Espessos ("envelhecimento", "evertidos"' value='thickened' checked={value === 'thickened'} onPress={() => {
+                const newValue = 'thickened';
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ bordos: newValue });
+                updateRegisterLesionUlceraData({ wound_edges: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step6')
               }} />
             </View>
           )}
-          name="bordos"
+          name="wound_edges"
         /> 
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/ulcera/step4')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

@@ -1,13 +1,14 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import Input from '@/components/Input';
+import { Label } from "@/components/Label";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
 import { formatPhone } from "@/utils/formatPhone";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Text, TextInput, View } from 'react-native';
@@ -15,8 +16,17 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep5() {
   const [modalAlert, setModalAlert] = useState(false);
-  const { control, handleSubmit, formState: { errors } } = useForm<PatientProps>();
-  const { updatePatientData, setPatientData } = usePatientForm();
+  const { patientData, updatePatientData, setPatientData, setImages } = usePatientForm();
+  const { control, handleSubmit, formState: { errors } } = useForm<PatientProps>(
+    {
+      defaultValues: {
+        phone_number: patientData.phone_number ?? '',
+        user: {
+          email: patientData.user?.email ?? ''
+        }
+      }
+    }
+  );
 
 
   const handleNext = (data: PatientProps) => {
@@ -27,6 +37,7 @@ export default function RegisterPatientStep5() {
   
   const handleCancel = () => {
     setPatientData({});
+    setImages([]);
     setModalAlert(!modalAlert);
     router.push('/(app)/home');
   }
@@ -59,79 +70,86 @@ export default function RegisterPatientStep5() {
 
       <Header title="Cadastrar paciente" onPress={() => setModalAlert(!modalAlert)} />
 
-      <View className="px-6 w-full justify-start flex-1">
+      <View className="px-8 pb-6 w-full justify-start flex-1 gap-6">
 
         <ProgressBar step={5} totalSteps={9} />
 
-        <Text className="text-base text-gray-700 mt-8">Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa.</Text>
+        <View className="flex-1 gap-8">
+          <Text className="text-base text-neutral-700">Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa.</Text>
 
-        <Text className="text-base mb-2 text-gray-700 mt-8">E-mail para retorno</Text>
+          <View>
+            <Label title="E-mail para retorno" text="Endereço de e-mail para contatar o paciente"/>
 
-        <Text className="text-base text-gray-500 mb-2">Endereço de e-mail para contatar o paciente</Text>
-
-        <Input 
-          ref={inputFocus} 
-          error={errors.email?.message}
-          formProps={{
-            control,
-            name: "email",
-            rules: {
-              required: "O e-mail é obrigatório.",
-              pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: "E-mail inválido."
-              }
-            }
-          }}
-          inputProps={{
-            placeholder: "Endereço de e-mail",
-            returnKeyType: "next",
-          }}
-        />
-
-        <Text className="text-base mb-2 text-gray-700 mt-8">Telefone de contato <Text className="text-base text-gray-500 mb-2">(Opcional)</Text></Text>
-
-        <Input 
-            error={errors.phone_number?.message}
-            formProps={{
-              control,
-              name: "phone_number",
-              rules: {
-                required: "O telefone é obrigatório.",
-                pattern: {
-                  //value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
-                  value: /^\(\d{2}\)\s?\d{4,5}-\d{4}$/,
-                  message: "Telefone inválido."
+            <Input 
+              ref={inputFocus} 
+              error={errors.user?.email?.message}
+              formProps={{
+                control,
+                name: "user.email",
+                rules: {
+                  required: "O e-mail é obrigatório.",
+                  pattern: {
+                    value: /^\S+@\S+\.\S+$/,
+                    message: "E-mail inválido."
+                  }
                 }
-              }
-            }}
-            inputProps={{
-              placeholder: "Telefone do paciente",
-              returnKeyType: "next",
-              keyboardType: "numeric",
-              maxLength: 15
-            }}
-            onChangeTextFormat={formatPhone}
-            
+              }}
+              inputProps={{
+                placeholder: "Endereço de e-mail",
+                returnKeyType: "next",
+              }}
+            />
+          </View>
+
+          <View>
+            <Text className="text-base mb-2 text-neutral-900 font-semibold">Telefone de contato <Text className="text-base text-neutral-700 mb-2 font-normal">(Opcional)</Text></Text>
+
+            <Input 
+              error={errors.phone_number?.message}
+              formProps={{
+                control,
+                name: "phone_number",
+                rules: {
+                  required: "O telefone é obrigatório.",
+                  pattern: {
+                    //value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
+                    value: /^\(\d{2}\)\s?\d{4,5}-\d{4}$/,
+                    message: "Telefone inválido."
+                  }
+                }
+              }}
+              inputProps={{
+                placeholder: "Telefone do paciente",
+                returnKeyType: "next",
+                keyboardType: "numeric",
+                maxLength: 15
+              }}
+              onChangeTextFormat={formatPhone}
+            />
+          </View>
+        </View>
+
+        
+        <View className="gap-4 w-full justify-start flex-row">
+          <Button title="Voltar" 
+            iconLeft 
+            secondary 
+            icon={(<ArrowLeftIcon size={24} color="#4052A1" />)}  
+            onPress={()=> router.push("/(app)/register-patient/step4")} 
+            style={{ flexGrow: 1, width: '47%' }}
           />
+          <Button title="Próximo" 
+            iconRight 
+            icon={(<ArrowRightIcon size={24} color="white" />)} 
+            onPress={handleSubmit(handleNext)} 
+            style={{ flexGrow: 1, width: '47%' }}
+          />
+        </View>
+        
       
       </View>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
-        <Button title="Voltar" 
-          iconLeft 
-          secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push("/(app)/register-patient/step4")} 
-          style={{ flexGrow: 1, width: '47%' }}
-        />
-        <Button title="Próximo" 
-          iconRight 
-          icon={(<AntDesign name="arrowright" size={14} color="white" />)} 
-          onPress={handleSubmit(handleNext)} 
-          style={{ flexGrow: 1, width: '47%' }}
-        />
-      </View>
+      
 
     </Animated.View>
   );

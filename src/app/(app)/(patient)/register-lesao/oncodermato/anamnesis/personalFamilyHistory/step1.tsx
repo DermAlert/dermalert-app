@@ -5,11 +5,13 @@ import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { useTagListModal } from "@/hooks/useTagListModal";
+import { api } from "@/services/api";
 import { PersonalFamilyHistoryProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { ArrowRightIcon, XIcon } from "phosphor-react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
@@ -20,28 +22,30 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-const FAMILY_MEMBERS = [
-  "Tio",
-  "Tia",
-  "Tio-avô",
-  "Tia-avó",
-  "Primo",
-  "Prima",
-  "Filho",
-  "Filha",
-  "Sobrinho",
-  "Sobrinha",
-  "Bisavô",
-  "Bisavó"
-];
+// const FAMILY_MEMBERS = [
+//   "Tio",
+//   "Tia",
+//   "Tio-avô",
+//   "Tia-avó",
+//   "Primo",
+//   "Prima",
+//   "Filho",
+//   "Filha",
+//   "Sobrinho",
+//   "Sobrinha",
+//   "Bisavô",
+//   "Bisavó"
+// ];
 
 export default function PersonalFamilyHistoryStep1() {
   const [isFamilyOpen, setIsFamilyOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
+  const [relativesList, setRelativesList] = useState<string[]>([]);
   
   const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
+  const { setLesionType } = useLesionType();
 
 
   // animação accordion
@@ -58,31 +62,87 @@ export default function PersonalFamilyHistoryStep1() {
   }));
 
   // formulario
-  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>();
+  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>(
+    {
+      defaultValues: {
+        family_history: familyHistoryData.family_history && familyHistoryData.family_history.length === 0 ? ["Não"] : undefined,
+        family_history_types: familyHistoryData.family_history_types,
+      }
+    }
+  );
+
+
+  const loadRelatives = async () => {
+    try {
+      const { data } = await api.get('/relatives/');
+
+      if (data) {
+        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
+        setRelativesList(onlyNames);
+        //console.log(relativesList);
+        //console.log(data);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const fixedOptions = ["Mãe", "Pai", "Avô/Avó", "Irmão/Irmã", "Não"];
+
   const onChangeRef = useRef<(value: string[]) => void>(() => {});
   const valueRef = useRef<string[]>([]);
   const familyHistoryValue = useWatch({ control, name: "family_history" });
+  const familyHistoryTypeValue = useWatch({ control, name: "family_history_types" });
 
   const {
     list: familyList,
+    setList,
     searchText,
     filteredData,
     addItemToList,
     removeItemFromList,
     handleSearch,
   } = useTagListModal({
-    baseList: FAMILY_MEMBERS,
+    baseList: relativesList,
     currentValue: familyHistoryValue ?? [],
     onChange: (v) => onChangeRef.current(v),
     setNotEmpty,
+    fixedOptions
   });
+
+  useEffect(() => {
+    if (familyHistoryData.family_history && familyHistoryData.family_history.length > 0) {
+      const fixedSelected = familyHistoryData.family_history.filter(d => fixedOptions.includes(d));
+      const otherSelected = familyHistoryData.family_history.filter(d => !fixedOptions.includes(d));
+      //setList([]);
+  
+      onChangeRef.current([
+        ...fixedSelected,
+        ...otherSelected
+      ]);
+  
+      //setList(otherSelected);
+  
+      if (otherSelected.length > 0) {
+        setIsOtherOpen(true);
+      }
+    }
+  }, [familyHistoryData, setList]);
 
   
 
   const handleNext = (data: PersonalFamilyHistoryProps) => {
     if (data.family_history && data.family_history.length > 0 && notEmpty) {
       console.log(data);
-      updateFamilyHistoryData(data);
+
+      if(!data.family_history.includes("Não") && data.family_history_types && data.family_history_types.length === 0) return
+
+      const familyHistoryData = data.family_history.includes("Não") ? [] : data.family_history;
+      const familyHistoryTypeData = data.family_history.includes("Não") ? [] : data.family_history_types;
+
+
+      updateFamilyHistoryData({ family_history: familyHistoryData, family_history_types: familyHistoryTypeData });
       router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2');
     } else {
       return;
@@ -91,14 +151,16 @@ export default function PersonalFamilyHistoryStep1() {
 
   const handleCancel = () => {
     setFamilyHistoryData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
   useEffect(() => {
     const isOutrosSelected = isOtherOpen;
     const current = familyHistoryValue || [];
+    const currentType = familyHistoryTypeValue || [];
     valueRef.current = familyHistoryValue || [];
-    const hasOtherSelections = current.length > 0;
+    const hasOtherSelections = current.length > 0 && currentType.length > 0;
     const hasFamilyInList = familyList.length > 0;
 
     if (isOutrosSelected) {
@@ -106,12 +168,28 @@ export default function PersonalFamilyHistoryStep1() {
         setNotEmpty(false);
         return;
       }
-      setNotEmpty(true);
+      if(currentType.length > 0){
+        setNotEmpty(true);
+      } else {
+        setNotEmpty(false)
+      }
+      
       return;
     }
 
+    if(familyHistoryData.family_history && familyHistoryData.family_history.length > 0) {
+      setNotEmpty(true);        
+      setIsFamilyOpen(true);
+    }
+
     setNotEmpty(hasOtherSelections);
-  }, [familyHistoryValue, familyList, isOtherOpen]);
+  }, [familyHistoryValue, familyList, isOtherOpen, isFamilyOpen]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadRelatives()
+    },[])
+  )
 
   useEffect(() => {
     console.log(familyHistoryData)
@@ -150,10 +228,10 @@ export default function PersonalFamilyHistoryStep1() {
 
       <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={5} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente tem histórico familiar de câncer de pele?</Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente tem histórico familiar de câncer de pele?</Text>
 
         <Controller
           control={control}
@@ -182,7 +260,7 @@ export default function PersonalFamilyHistoryStep1() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <Text className="px-0 mt-4">Qual grau de parentesco?</Text>
+                      <Text className="px-0 mt-5 text-neutral-900 text-base">Qual grau de parentesco?</Text>
                       {["Mãe", "Pai", "Avô/Avó", "Irmão/Irmã", "Outros"].map(item => (
                         <CheckButton
                           key={item}
@@ -214,58 +292,78 @@ export default function PersonalFamilyHistoryStep1() {
                             } else {
                               onChange([...value, item]);
                               const isSelected = isOtherOpen;
-                              if (isSelected && familyList.length === 0) {
-                                setNotEmpty(false);
-                              } else {
-                                setNotEmpty(true);
-                              }
+                              // if (isSelected && familyList.length === 0) {
+                              //   setNotEmpty(false);
+                              // } else if (familyHistoryTypeValue?.length === 0) {
+                              //   setNotEmpty(false);
+                              // } else {
+                              //   setNotEmpty(true)
+                              // }
                             }
                           }}
                           indented
                         />
                       ))}
                       {isOtherOpen && (
-                        <View className="mx-6 mt-3">
-                          <Text>Especifique</Text>
+                        <View className="mx-4 mt-2">
+                          <Text className="text-neutral-700 text-base">Especifique</Text>
                           <TouchableOpacity
-                            className="border border-gray-300 rounded-lg p-3 mb-4 mt-2"
+                            className="border border-neutral-300 rounded-lg p-4 mt-2 mb-4"
                             activeOpacity={1}
                             onPress={() => setModalSearchOpen(true)}
                           >
-                            <Text className="text-gray-300">Ex.:</Text>
+                            <Text className="text-neutral-400">Ex.:</Text>
                           </TouchableOpacity>
 
-                          <View className="gap-2 mb-3">
+                          <View className="gap-2">
                             {familyList.map((item) => (
-                              <View key={item} className="flex-row gap-2 items-center bg-gray-200 rounded-lg px-3 py-2 self-start">
-                                <Text className="w-auto max-w-[240px]">{item}</Text>
-                                <TouchableOpacity onPress={() => removeItemFromList(item)}>
-                                  <AntDesign name="close" size={12} color="#2C2C2C" />
-                                </TouchableOpacity>
-                              </View>
+                              <View key={item} className="flex-row gap-2 items-center bg-primary-100 rounded-lg px-2 py-[6px] self-start">
+                              <Text className="w-auto max-w-[240px] text-neutral-700 text-sm font-medium">{item}</Text>
+                              <TouchableOpacity onPress={() => removeItemFromList(item)}>
+                                <XIcon size={12} color="#7D83A0" weight="bold" />
+                              </TouchableOpacity>
+                            </View>
                             ))}
                           </View>
                         </View>
                       )}
 
-                      <Text className="px-0 mt-4">Qual tipo de câncer de pele?</Text>
-                      {["Melanoma", "Carcinoma Basocelular", "Carcinoma Espinocelular"].map(item => (
-                        <CheckButton
-                          key={item}
-                          label={item}
-                          value={item}
-                          checked={value.includes(item)}
-                          onPress={() => {
-                            if (value.includes(item)) {
-                              onChange(value.filter(v => v !== item));
-                            } else {
-                              onChange([...value, item]);
-                              setNotEmpty(true);
-                            }
-                          }}
-                          indented
-                        />
-                      ))}
+                      <Controller
+                        control={control}
+                        defaultValue={[]}
+                        name="family_history_types"
+                        render={({ field: { onChange, value = [] } }) => {
+                          return (
+                            <>
+                            <Text  className="px-0 mt-5 text-neutral-900 text-base">Qual tipo de câncer de pele?</Text>
+                              {["Melanoma", "Carcinoma Basocelular", "Carcinoma Espinocelular"].map(item => (
+                                <CheckButton
+                                  key={item}
+                                  label={item}
+                                  value={item}
+                                  checked={value.includes(item)}
+                                  onPress={() => {
+                                    if (value.includes(item)) {
+                                      onChange(value.filter(v => v !== item));
+                                    } else {
+                                      onChange([...value, item]);
+                                      // if (familyHistoryValue && familyHistoryValue.length === 0) {
+                                      //   setNotEmpty(false);
+                                      //   return
+                                      // } else {
+                                      //   setNotEmpty(true)
+                                      // }
+                                    }
+                                  }}
+                                  indented
+                                />
+                              ))}
+                            </>
+                            
+                          );
+                        }}
+                      />
+
                     </View>
                   </Animated.View>
                 </View>
@@ -279,7 +377,7 @@ export default function PersonalFamilyHistoryStep1() {
                     onChange(newValue);
                     setNotEmpty(true);
                     setIsFamilyOpen(false);
-                    updateFamilyHistoryData({ family_history: newValue });
+                    updateFamilyHistoryData({ family_history: [], family_history_types: [] });
                     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step2');
                   }}
                 />
@@ -288,14 +386,16 @@ export default function PersonalFamilyHistoryStep1() {
           }}
           name="family_history"
         />
+
+
+        
       </ScrollView>
 
-      <View className="px-6 w-full justify-start mb-4">
+      <View className="px-8 w-full justify-start mb-4 mt-4">
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
-          style={{ marginTop: 24 }} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#D4D6DF'}`} />}
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}
           disabled={notEmpty}

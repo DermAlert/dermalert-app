@@ -3,9 +3,10 @@ import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { usePhototypeAssessmentForm } from "@/hooks/Oncodermato/usePhototypeAssessmentForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { PhototypeAssessmentProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -18,10 +19,16 @@ export default function PhototypeAssessmentStep4() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { phototypeAssessmentData, setPhototypeAssessmentData, updatePhototypeAssessmentData } = usePhototypeAssessmentForm();
-
+  const { setLesionType } = useLesionType();
 
   // formulario
-  const { control, handleSubmit } = useForm<PhototypeAssessmentProps>();
+  const { control, handleSubmit } = useForm<PhototypeAssessmentProps>(
+    {
+      defaultValues: {
+        freckles: phototypeAssessmentData.freckles
+      }
+    }
+  );
   const cancerTypeValue = useWatch({ control, name: "freckles" });
 
 
@@ -31,7 +38,7 @@ export default function PhototypeAssessmentStep4() {
     if (data.freckles && data.freckles.length > 0 && notEmpty) {
       console.log(data);
       updatePhototypeAssessmentData(data);
-      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step5');
     } else {
       return;
     }
@@ -39,6 +46,7 @@ export default function PhototypeAssessmentStep4() {
 
   const handleCancel = () => {
     setPhototypeAssessmentData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -62,38 +70,38 @@ export default function PhototypeAssessmentStep4() {
 
       <Header title="Avaliação de Fototipo" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={4} totalSteps={8} />
 
-        <Text className="text-base text-gray-700 my-8">Quantas sardas o paciente tem em áreas não expostas?</Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">Quantas sardas o paciente tem em áreas não expostas?</Text>
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Muitas" value="Muitas" checked={value === 'Muitas'} onPress={() => {
-                const newValue = "Muitas";
+              <RadioButton label="Muitas" value="many" checked={value === 'many'} onPress={() => {
+                const newValue = "many";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ freckles: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step5')
               }} />
-              <RadioButton label="Algumas" value="Algumas" checked={value === 'Algumas'} onPress={() => {
-                const newValue = "Algumas";
+              <RadioButton label="Algumas" value="some" checked={value === 'some'} onPress={() => {
+                const newValue = "some";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ freckles: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step5')
               }} />
-              <RadioButton label="Poucas" value="Poucas" checked={value === 'Poucas'} onPress={() => {
-                const newValue = "Poucas";
+              <RadioButton label="Poucas" value="few" checked={value === 'few'} onPress={() => {
+                const newValue = "few";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ freckles: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step5')
               }} />
-              <RadioButton label="Nenhuma" value="Nenhuma" checked={value === 'Nenhuma'} onPress={() => {
-                const newValue = "Nenhuma";
+              <RadioButton label="Nenhuma" value="none" checked={value === 'none'} onPress={() => {
+                const newValue = "none";
                 onChange(newValue);
                 setNotEmpty(true);
                 updatePhototypeAssessmentData({ freckles: newValue });
@@ -106,18 +114,18 @@ export default function PhototypeAssessmentStep4() {
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/phototypeAssessment/step3')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />}  
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

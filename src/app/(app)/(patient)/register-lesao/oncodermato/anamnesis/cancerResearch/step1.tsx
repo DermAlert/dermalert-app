@@ -3,9 +3,10 @@ import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { CancerResearchProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -18,20 +19,26 @@ export default function CancerResearchStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { cancerResearchData, setCancerResearchData, updateCancerResearchData } = useCancerResearchForm();
-
+  const { setLesionType } = useLesionType();
 
   // formulario
-  const { control, handleSubmit } = useForm<CancerResearchProps>();
+  const { control, handleSubmit } = useForm<CancerResearchProps>(
+    {
+      defaultValues: {
+        suspicious_moles: cancerResearchData.suspicious_moles
+      }
+    }
+  );
   const cancerTypeValue = useWatch({ control, name: "suspicious_moles" });
 
 
   
 
   const handleNext = (data: CancerResearchProps) => {
-    if (data.suspicious_moles && data.suspicious_moles.length > 0 && notEmpty) {
+    if (data.suspicious_moles !== undefined && notEmpty) {
       console.log(data);
       updateCancerResearchData(data);
-      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step2');
     } else {
       return;
     }
@@ -39,14 +46,14 @@ export default function CancerResearchStep1() {
 
   const handleCancel = () => {
     setCancerResearchData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
   useEffect(() => {
-    const current = cancerTypeValue || [];
-    const hasValue = current.length > 0;
+    const current = cancerTypeValue;
 
-    setNotEmpty(hasValue);
+    setNotEmpty(current !== undefined);
   }, [cancerTypeValue]);
 
   useEffect(() => {
@@ -62,24 +69,24 @@ export default function CancerResearchStep1() {
 
       <Header title="Investigação de CA e Lesões" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente tem pintas ou manchas que mudaram de cor, tamanho ou formato recentemente?</Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente tem pintas ou manchas que mudaram de cor, tamanho ou formato recentemente?</Text>
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Sim" value="Sim" checked={value === 'Sim'} onPress={() => {
-                const newValue = "Sim";
+              <RadioButton label="Sim" value="true" checked={value === true} onPress={() => {
+                const newValue = true;
                 onChange(newValue);
                 setNotEmpty(true);
                 updateCancerResearchData({ suspicious_moles: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step2')
               }} />
-              <RadioButton label="Não" value="Não" checked={value === 'Não'} onPress={() => {
-                const newValue = "Não";
+              <RadioButton label="Não" value="false" checked={value === false} onPress={() => {
+                const newValue = false;
                 onChange(newValue);
                 setNotEmpty(true);
                 updateCancerResearchData({ suspicious_moles: newValue });
@@ -92,12 +99,11 @@ export default function CancerResearchStep1() {
 
       </ScrollView>
 
-      <View className="px-6 w-full justify-start mb-4">
+      <View className="px-8 mt-4 w-full justify-start mb-4">
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
-          style={{ marginTop: 24 }} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}
           disabled={notEmpty}

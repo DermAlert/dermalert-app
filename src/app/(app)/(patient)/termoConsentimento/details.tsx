@@ -1,12 +1,13 @@
 import Header from '@/components/Header';
 import ModalAlert from '@/components/ModalAlert';
 import { useRegisterLesionForm } from '@/hooks/Oncodermato/useRegisterLesionForm';
+import { useRegisterLesionUlceraForm } from '@/hooks/Ulcera/useRegisterLesionUlceraForm';
 import { usePatientForm } from '@/hooks/usePatientForm';
 import { getImageUri } from '@/storage/imageStore';
-import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { TrashIcon } from 'phosphor-react-native';
+import { useEffect, useState } from 'react';
 import { TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import Zoom from 'react-native-zoom-reanimated';
 
@@ -15,20 +16,30 @@ export default function TermoConsentimento() {
   //const { width } = Dimensions.get('window');
   const { width, height } = useWindowDimensions()
   const altura = height-64
-  const { deletar, isOncodermato, isPatient } = useLocalSearchParams();
+  const { deletar, isOncodermato, isPatient, isUlcera } = useLocalSearchParams();
   const [modalAlert, setModalAlert] = useState(false);
 
   const image = getImageUri(); 
   const { removeImageLesion } = useRegisterLesionForm(); 
+  const { removeImageLesionUlcera } = useRegisterLesionUlceraForm(); 
   const { removeImage } = usePatientForm(); 
+
+  useEffect(() => {
+    console.log('isOncodermato:', isOncodermato);
+    console.log('isPatient:', isPatient);
+    console.log('isUlcera:', isUlcera);
+  }, []);
 
   const handleCancel = () => {
     if (image) {
       if (isOncodermato === 'true') {
-          removeImageLesion(image);
-        } else if (isPatient === 'true') {  
-          removeImage(image);
-        }
+        removeImageLesion(image);
+      } else if (isPatient === 'true') {  
+        removeImage(image);
+      } else if (isUlcera === 'true') {
+        removeImageLesionUlcera(image);
+        console.log('Removendo imagem de lesão úlcera:', image);
+      }
     }
     setModalAlert(false);
     router.back(); 
@@ -59,7 +70,7 @@ export default function TermoConsentimento() {
           className="absolute top-10 right-4 w-10 h-10 justify-center items-center" 
           onPress={() => setModalAlert(!modalAlert)}
         >
-          <Feather name="trash" size={24} color="#1E1E1E" />
+          <TrashIcon size={24} color="#4052A1" />
         </TouchableOpacity>
       )}
 

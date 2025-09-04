@@ -1,11 +1,14 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
+import { SummaryQuestion } from "@/components/SummaryQuestion";
+import { TitleText } from "@/components/TitleText";
 import { useRiskProtectiveFactorsForm } from "@/hooks/Oncodermato/useRiskProtectiveFactorsForm";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { useLesionType } from "@/hooks/useLesionType";
 import { router } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect } from "react";
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
@@ -14,6 +17,7 @@ import Animated, {
 export default function RiskProtectiveFactorsStep8() {
   
   const { riskProtectiveFactorsData, setRiskProtectiveFactorsData } = useRiskProtectiveFactorsForm();
+  const { setLesionType } = useLesionType();
 
   const handleNext = () => {
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
@@ -21,6 +25,7 @@ export default function RiskProtectiveFactorsStep8() {
 
   const handleCancel = () => {
     setRiskProtectiveFactorsData({});
+    setLesionType(null) 
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -35,69 +40,90 @@ export default function RiskProtectiveFactorsStep8() {
       className="flex-1 bg-white justify-start items-center p-safe"
     >
 
-      <Header title="Avaliação de Fototipo" onPress={handleCancel} />
+      <Header title="Fatores de Risco e Proteção" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={8} totalSteps={8} />
 
-        <Text className="text-2xl font-semibold">Resumo</Text>
+        <TitleText title="Resumo" style={{marginTop: 8}} />
 
-        <Text className="text-base mb-2 text-gray-700 font-semibold mt-8">Você se expõe ao sol por longos períodos?</Text>
-        <Text className="text-base text-gray-500">
-          {riskProtectiveFactorsData.sun_exposure_period}
-        </Text>
+        <View className="gap-8 my-8">
 
-        <View className="mt-6">
+          <SummaryQuestion question="Com que frequência o paciente se expõe ao sol por longos períodos?">
+            {
+              riskProtectiveFactorsData.sun_exposure_period === 'daily'? 'Diariamente' :
+              riskProtectiveFactorsData.sun_exposure_period === 'few_times_per_week'? 'Algumas vezes por semana' :
+              riskProtectiveFactorsData.sun_exposure_period === 'occasionally'? 'Ocasionalmente' :
+              riskProtectiveFactorsData.sun_exposure_period === 'no_exposure'? 'Não se expõe ao sol' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Quantas vezes ao longo da vida o paciente já teve queimaduras solares graves (com formação de bolhas)?</Text>
-          <Text className="text-base text-gray-500">
-            {riskProtectiveFactorsData.sun_burn}
-          </Text>
+          <SummaryQuestion question="Quantas vezes ao longo da vida o paciente já teve queimaduras solares graves?">
+            {
+              riskProtectiveFactorsData.sun_burn === 'once_twice'? '1-2 vezes' :
+              riskProtectiveFactorsData.sun_burn === 'three_to_five'? '3-5 vezes' :
+              riskProtectiveFactorsData.sun_burn === 'more_than_five'? 'Mais de 5 vezes' :
+              riskProtectiveFactorsData.sun_burn === 'never'? 'Nunca teve' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-        </View>
+          <SummaryQuestion question="O paciente usa protetor solar regularmente? Se sim, qual FPS?">
+            {
+              riskProtectiveFactorsData.uv_protection === 'none'? 'Não usa' :
+              riskProtectiveFactorsData.uv_protection === 'spf_15'? 'FPS 15' :
+              riskProtectiveFactorsData.uv_protection === 'spf_30'? 'FPS 30' :
+              riskProtectiveFactorsData.uv_protection === 'spf_50'? 'FPS 50' :
+              riskProtectiveFactorsData.uv_protection === 'spf_70'? 'FPS 70' :
+              riskProtectiveFactorsData.uv_protection === 'spf_100_plus'? 'FPS 100 ou mais' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-        <View className="mt-6">
+          <SummaryQuestion question="O paciente usa chapéus ou roupas de proteção ao se expor ao sol?">
+            {
+              riskProtectiveFactorsData.hat_use === true ? 'Sim' :
+              riskProtectiveFactorsData.hat_use === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-          <Text className="text-base mb-2 text-gray-700 font-semibold">O paciente usa protetor solar regularmente? Se sim, qual FPS?</Text>
-          <Text className="text-base text-gray-500">{riskProtectiveFactorsData.uv_protection}</Text>
+          <SummaryQuestion question="O paciente já utilizou serviços de bronzeamento artificial?">
+            {
+              riskProtectiveFactorsData.artifitial_tan === true ? 'Sim' :
+              riskProtectiveFactorsData.artifitial_tan === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-        </View>
+          <SummaryQuestion question="Com que frequencia o paciente visita o dermatologista para check-ups?">
+            {
+              riskProtectiveFactorsData.checkups_frequency === 'annually'? 'Anualmente' :
+              riskProtectiveFactorsData.checkups_frequency === 'every_six_months'? 'A cada 6 meses' :
+              riskProtectiveFactorsData.checkups_frequency === 'not_regularly'? 'Não visita regularmente' :
+              riskProtectiveFactorsData.checkups_frequency === 'other'? 'Outro' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">O paciente usa chapéus ou roupas de proteção ao se expor ao sol? </Text>
-          <Text className="text-base text-gray-500">{riskProtectiveFactorsData.hat_use}</Text>
-
-        </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">O paciente já utilizou serviços de bronzeamento artificial?</Text>
-          <Text className="text-base text-gray-500">{riskProtectiveFactorsData.artifitial_tan}</Text>
-
-        </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Com que frequencia o paciente visita o dermatologista para check-ups?</Text>
-          <Text className="text-base text-gray-500">{riskProtectiveFactorsData.checkups_frequency}</Text>
-
-        </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">O paciente já participou de campanhas de prevenção contra o câncer de pele?</Text>
-          <Text className="text-base text-gray-500">{riskProtectiveFactorsData.cancer_campaigns}</Text>
+          <SummaryQuestion question="O paciente já participou de campanhas de prevenção contra o câncer de pele?">
+            {
+              riskProtectiveFactorsData.cancer_campaigns === true ? 'Sim' :
+              riskProtectiveFactorsData.cancer_campaigns === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
         </View>
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/riskProtectiveFactors/step7')} 
           style={{ flexGrow: 1, width: '47%' }}
         />

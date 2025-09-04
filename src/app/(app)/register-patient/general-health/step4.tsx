@@ -5,8 +5,8 @@ import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { GeneralHealthProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -40,7 +40,13 @@ export default function GeneralHealthStep4() {
   }));
 
   // formulario
-  const { control, handleSubmit, formState: { errors } } = useForm<GeneralHealthProps>();
+  const { control, handleSubmit, formState: { errors } } = useForm<GeneralHealthProps>(
+    {
+      defaultValues: {
+        surgeries: generalHealthData.surgeries
+      }
+    }
+  );
   const onChangeRef = useRef<(value: string[]) => void>(() => {});
   const surgeriesValue = useWatch({ control, name: "surgeries" });
 
@@ -63,6 +69,11 @@ export default function GeneralHealthStep4() {
     const current = surgeriesValue || "";
     const hasOtherSelections = current.length > 0;
 
+    if(generalHealthData.surgeries && generalHealthData.surgeries.length > 0  && generalHealthData.surgeries !== "Não") {
+      setNotEmpty(true);
+      setIsYesOpen(true);
+    }
+
 
     setNotEmpty(hasOtherSelections);
   }, [surgeriesValue]);
@@ -80,10 +91,10 @@ export default function GeneralHealthStep4() {
 
       <Header title="Andecedentes clínicos" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={4} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente já passou por cirurgias dermatológicas?</Text>
+        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente já passou por cirurgias dermatológicas?</Text>
 
         <Controller
           control={control}
@@ -99,6 +110,10 @@ export default function GeneralHealthStep4() {
                     onPress={() => {
                       setIsYesOpen(true);
                       setNotEmpty(false);
+
+                      if (value === "Não") {
+                        onChange([]);
+                      }
                     }}
                   />
 
@@ -109,8 +124,8 @@ export default function GeneralHealthStep4() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <View className="mx-6 mt-3">
-                          <Text className="mb-2">Qual foi o procedimento?</Text>
+                      <View className="mx-4 mt-6 mb-6">
+                          <Text className="text-neutral-900 font-semibold text-base mb-2">Qual foi o procedimento?</Text>
                           
                           <Input 
                             error={errors.surgeries?.message}
@@ -152,18 +167,18 @@ export default function GeneralHealthStep4() {
         />
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-6 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)}  
           onPress={()=> router.push("/(app)/register-patient/general-health/step3")} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#D4D6DF'}`} />} 
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

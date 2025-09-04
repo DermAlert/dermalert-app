@@ -4,10 +4,11 @@ import Header from "@/components/Header";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { api } from "@/services/api";
+import axios from "axios";
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import React, { useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { Text, TextInput, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
@@ -15,17 +16,40 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterPatientStep7() {
   const [modalAlert, setModalAlert] = useState(false);
   const [autorizado, setAutorizado] = useState(false);
-  const { patientData, setPatientData } = usePatientForm();
+  const { patientData, setPatientData, setImages } = usePatientForm();
   
   const handleCancel = () => {
     setPatientData({});
+    setImages([]);
     setModalAlert(!modalAlert);
     router.push('/(app)/home');
   }
 
   const inputFocus = useRef<TextInput>(null);
 
-  const { control, getValues, formState: { errors } } = useForm();
+  const handleSendtoServer = async () => {
+    console.log(patientData);
+
+    try {
+      const response = await api.post(`/patients/`, patientData, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      console.log("enviou");
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log('STATUS:', error.response?.status);
+        console.log('HEADERS:', error.response?.headers);
+        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
+      } else {
+        console.log(error);
+      }
+    }
+  }
+
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -60,31 +84,12 @@ export default function RegisterPatientStep7() {
 
       
 
-      <View className="px-6 w-full justify-start flex-1">
+      <View className="px-8 pb-6 w-full justify-start flex-1 gap-6">
 
         <ProgressBar step={7} totalSteps={9} />
 
-        <Text className="text-base mb-8 text-gray-700 mt-8">O paciente autoriza o uso dos seus dados anonimizados para fins de pesquisa?</Text>
-
-        {/* <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <View className="gap-3">
-              <CheckButton label="Autoriza" value="Autoriza" checked={value === 'Autoriza'} onPress={() => {
-                if(value === 'Autoriza') {
-                  onChange('');
-                  setAutorizado(false);
-                } else {
-                  onChange('Autoriza')
-                  setAutorizado(true)
-                }                
-              }} 
-              />
-            </View>
-          )}
-          name="autorizacao"
-        />  */}
-
+        <View className="flex-1">
+          <Text className="text-base mb-8 text-neutral-900">O paciente autoriza o uso dos seus dados anonimizados para fins de pesquisa?</Text>
 
           <CheckButton label="Autoriza" value="Autoriza" checked={autorizado} onPress={() => {
             if(autorizado) {
@@ -94,26 +99,32 @@ export default function RegisterPatientStep7() {
             }                
           }} 
           />
+        </View>
+
+        <View className="gap-4 w-full justify-start flex-row">
+          <Button title="Voltar" 
+            iconLeft 
+            secondary 
+            icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
+            onPress={()=> router.push("/(app)/register-patient/step6")} 
+            style={{ flexGrow: 1, width: '47%' }}
+          />
+          <Button title="Próximo" 
+            iconRight 
+            icon={(<ArrowRightIcon size={24} color={`${autorizado ? 'white' : '#B3B3B3'}`} />)} 
+            onPress={()=> {
+              autorizado && router.push("/(app)/register-patient/step8")
+              //handleSendtoServer();
+            }} 
+            style={{ flexGrow: 1, width: '47%' }}
+            activeOpacity={autorizado ? 0.2 : 1}
+            disabled={autorizado}
+          />
+        </View>
 
       </View>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
-        <Button title="Voltar" 
-          iconLeft 
-          secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push("/(app)/register-patient/step6")} 
-          style={{ flexGrow: 1, width: '47%' }}
-        />
-        <Button title="Próximo" 
-          iconRight 
-          icon={(<AntDesign name="arrowright" size={14} color={`${autorizado ? 'white' : '#B3B3B3'}`} />)} 
-          onPress={()=> {autorizado && router.push("/(app)/register-patient/step8")}} 
-          style={{ flexGrow: 1, width: '47%' }}
-          activeOpacity={autorizado ? 0.2 : 1}
-          disabled={autorizado}
-        />
-      </View>
+      
 
     </Animated.View>
   );

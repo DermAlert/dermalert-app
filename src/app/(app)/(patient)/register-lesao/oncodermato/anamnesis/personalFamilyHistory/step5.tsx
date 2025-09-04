@@ -1,11 +1,14 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
+import { SummaryQuestion } from "@/components/SummaryQuestion";
+import { TitleText } from "@/components/TitleText";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { useLesionType } from "@/hooks/useLesionType";
 import { router } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect } from "react";
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
@@ -13,6 +16,7 @@ import Animated, {
 
 export default function PersonalFamilyHistoryStep5() {
   const { familyHistoryData, setFamilyHistoryData  } = useFamilyHistoryForm();
+  const { setLesionType } = useLesionType();
 
   const handleNext = () => {
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
@@ -20,6 +24,7 @@ export default function PersonalFamilyHistoryStep5() {
 
   const handleCancel = () => {
     setFamilyHistoryData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -39,46 +44,46 @@ export default function PersonalFamilyHistoryStep5() {
 
       <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={5} />
 
-        <Text className="text-base mb-2 text-gray-700 font-semibold mt-8">Você tem histórico familiar de câncer de pele?</Text>
-        <Text className="text-base text-gray-500">
-          {familyHistoryData.family_history?.join(', ')}
-        </Text>
+        <TitleText title="Resumo" style={{marginTop: 24}} />
 
-        <View className="mt-6">
+        <View className='gap-8 my-8'>
 
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Você já foi diagnosticado com câncer de pele? </Text>
-          <Text className="text-base text-gray-500">
-            {familyHistoryData.cancer_type?.join(', ')}
-          </Text>
+          <SummaryQuestion question="O paciente tem histórico familiar de câncer de pele?">
+            { familyHistoryData?.family_history && familyHistoryData?.family_history.length > 0 ? familyHistoryData?.family_history?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name).join(', ') : 'Não'}
+          </SummaryQuestion>
 
-        </View>
+          <SummaryQuestion question="Se sim, qual tipo de câncer de pele?">
+            { familyHistoryData?.family_history_types && familyHistoryData?.family_history_types.length > 0 ? familyHistoryData?.family_history_types?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name).join(', ') : 'Não tenho'}
+          </SummaryQuestion>
 
-        <View className="mt-6">
+          <SummaryQuestion question="O paciente já foi diagnosticado com câncer de pele?">
+            { familyHistoryData?.patient_cancer_type && familyHistoryData?.patient_cancer_type.length > 0 ? familyHistoryData?.patient_cancer_type?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name).join(', ') : 'Não fui'}
+          </SummaryQuestion>
 
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Você já teve lesões removidas que foram identificadas como pré-cancerígenas? </Text>
-          <Text className="text-base text-gray-500">
-            {familyHistoryData.removed_injuries}
-          </Text>
+          <SummaryQuestion question="O paciente já teve lesões removidas que foram identificadas como pré-cancerígenas?">
+            {
+              familyHistoryData.removed_injuries === true ? 'Sim' :
+              familyHistoryData.removed_injuries === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
 
-        </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Você já passou por tratamento para lesões na pele?</Text>
-          <Text className="text-base text-gray-500">{familyHistoryData.injuries_treatment?.join(', ')}</Text>
+          <SummaryQuestion question="O paciente já passou por tratamento para lesões na pele?">
+            { familyHistoryData?.injuries_treatment && familyHistoryData?.injuries_treatment.length > 0 ? familyHistoryData?.injuries_treatment?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name).join(', ') : 'Não'}
+          </SummaryQuestion>
 
         </View>
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
-          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step3')} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step4')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button title="Salvar" 

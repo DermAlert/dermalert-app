@@ -1,4 +1,5 @@
-import { Roboto_400Regular, useFonts } from '@expo-google-fonts/roboto';
+//import { Roboto_400Regular, useFonts } from '@expo-google-fonts/roboto';
+import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -12,7 +13,7 @@ SplashScreen.preventAutoHideAsync()
 
 export default function Layout() {
   const [loaded, error] = useFonts({
-    Roboto_400Regular
+    Inter_500Medium
   })
 
   useEffect(() => {

@@ -1,20 +1,28 @@
-import { Image } from 'expo-image';
+import { formatDateFromApi } from '@/utils/formatDate';
 import { router } from 'expo-router';
+import { CardsIcon } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
-export default function LesaoRegistroCard({...rest}: TouchableOpacityProps) {
+type LesaoRegistroCardProps = TouchableOpacityProps & {
+  lesionType: string;
+  registroId?: number;
+  imagesNumber?: number;
+  lesionDate?: string;
+}
+
+export default function LesaoRegistroCard({ lesionType, registroId, imagesNumber, lesionDate, ...rest }: LesaoRegistroCardProps) {
 
   return (
     <TouchableOpacity 
-      className="border border-gray-300 rounded-lg flex-row justify-start p-3 items-center gap-3"
+      className="shadow-sm shadow-neutral-800 bg-white rounded-lg flex-row justify-start p-4 items-center gap-4"
       activeOpacity={0.6}
       onPress={()=> {
-        router.push('/(app)/(patient)/lesao/registroDetail/registroDetail');
+        router.push({pathname: '/(app)/(patient)/lesao/registroDetail/registroDetail', params: { type: lesionType, registroId }});
       }}
       {...rest}
     >
 
-      <View 
+      {/* <View 
         className="w-[56] h-[56] border border-gray-300 rounded-md justify-center items-center overflow-hidden bg-gray-300 relative"
       >
         <Image 
@@ -23,16 +31,20 @@ export default function LesaoRegistroCard({...rest}: TouchableOpacityProps) {
           contentFit="cover"
           contentPosition="top"
         />
+      </View> */}
+
+      <View className={`h-12 w-12 rounded-lg justify-center items-center  ${lesionType === "cancer" ? 'bg-secondary-100' : 'bg-primary-200'}`}>
+        <CardsIcon size={24} color={`${lesionType === 'cancer' ?  '#FF765E' : '#6775B4' }`} weight="fill" />
       </View>
 
       <View>
 
-        <Text className='font-semibold text-sm self-start mb-1'>
-          Registro de 27/05/2025
+        <Text className='font-medium text-sm mb-1 text-neutral-900'>
+          Registro de {lesionDate ? formatDateFromApi(lesionDate) : 'Data não disponível'}
         </Text>
 
-        <Text className='text-xs text-gray-600'>
-          4 imagens
+        <Text className='text-xs font-semibold text-neutral-700'>
+          {imagesNumber && imagesNumber > 1 ? `${imagesNumber} imagens` : `${imagesNumber} imagem`}
         </Text>
         
       </View>

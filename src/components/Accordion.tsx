@@ -1,4 +1,5 @@
-import { Entypo, Ionicons } from "@expo/vector-icons";
+import { CaretDownIcon, CaretUpIcon, PersonIcon } from "phosphor-react-native";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -27,26 +28,30 @@ export default function Accordion({ title, isOpen, onToggle, children, icon, ind
     height: animatedHeight.value,
     overflow: "hidden",
   }));
-
-  const containerStyle = `flex-row items-center gap-4 rounded-lg p-4 ${
-    indented ? "bg-white" : isOpen ? "bg-gray-300" : "bg-gray-200"
+ 
+  const containerStyle = `flex-row items-center gap-[10] rounded-2xl ${
+    indented ? "bg-white px-6 py-2" : isOpen ? "bg-primary-200 px-4 py-5" : "bg-primary-100 px-4 py-5"
   }`;
+
+  const isOpenIcon = isOpen ? (
+    <CaretUpIcon size={16} color="#4052A1" weight="bold" />
+  ) : (
+    <CaretDownIcon size={16} color="#4052A1" weight="bold" />
+  );
   
   const leftIcon = indented ? (
-    <Entypo name={isOpen ? "chevron-up" : "chevron-down"} size={20} color="#49454F" />
+    isOpenIcon
   ) : (
-    icon ?? <Ionicons name="body" size={20} color="#49454F" />
+    icon ?? <PersonIcon size={20} color="#6775B4" weight="bold" />
   );
   
-  const rightIcon = !indented && (
-    <Entypo name={isOpen ? "chevron-up" : "chevron-down"} size={20} color="#49454F" />
-  );
+  const rightIcon = !indented && isOpenIcon;
 
   return (
-    <View>
+    <View className="gap-2">
       <TouchableOpacity className={containerStyle} onPress={onToggle}>
         {leftIcon}
-        <Text className="text-gray-800 text-base flex-1">{title}</Text>
+        <Text className="text-neutral-700 text-base flex-1">{title}</Text>
         {rightIcon}
       </TouchableOpacity>
       

@@ -3,9 +3,10 @@ import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useRiskProtectiveFactorsForm } from "@/hooks/Oncodermato/useRiskProtectiveFactorsForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { RiskProtectiveFactorsProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -18,20 +19,26 @@ export default function RiskProtectiveFactorsStep5() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { riskProtectiveFactorsData, setRiskProtectiveFactorsData, updateRiskProtectiveFactorsData } = useRiskProtectiveFactorsForm();
-
+  const { setLesionType } = useLesionType();
 
   // formulario
-  const { control, handleSubmit } = useForm<RiskProtectiveFactorsProps>();
+  const { control, handleSubmit } = useForm<RiskProtectiveFactorsProps>(
+    {
+      defaultValues: {
+        artifitial_tan: riskProtectiveFactorsData.artifitial_tan
+      }
+    }
+  );
   const cancerTypeValue = useWatch({ control, name: "artifitial_tan" });
 
 
   
 
   const handleNext = (data: RiskProtectiveFactorsProps) => {
-    if (data.artifitial_tan && data.artifitial_tan.length > 0 && notEmpty) {
+    if (data.artifitial_tan !== undefined && notEmpty) {
       console.log(data);
       updateRiskProtectiveFactorsData(data);
-      //router.push('/(app)/(patient)/register-lesao/Oncodermato/Anamnesis/personalFamilyHistory/step1');
+      router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/riskProtectiveFactors/step6');
     } else {
       return;
     }
@@ -39,14 +46,14 @@ export default function RiskProtectiveFactorsStep5() {
 
   const handleCancel = () => {
     setRiskProtectiveFactorsData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
   useEffect(() => {
-    const current = cancerTypeValue || [];
-    const hasValue = current.length > 0;
+    const current = cancerTypeValue;
 
-    setNotEmpty(hasValue);
+    setNotEmpty(current !== undefined);
   }, [cancerTypeValue]);
 
   useEffect(() => {
@@ -62,24 +69,24 @@ export default function RiskProtectiveFactorsStep5() {
 
       <Header title="Fatores de Risco e Proteção" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={8} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente já utilizou serviços de bronzeamento artificial? </Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente já utilizou serviços de bronzeamento artificial? </Text>
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Sim" value="Sim" checked={value === 'Sim'} onPress={() => {
-                const newValue = "Sim";
+              <RadioButton label="Sim" value="true" checked={value === true} onPress={() => {
+                const newValue = true;
                 onChange(newValue);
                 setNotEmpty(true);
                 updateRiskProtectiveFactorsData({ artifitial_tan: newValue });
                 router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/riskProtectiveFactors/step6')
               }} />
-              <RadioButton label="Não" value="Não" checked={value === 'Não'} onPress={() => {
-                const newValue = "Não";
+              <RadioButton label="Não" value="false" checked={value === false} onPress={() => {
+                const newValue = false;
                 onChange(newValue);
                 setNotEmpty(true);
                 updateRiskProtectiveFactorsData({ artifitial_tan: newValue });
@@ -92,18 +99,18 @@ export default function RiskProtectiveFactorsStep5() {
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)}
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/riskProtectiveFactors/step4')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />}  
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

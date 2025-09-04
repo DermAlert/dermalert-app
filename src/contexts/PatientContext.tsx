@@ -21,11 +21,17 @@ function PatientProvider({ children }: { children: React.ReactNode; }) {
   const [patientData, setPatientData] = useState<PatientProps>({} as PatientProps);
   const [images, setImages] = useState<string[]>([]);
 
-  const updatePatientData = (data: PatientProps) => {
-    setPatientData((prevState) => ({
-      ...prevState,
-      ...data,
-    }));
+  const updatePatientData = (newData: PatientProps) => {
+    setPatientData((prev) =>
+      ({
+        ...prev,
+        ...newData,
+        user: {
+          ...prev.user,
+          ...newData.user,
+        },
+      } as PatientProps)
+    );
   };
 
   function removeImage(uri: string) {

@@ -1,7 +1,8 @@
-import Feather from '@expo/vector-icons/Feather';
+import Icon from '@/components/Icon';
+import { TitleText } from '@/components/TitleText';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 export default function OncodermatoSuccess() {
@@ -22,16 +23,13 @@ export default function OncodermatoSuccess() {
       className="flex-1 bg-white p-safe justify-center items-center"
     >
 
-      <View className="px-6 w-full justify-center flex-1">
+      <View className="px-8 w-full justify-start flex-1 gap-10">
+      
+        <Icon iconName="CheckCircleIcon" style={{marginTop: 96}} />
 
-      <Feather name="check-circle" size={40} color="#1E1E1E" />
-
-      <Text className="mb-4 text-2xl font-semibold mt-8">Anamnese Oncodermato registrada com sucesso!</Text>
-
-      <Text className="text-base text-gray-500">A anamnese do paciente foi registrada com sucesso.</Text>
-
-
-      </View>
+        <TitleText title="Anamnese Oncodermato registrada com sucesso!" description="A anamnese do paciente foi registrada com sucesso." />
+        
+      </View> 
 
       
       

@@ -4,8 +4,8 @@ import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { GeneralHealthProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -21,7 +21,13 @@ export default function GeneralHealthStep5() {
 
 
   // formulario
-  const { control, handleSubmit } = useForm<GeneralHealthProps>();
+  const { control, handleSubmit } = useForm<GeneralHealthProps>(
+    {
+      defaultValues: {
+        physical_activity_frequency: generalHealthData.physical_activity_frequency
+      }
+    }
+  );
 
   const physicalActivityValue = useWatch({ control, name: "physical_activity_frequency" });
 
@@ -62,45 +68,45 @@ export default function GeneralHealthStep5() {
 
       <Header title="Andecedentes clínicos" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente pratica atividade física regularmente com alguma frequencia? </Text>
+        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente pratica atividade física regularmente com alguma frequencia? </Text>
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Diariamente" value="diariamente" checked={value === 'diariamente'} onPress={() => {
-                const newValue = "diariamente";
+              <RadioButton label="Diariamente" value="daily" checked={value === 'daily'} onPress={() => {
+                const newValue = "daily";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateGeneralHealthData({ physical_activity_frequency: newValue });
                 router.push('/(app)/register-patient/general-health/step6');
                 }} />
-              <RadioButton label="3-5 vezes por semana" value="3-5" checked={value === '3-5'} onPress={() => {
-                const newValue = "3-5";
+              <RadioButton label="3-5 vezes por semana" value="3-5 times a week" checked={value === '3-5 times a week'} onPress={() => {
+                const newValue = "3-5 times a week";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateGeneralHealthData({ physical_activity_frequency: newValue });
                 router.push('/(app)/register-patient/general-health/step6');
                 }} />
-              <RadioButton label="1-2 vezes por semana" value="1-2" checked={value === '1-2'} onPress={() => {
-                const newValue = "1-2";
+              <RadioButton label="1-2 vezes por semana" value="1-2 times a week" checked={value === '1-2 times a week'} onPress={() => {
+                const newValue = "1-2 times a week";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateGeneralHealthData({ physical_activity_frequency: newValue });
                 router.push('/(app)/register-patient/general-health/step6');
                 }} />
-              <RadioButton label="Ocasionalmente" value="ocasionalmente" checked={value === 'ocasionalmente'} onPress={() => {
-                const newValue = "ocasionalmente";
+              <RadioButton label="Ocasionalmente" value="occasionally" checked={value === 'occasionally'} onPress={() => {
+                const newValue = "occasionally";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateGeneralHealthData({ physical_activity_frequency: newValue });
                 router.push('/(app)/register-patient/general-health/step6');
                 }} />
-              <RadioButton label="Não" value="Não" checked={value === 'Não'} onPress={() => {
-                const newValue = "Não";
+              <RadioButton label="Não" value="never" checked={value === 'never'} onPress={() => {
+                const newValue = "never";
                 onChange(newValue);
                 setNotEmpty(true);
                 updateGeneralHealthData({ physical_activity_frequency: newValue });
@@ -112,18 +118,18 @@ export default function GeneralHealthStep5() {
         /> 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-6 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)}  
           onPress={()=> router.push("/(app)/register-patient/general-health/step4")} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#D4D6DF'}`} />} 
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

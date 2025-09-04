@@ -4,9 +4,10 @@ import Input from "@/components/Input";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { CancerResearchProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -24,6 +25,7 @@ export default function CancerResearchStep5() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { cancerResearchData, setCancerResearchData, updateCancerResearchData } = useCancerResearchForm();
+  const { setLesionType } = useLesionType();
 
    // animação accordion
     const measuredHeight = useSharedValue(0);
@@ -40,15 +42,21 @@ export default function CancerResearchStep5() {
 
 
   // formulario
-  const { control, handleSubmit, formState: { errors } } = useForm<CancerResearchProps>();
+  const { control, handleSubmit, formState: { errors } } = useForm<CancerResearchProps>(
+    {
+      defaultValues: {
+        diagnosis: cancerResearchData.diagnosis
+      }
+    }
+  );
     const onChangeRef = useRef<(value: string[]) => void>(() => {});
-  const cancerTypeValue = useWatch({ control, name: "doctor_assistance" });
+  const cancerTypeValue = useWatch({ control, name: "diagnosis" });
 
 
   
 
   const handleNext = (data: CancerResearchProps) => {
-    if (data.doctor_assistance && data.doctor_assistance.length > 0 && notEmpty) {
+    if (data.diagnosis && data.diagnosis.length > 0 && notEmpty) {
       console.log(data);
       updateCancerResearchData(data);
       router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step6');
@@ -59,12 +67,18 @@ export default function CancerResearchStep5() {
 
   const handleCancel = () => {
     setCancerResearchData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
   useEffect(() => {
     const current = cancerTypeValue || [];
     const hasValue = current.length > 0;
+
+    if(cancerResearchData.diagnosis && cancerResearchData.diagnosis.length > 0  && cancerResearchData.diagnosis !== "Não") {
+      setNotEmpty(true);
+      setIsYesOpen(true);
+    }
 
     setNotEmpty(hasValue);
   }, [cancerTypeValue]);
@@ -82,10 +96,10 @@ export default function CancerResearchStep5() {
 
       <Header title="Investigação de CA e Lesões" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente já procurou um médico para avaliar essas lesões?</Text>
+        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente já procurou um médico para avaliar essas lesões?</Text>
 
         <Controller
           control={control}
@@ -101,6 +115,10 @@ export default function CancerResearchStep5() {
                     onPress={() => {
                       setIsYesOpen(true);
                       setNotEmpty(false);
+
+                      if (value === "Não") {
+                        onChange([]);
+                      }
                     }}
                   />
 
@@ -111,13 +129,13 @@ export default function CancerResearchStep5() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <View className="mx-6 mt-3">
-                          <Text className="mb-2">Qual foi o diagnóstico?</Text>
+                      <View className="mx-4 mt-6 mb-6">
+                          <Text className="text-neutral-900 font-semibold text-base mb-2">Qual foi o diagnóstico?</Text>
                           
                           <Input 
-                            error={errors.doctor_assistance?.message}
+                            error={errors.diagnosis?.message}
                             formProps={{ 
-                              name: 'doctor_assistance', 
+                              name: 'diagnosis', 
                               control, 
                               rules: { required: 'O campo é obrigatório.' } 
                             }}
@@ -142,30 +160,31 @@ export default function CancerResearchStep5() {
                     const newValue = "Não";
                     onChange(newValue);
                     setNotEmpty(true);
-                    updateCancerResearchData({ doctor_assistance: newValue });
+                    setIsYesOpen(false);
+                    updateCancerResearchData({ diagnosis: newValue });
                     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step6');
                   }}
                 />
               </View>
             );
           }}
-          name="doctor_assistance"
+          name="diagnosis"
         />
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step4')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#D4D6DF'}`} />}
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

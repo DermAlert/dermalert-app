@@ -1,4 +1,5 @@
-import Feather from "@expo/vector-icons/Feather";
+//import Feather from "@expo/vector-icons/Feather";
+import { EyeClosedIcon, EyeIcon } from 'phosphor-react-native';
 import { ReactNode, forwardRef, useEffect, useState } from "react";
 import { Controller, UseControllerProps } from "react-hook-form";
 import { Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
@@ -15,6 +16,7 @@ type InputProps = {
 
 const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps, inputProps, error = '', icon, password }, ref) => {
   const [visiblePassword, setvisiblePassword] = useState(false);
+  const [focused, setFocused] = useState(false);
 
   useEffect(() => {
     if(password){
@@ -26,7 +28,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
     <Controller {...formProps}
         render={({ field: { onChange, value } }) => (
           <>
-            <View className="border border-gray-300 rounded-md flex-row justify-between px-4 py-2 items-center">
+            <View className={`bg-white border rounded-lg flex-row justify-between p-3 items-center ${error.length > 0 ? 'border-danger-400' : focused ? 'border-primary-600' : 'border-neutral-300'}`}>
               <TextInput 
                 onChangeText={(text) => {
                   const formatted = onChangeTextFormat ? onChangeTextFormat(text) : text;
@@ -35,17 +37,19 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
                 value={value}
                 ref={ref}
                 secureTextEntry={visiblePassword}
-                placeholderTextColor="#bebebe"
-                className="py-1 flex-1" 
+                placeholderTextColor="#A9ADC0"
+                className="py-0 flex-1 text-base" 
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
                 {...inputProps} 
               />
               {icon}
               {password && (
                 <TouchableOpacity onPress={()=> setvisiblePassword(!visiblePassword)}>
                   {!visiblePassword ? (
-                    <Feather name="eye" size={15} color="#1E1E1E" />
+                    <EyeIcon size={16} color="#7D83A0" />
                   ) : (
-                    <Feather name="eye-off" size={15} color="#1E1E1E" />
+                    <EyeClosedIcon size={16} color="#7D83A0" />
                   )}
                   
                 </TouchableOpacity>
@@ -53,7 +57,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
             </View>
             {
               error.length > 0 &&
-              <Text className="text-red-500 mt-2 text-sm">
+              <Text className="text-danger-700 mt-2 text-xs font-semibold tracking-wide">
                 {error}
               </Text>
             }

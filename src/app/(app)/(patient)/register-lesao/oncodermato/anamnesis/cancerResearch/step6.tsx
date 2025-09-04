@@ -1,11 +1,14 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
+import { SummaryQuestion } from "@/components/SummaryQuestion";
+import { TitleText } from "@/components/TitleText";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { useLesionType } from "@/hooks/useLesionType";
 import { router } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect } from "react";
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
@@ -14,6 +17,7 @@ import Animated, {
 export default function CancerResearchStep6() {
   
   const { cancerResearchData, setCancerResearchData } = useCancerResearchForm();
+  const { setLesionType } = useLesionType();
 
   const handleNext = () => {
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
@@ -21,6 +25,7 @@ export default function CancerResearchStep6() {
   
   const handleCancel = () => {
     setCancerResearchData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -39,52 +44,60 @@ export default function CancerResearchStep6() {
 
       <Header title="Investigação de CA e Lesões" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={6} totalSteps={6} />
 
-        <Text className="text-base mb-2 text-gray-700 font-semibold mt-8">O paciente tem pintas ou manchas que mudaram de cor, tamanho ou formato recentemente?</Text>
-        <Text className="text-base text-gray-500">
-          {cancerResearchData.suspicious_moles}
-        </Text>
+        <TitleText title="Resumo" style={{marginTop: 8}} />
 
-        <View className="mt-6">
+        <View className="gap-8 my-8">
 
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Essas manchas ou lesões causam coceira, sangramento ou dor?</Text>
-          <Text className="text-base text-gray-500">
-            {cancerResearchData.bleed_itch}
-          </Text>
+          <SummaryQuestion question="O paciente tem pintas ou manchas que mudaram de cor, tamanho ou formato recentemente?">
+            {
+              cancerResearchData.suspicious_moles === true ? 'Sim' :
+              cancerResearchData.suspicious_moles === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
+
+          <SummaryQuestion question="Essas manchas ou lesões causam coceira, sangramento ou dor?">
+            {
+              cancerResearchData.bleed_itch === true ? 'Sim' :
+              cancerResearchData.bleed_itch === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
+
+          <SummaryQuestion question="Com que frequencia o paciente visita o dermatologista para check-ups?">
+            {
+              cancerResearchData.how_long === 'lt_1_month'? 'Menos de 1 mês' :
+              cancerResearchData.how_long === '1_3_months'? '1-3 meses' :
+              cancerResearchData.how_long === '3_6_months'? '3-6 meses' :
+              cancerResearchData.how_long === 'gt_6_months'? 'Mais de 6 meses' :
+              'Não informado'
+            }
+          </SummaryQuestion>
+
+          <SummaryQuestion question="Essas lesões têm bordas irregulares, múltiplas cores ou assimetria?">
+            {
+              cancerResearchData.lesion_aspect === true ? 'Sim' :
+              cancerResearchData.lesion_aspect === false ? 'Não' :
+              'Não informado'
+            }
+          </SummaryQuestion>
+
+          <SummaryQuestion question="O paciente já procurou um médico para avaliar essas lesões? Se sim, qual o diagnóstico?">
+            {cancerResearchData.diagnosis}
+          </SummaryQuestion>
 
         </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Há quanto tempo o paciente notou essas alterações?</Text>
-          <Text className="text-base text-gray-500">
-            {cancerResearchData.how_long}
-          </Text>
-
-        </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">Essas lesões têm bordas irregulares, múltiplas cores ou assimetria?</Text>
-          <Text className="text-base text-gray-500">{cancerResearchData.lesion_aspect}</Text>
-
-        </View>
-
-        <View className="mt-6">
-
-          <Text className="text-base mb-2 text-gray-700 font-semibold">O paciente já procurou um médico para avaliar essas lesões?</Text> 
-          <Text className="text-base text-gray-500">{cancerResearchData.doctor_assistance}</Text>
-
-        </View>
+        
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/cancerResearch/step5')} 
           style={{ flexGrow: 1, width: '47%' }}
         />

@@ -1,16 +1,25 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
+import Icon from "@/components/Icon";
 import Input from '@/components/Input';
+import { Label } from "@/components/Label";
+import { Loading } from "@/components/Loading";
+import { TitleText } from "@/components/TitleText";
+import { api } from "@/services/api";
 import { FormPatientEditEmailData } from "@/types/forms";
-import Feather from '@expo/vector-icons/Feather';
-import { router } from "expo-router";
+import axios from "axios";
+import { router, useLocalSearchParams } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 export default function PatientEditEmail() {
   const [step1, setStep1] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { id } = useLocalSearchParams();
 
   const {
     control,
@@ -19,10 +28,27 @@ export default function PatientEditEmail() {
     formState: { errors },
   } = useForm<FormPatientEditEmailData>()
 
-  const onSubmit = (data: FormPatientEditEmailData): void => {
-    console.log(data);
-    reset();
-    setStep1(false)
+  const onSubmit = async (data: FormPatientEditEmailData): Promise<void> => {
+    try {
+      setIsLoading(true);
+
+      const response = await api.patch(`/patients/${id}/`, data);
+
+      //console.log(response.data);
+
+      reset();
+      setStep1(false)
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        console.log('STATUS:', error.response?.status);
+        console.log('HEADERS:', error.response?.headers);
+        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
+      } 
+    }
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -35,60 +61,69 @@ export default function PatientEditEmail() {
     return () => clearTimeout(timeout);
   }, []);
 
+  
+
+  if(isLoading){
+    return (
+      <View className="flex-1 p-safe justify-center items-center">
+        <Loading />
+      </View>
+    )
+  }
+
   return (
     <Animated.View 
       entering={SlideInDown} 
       exiting={SlideOutDown} 
       className="flex-1 bg-white p-safe justify-start items-center"
     >
-      <Header title="Alterar email" onPress={() => router.push('/(app)/(patient)/patientDetails/[id]')} />
+      <Header title="Alterar email" onPress={() => router.push({pathname: '/(app)/(patient)/patientDetails/[id]', params: {id: id.toString()}})} />
 
       {step1 && (
-        <View className="px-6 w-full justify-start flex-1 mt-[70]">
+        <View className="p-8 w-full justify-start flex-1 gap-8">
 
-          <Text className="mb-4 text-2xl font-semibold">Endereço de e-mail do paciente</Text>
+          <TitleText title="Endereço de e-mail do paciente" description="Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa." />
 
-          <Text className="text-base text-gray-500">Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa.</Text>
-        
-          <Text className="text-base mb-2 text-gray-700 mt-8">E-mail para retorno</Text>
+          <View>
+            <Label title="E-mail para retorno" text="Endereço de e-mail para contatar o paciente" />
 
-          <Text className="text-base text-gray-500 mb-2">Endereço de e-mail para contatar o paciente</Text>
-
-          <Input 
-            ref={inputFocus} 
-            error={errors.email?.message}
-            formProps={{
-              control,
-              name: "email",
-              rules: {
-                required: "O e-mail é obrigatório.",
-                pattern: {
-                  value: /^\S+@\S+\.\S+$/,
-                  message: "E-mail inválido."
+            <Input 
+              ref={inputFocus} 
+              error={errors.user?.email?.message}
+              formProps={{
+                control,
+                name: "user.email",
+                rules: {
+                  required: "O e-mail é obrigatório.",
+                  pattern: {
+                    value: /^\S+@\S+\.\S+$/,
+                    message: "E-mail inválido."
+                  }
                 }
-              }
-            }}
-            inputProps={{
-              placeholder: "Informe o e-mail do paciente",
-              returnKeyType: "next",
-            }}
-          />
+              }}
+              inputProps={{
+                placeholder: "Informe o e-mail do paciente",
+                returnKeyType: "next",
+              }}
+            />
+          </View>
+          
 
-          <Button title="Salvar" style={{ marginTop: 24 }} onPress={handleSubmit(onSubmit)} />
+          <Button title="Salvar" onPress={handleSubmit(onSubmit)} />
 
         </View>
       )}
 
       {!step1 && (
-        <View className="px-6 w-full justify-start flex-1 mt-[70]">
+        <View className="p-8 w-full justify-start flex-1 gap-10">
 
-          <Feather name="check-circle" size={40} color="#1E1E1E" />
+          <Icon iconName="CheckCircleIcon" />
 
-          <Text className="mb-4 text-2xl font-semibold mt-8">E-mail para retorno atualizado!</Text>
+          <TitleText title="E-mail para retorno atualizado!" description="O endereço de e-mail informado pelo paciente foi atualizado com sucesso." />
 
-          <Text className="text-base text-gray-500">O endereço de e-mail informado pelo paciente foi atualizado com sucesso.</Text>
 
-          <Button title="Voltar" secondary style={{ marginTop: 32, width: 112 }} onPress={() => router.push('/(app)/(patient)/patientDetails/[id]')} />
+          <Button title="Voltar" secondary style={{ alignSelf: "flex-start" }} full={false} onPress={() => router.push({pathname: '/(app)/(patient)/patientDetails/[id]', params: { id: id.toString() }})} iconLeft 
+          icon={(<ArrowLeftIcon size={18} color="#4052A1"/>)}  />
 
         </View>
       )}

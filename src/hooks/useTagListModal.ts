@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type UseTagListModalProps = {
   baseList: string[];
   currentValue: string[];
   onChange: (value: string[]) => void;
   setNotEmpty?: (value: boolean) => void;
+  fixedOptions?: string[];
 };
 
 export function useTagListModal({
@@ -12,6 +13,7 @@ export function useTagListModal({
   currentValue,
   onChange,
   setNotEmpty,
+  fixedOptions
 }: UseTagListModalProps) {
   const [list, setList] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -45,6 +47,11 @@ export function useTagListModal({
     );
     setFilteredData(filtered);
   };
+
+  useEffect(() => {
+    setList(currentValue.length > 0 ? currentValue.filter(item => !(fixedOptions ?? []).includes(item)) : []);
+    setFilteredData(baseList);
+  }, [baseList]);
 
   return {
     list,

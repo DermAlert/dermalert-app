@@ -2,10 +2,11 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { TitleText } from "@/components/TitleText";
 import { useRegisterLesionUlceraForm } from "@/hooks/Ulcera/useRegisterLesionUlceraForm";
 import { LesaoUlceraProps } from "@/types/forms";
-import { AntDesign } from '@expo/vector-icons';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -22,14 +23,20 @@ export default function RegisterLesaoUlceraStep7() {
   
 
   // formulario
-  const { control, handleSubmit } = useForm<LesaoUlceraProps>();
-  const lesionLocalValue = useWatch({ control, name: "exsudato" });
+  const { control, handleSubmit } = useForm<LesaoUlceraProps>(
+    {
+      defaultValues: {
+        exudate_type: registerLesionUlceraData.exudate_type,
+      }
+    }
+  );
+  const lesionLocalValue = useWatch({ control, name: "exudate_type" });
 
 
   
 
   const handleNext = (data: LesaoUlceraProps) => {
-    if (data.exsudato && data.exsudato.length > 0 && notEmpty) {
+    if (data.exudate_type && data.exudate_type.length > 0 && notEmpty) {
       console.log(data);
       updateRegisterLesionUlceraData(data);
       router.push('/(app)/(patient)/register-lesao/ulcera/step8');
@@ -63,72 +70,71 @@ export default function RegisterLesaoUlceraStep7() {
 
       <Header title="Registrar lesão" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={7} totalSteps={9} />
 
-        <Text className="text-2xl font-semibold mt-6">RESVECH</Text>
-        <Text className="text-base text-gray-600 mt-4">Exsudato</Text>
-        <Text className="text-base text-gray-600 mb-8">(0-4 pontos)</Text>
+        <TitleText title="RESVECH" description="Exsudato"/>
+        <Text className="text-sm text-neutral-700 mb-6">(0-4 pontos)</Text>
 
 
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <View className="gap-3">
-              <RadioButton label="Seco" value="Seco" checked={value === 'Seco'} onPress={() => {
-                const newValue = "Seco";
+              <RadioButton label="Seco" value="dry" checked={value === 'dry'} onPress={() => {
+                const newValue = "dry";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ exsudato: newValue });
+                updateRegisterLesionUlceraData({ exudate_type: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step8')
               }} />
-              <RadioButton label="Úmido" value="Úmido" checked={value === 'Úmido'} onPress={() => {
-                const newValue = "Úmido";
+              <RadioButton label="Úmido" value="moist" checked={value === 'moist'} onPress={() => {
+                const newValue = "moist";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ exsudato: newValue });
+                updateRegisterLesionUlceraData({ exudate_type: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step8')
               }} />
-              <RadioButton label="Molhado" value="Molhado" checked={value === 'Molhado'} onPress={() => {
-                const newValue = "Molhado";
+              <RadioButton label="Molhado" value="wet" checked={value === 'wet'} onPress={() => {
+                const newValue = "wet";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ exsudato: newValue });
+                updateRegisterLesionUlceraData({ exudate_type: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step8')
               }} />
-              <RadioButton label="Saturado ou elevado" value="Saturado ou elevado" checked={value === 'Saturado ou elevado'} onPress={() => {
-                const newValue = "Saturado ou elevado";
+              <RadioButton label="Saturado ou elevado" value="saturated" checked={value === 'saturated'} onPress={() => {
+                const newValue = "saturated";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ exsudato: newValue });
+                updateRegisterLesionUlceraData({ exudate_type: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step8')
               }} />
-              <RadioButton label="Com fuga de exsudato" value="Com fuga de exsudato" checked={value === 'Com fuga de exsudato'} onPress={() => {
-                const newValue = "Com fuga de exsudato";
+              <RadioButton label="Com fuga de exsudato" value="leakage" checked={value === 'leakage'} onPress={() => {
+                const newValue = "leakage";
                 onChange(newValue);
                 setNotEmpty(true);
-                updateRegisterLesionUlceraData({ exsudato: newValue });
+                updateRegisterLesionUlceraData({ exudate_type: newValue });
                 router.push('/(app)/(patient)/register-lesao/ulcera/step8')
               }} />
             </View>
           )}
-          name="exsudato"
+          name="exudate_type"
         /> 
 
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/ulcera/step6')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

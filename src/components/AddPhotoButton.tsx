@@ -1,5 +1,5 @@
 
-import { Feather } from '@expo/vector-icons';
+import { CameraPlusIcon } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 
 
@@ -7,11 +7,11 @@ export default function AddPhotoButton({...rest }: TouchableOpacityProps) {
 
   return (
     <TouchableOpacity
-      className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-white relative"
+      className="w-[30.2%] h-[95] border border-neutral-300 rounded-lg justify-center items-center overflow-hidden bg-white relative"
       {...rest}
     >
-      <Feather name="camera" size={22} color="#757575" />
-      <Text className="text-sm mt-3 text-center leading-4">Adicionar imagem</Text>
+      <CameraPlusIcon size={30} color="#6775B4" />
+      <Text className="text-sm mt-1 text-center text-neutral-900">Adicionar imagem</Text>
     </TouchableOpacity>
   )
 }

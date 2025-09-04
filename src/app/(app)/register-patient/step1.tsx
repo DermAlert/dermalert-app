@@ -1,23 +1,32 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import Input from '@/components/Input';
+import { Label } from "@/components/Label";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep1() {
   const [modalAlert, setModalAlert] = useState(false);
+  const { updatePatientData, patientData, setPatientData, setImages } = usePatientForm();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<PatientProps>();
-  const { updatePatientData, patientData, setPatientData } = usePatientForm();
-
+  const { control, handleSubmit, formState: { errors } } = useForm<PatientProps>(
+    {
+      defaultValues: {
+        user: {
+          name: patientData.user?.name || '',
+        }
+      }
+    }
+  );
+  
   const handleNext = (data: PatientProps) => {
     console.log(data);
     updatePatientData(data);
@@ -26,6 +35,7 @@ export default function RegisterPatientStep1() {
 
   const handleCancel = () => {
     setPatientData({});
+    setImages([]);
     setModalAlert(!modalAlert);
     router.push('/(app)/home');
   }
@@ -62,32 +72,34 @@ export default function RegisterPatientStep1() {
 
       <Header title="Cadastrar paciente" onPress={() => setModalAlert(!modalAlert)} />
 
-      <View className="px-6 w-full justify-start flex-1">
+      <View className="px-8 pb-6 w-full justify-start flex-1 gap-6">
 
         <ProgressBar step={1} totalSteps={9} />
 
-        <Text className="text-base mb-2 text-gray-700 mt-8">Nome completo</Text>
+        <View>
+          <Label title="Nome completo" text="Informe o nome completo do paciente."  />
 
-        <Text className="text-base text-gray-500 mb-2">Informe o nome completo do paciente.</Text>
+          <Input 
+            ref={inputFocus} 
+            error={errors.user?.name?.message}
+            formProps={{ 
+              name: 'user.name', 
+              control, 
+              rules: { required: 'O nome é obrigatório.' } 
+            }}
+            inputProps={{
+              placeholder: "Nome completo",
+              returnKeyType: "next"
+            }}
+          />
+        </View>
 
-        <Input 
-          ref={inputFocus} 
-          error={errors.name?.message}
-          formProps={{ 
-            name: 'name', 
-            control, 
-            rules: { required: 'O nome é obrigatório.' } 
-          }}
-          inputProps={{
-            placeholder: "Informe o nome completo do paciente.",
-            returnKeyType: "next"
-          }}
-        />
+        
 
       </View>
 
-      <View className="px-6 w-full justify-start mb-4">
-        <Button title="Próximo" iconRight icon={(<AntDesign name="arrowright" size={14} color="white" />)} style={{ marginTop: 24 }} onPress={handleSubmit(handleNext)} />
+      <View className="px-8 w-full justify-start mb-4 mt-6">
+        <Button title="Próximo" iconRight icon={(<ArrowRightIcon size={24} color="white" />)}  onPress={handleSubmit(handleNext)} />
       </View>
 
     </Animated.View>

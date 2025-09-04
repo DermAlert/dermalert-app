@@ -4,9 +4,10 @@ import Header from "@/components/Header";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { PersonalFamilyHistoryProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from "expo-router";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, View } from 'react-native';
@@ -23,6 +24,7 @@ export default function PersonalFamilyHistoryStep2() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
+  const { setLesionType } = useLesionType();
 
 
   // animação accordion
@@ -39,16 +41,24 @@ export default function PersonalFamilyHistoryStep2() {
   }));
 
   // formulario
-  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>();
-  const cancerTypeValue = useWatch({ control, name: "cancer_type" });
+  const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>(
+    {
+      defaultValues: {
+        patient_cancer_type: familyHistoryData.patient_cancer_type && familyHistoryData.patient_cancer_type.length === 0 ? ["Não"] : familyHistoryData.patient_cancer_type
+      }
+    }
+  );
 
+  const cancerTypeValue = useWatch({ control, name: "patient_cancer_type" });
 
   
 
   const handleNext = (data: PersonalFamilyHistoryProps) => {
-    if (data.cancer_type && data.cancer_type.length > 0 && notEmpty) {
-      console.log(data);
-      updateFamilyHistoryData(data);
+    if (data.patient_cancer_type && data.patient_cancer_type.length > 0 && notEmpty) {
+      //console.log(data);
+      const sendData = data.patient_cancer_type.includes("Não") ? [] : data.patient_cancer_type;
+
+      updateFamilyHistoryData({ patient_cancer_type: sendData}); 
       router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step3');
     } else {
       return;
@@ -57,6 +67,7 @@ export default function PersonalFamilyHistoryStep2() {
 
   const handleCancel = () => {
     setFamilyHistoryData({});
+    setLesionType(null)
     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/steps');
   }
 
@@ -64,8 +75,13 @@ export default function PersonalFamilyHistoryStep2() {
     const current = cancerTypeValue || [];
     const hasValue = current.length > 0;
 
+    if(familyHistoryData.patient_cancer_type && familyHistoryData.patient_cancer_type?.length > 0) {
+      setNotEmpty(true);
+      setIsYesOpen(true);
+    }
+
     setNotEmpty(hasValue);
-  }, [cancerTypeValue]);
+  }, [cancerTypeValue, isYesOpen]);
 
   useEffect(() => {
     console.log(familyHistoryData)
@@ -80,10 +96,10 @@ export default function PersonalFamilyHistoryStep2() {
 
       <Header title="Histórico Familiar e Pessoal" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={2} totalSteps={5} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente já foi diagnosticado com câncer de pele?</Text>
+        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente já foi diagnosticado com câncer de pele?</Text>
 
         <Controller
           control={control}
@@ -111,7 +127,7 @@ export default function PersonalFamilyHistoryStep2() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <Text className="px-0 mt-4">Qual tipo de câncer?</Text>
+                      <Text className="px-0 mt-5 text-neutral-900 text-base">Qual tipo de câncer?</Text>
                       {["Melanoma", "Carcinoma Basocelular", "Carcinoma Espinocelular"].map(item => (
                         <CheckButton
                           key={item}
@@ -143,29 +159,29 @@ export default function PersonalFamilyHistoryStep2() {
                     onChange(newValue);
                     setNotEmpty(true);
                     setIsYesOpen(false);
-                    updateFamilyHistoryData({ cancer_type: newValue });
+                    updateFamilyHistoryData({ patient_cancer_type: [] });
                     router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step3');
                   }}
                 />
               </View>
             );
           }}
-          name="cancer_type"
+          name="patient_cancer_type"
         />
       </ScrollView>
 
-      <View className="gap-4 mt-6 px-6 w-full justify-start mb-4 flex-row">
+      <View className="gap-4 mt-4 px-8 w-full justify-start mb-4 flex-row">
         <Button title="Voltar" 
           iconLeft 
           secondary 
-          icon={(<AntDesign name="arrowleft" size={14} color="#1E1E1E" />)} 
+          icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
           onPress={()=> router.push('/(app)/(patient)/register-lesao/oncodermato/anamnesis/personalFamilyHistory/step1')} 
           style={{ flexGrow: 1, width: '47%' }}
         />
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
+          icon={<ArrowRightIcon size={24} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />}
           style={{ flexGrow: 1, width: '47%' }} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}

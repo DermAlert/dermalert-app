@@ -6,10 +6,12 @@ import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
+import { api } from "@/services/api";
 import { GeneralHealthProps } from "@/types/forms";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { ArrowRightIcon, XIcon } from "phosphor-react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
@@ -20,62 +22,88 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-const CHRONIC_DISEASES = [
-  "Hipertensão arterial",
-  "Diabetes mellitus tipo 1",
-  "Diabetes mellitus tipo 2",
-  "Asma brônquica",
-  "Doença pulmonar obstrutiva crônica (DPOC)",
-  "Insuficiência cardíaca",
-  "Doença arterial coronariana",
-  "Arritmia cardíaca",
-  "Doença renal crônica",
-  "Doença hepática crônica",
-  "Doença de Alzheimer",
-  "Doença de Parkinson",
-  "Artrite reumatoide",
-  "Osteoartrite",
-  "Lúpus eritematoso sistêmico",
-  "Esclerose múltipla",
-  "Hipotireoidismo",
-  "Hipertireoidismo",
-  "Doença celíaca",
-  "Fibrose cística",
-  "Fibromialgia",
-  "Depressão maior",
-  "Transtorno bipolar",
-  "Transtorno de ansiedade generalizada",
-  "Epilepsia",
-  "Doença de Crohn",
-  "Retocolite ulcerativa",
-  "Gota",
-  "Anemia falciforme",
-  "Talassemia",
-  "Hemofilia",
-  "HIV/Aids",
-  "Câncer de mama (crônico)",
-  "Câncer de próstata (crônico)",
-  "Câncer colorretal (crônico)",
-  "Esôfago de Barrett",
-  "Doença arterial periférica",
-  "Glaucoma",
-  "Catarata",
-  "Psoríase",
-]
+// const CHRONIC_DISEASES = [
+//   "Hipertensão arterial",
+//   "Diabetes mellitus tipo 1",
+//   "Diabetes mellitus tipo 2",
+//   "Asma brônquica",
+//   "Doença pulmonar obstrutiva crônica (DPOC)",
+//   "Insuficiência cardíaca",
+//   "Doença arterial coronariana",
+//   "Arritmia cardíaca",
+//   "Doença renal crônica",
+//   "Doença hepática crônica",
+//   "Doença de Alzheimer",
+//   "Doença de Parkinson",
+//   "Artrite reumatoide",
+//   "Osteoartrite",
+//   "Lúpus eritematoso sistêmico",
+//   "Esclerose múltipla",
+//   "Hipotireoidismo",
+//   "Hipertireoidismo",
+//   "Doença celíaca",
+//   "Fibrose cística",
+//   "Fibromialgia",
+//   "Depressão maior",
+//   "Transtorno bipolar",
+//   "Transtorno de ansiedade generalizada",
+//   "Epilepsia",
+//   "Doença de Crohn",
+//   "Retocolite ulcerativa",
+//   "Gota",
+//   "Anemia falciforme",
+//   "Talassemia",
+//   "Hemofilia",
+//   "HIV/Aids",
+//   "Câncer de mama (crônico)",
+//   "Câncer de próstata (crônico)",
+//   "Câncer colorretal (crônico)",
+//   "Esôfago de Barrett",
+//   "Doença arterial periférica",
+//   "Glaucoma",
+//   "Catarata",
+//   "Psoríase",
+// ]
 
 export default function GeneralHealthStep1() {
   const [isDiseasesOpen, setIsDiseasesOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   const [isOtherDiseasesOpen, setIsOtherDiseasesOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
+  const [chronicDiseasesList, setChronicDiseasesList] = useState<string[]>([]);
   
   const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
+
+  const { control, handleSubmit, getValues } = useForm<GeneralHealthProps>(
+    {
+      defaultValues: {
+        chronic_diseases: generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length === 0 ? ["Não"] : undefined
+      }
+    }
+  );
+
+  const loadChronicDiseases = async () => {
+    try {
+      const { data } = await api.get('/chronic-diseases/');
+
+      if (data) {
+        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
+        setChronicDiseasesList(onlyNames);
+        //console.log(chronicDiseasesList);
+        //console.log(data);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   // animação accordion
   const measuredHeight = useSharedValue(0);
   const animatedHeight = useDerivedValue(() => 
     withTiming(
+      // isDiseasesOpen || generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length > 0 ? measuredHeight.value : 0, 
       isDiseasesOpen ? measuredHeight.value : 0, 
       { duration: 300 }
     )
@@ -86,31 +114,59 @@ export default function GeneralHealthStep1() {
   }));
 
   // formulario
-  const { control, handleSubmit } = useForm<GeneralHealthProps>();
+  
+  const fixedOptions = ["Hipertensão", "Diabetes", "Cardiopatas", "Não"];
+
   const onChangeRef = useRef<(value: string[]) => void>(() => {});
   const valueRef = useRef<string[]>([]);
   const chronicDiseasesValue = useWatch({ control, name: "chronic_diseases" });
 
   const {
     list: diseasesList,
+    setList,
     searchText,
     filteredData,
     addItemToList,
     removeItemFromList,
     handleSearch,
   } = useTagListModal({
-    baseList: CHRONIC_DISEASES,
+    baseList: chronicDiseasesList,
     currentValue: chronicDiseasesValue ?? [],
     onChange: (v) => onChangeRef.current(v),
     setNotEmpty,
+    fixedOptions
   });
 
-  
+    
+
+useEffect(() => {
+  if (generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length > 0) {
+    const fixedSelected = generalHealthData.chronic_diseases.filter(d => fixedOptions.includes(d));
+    const otherSelected = generalHealthData.chronic_diseases.filter(d => !fixedOptions.includes(d));
+    //setList([]);
+
+    onChangeRef.current([
+      ...fixedSelected,
+      ...otherSelected
+    ]);
+
+    //setList(otherSelected);
+
+    if (otherSelected.length > 0) {
+      setIsOtherDiseasesOpen(true);
+    }
+  }
+}, [generalHealthData, setList]);
+
 
   const handleNext = (data: GeneralHealthProps) => {
     if (data.chronic_diseases && data.chronic_diseases.length > 0 && notEmpty) {
-      console.log(data);
-      updateGeneralHealthData(data);
+      //const formatted = data.chronic_diseases.map((d) => ({ name: d }));
+
+      const sendData = data.chronic_diseases.includes("Não") ? [] : data.chronic_diseases;
+  
+      //console.log({ chronic_diseases: sendData});
+      updateGeneralHealthData({ chronic_diseases: sendData}); 
       router.push('/(app)/register-patient/general-health/step2');
     } else {
       return;
@@ -123,6 +179,8 @@ export default function GeneralHealthStep1() {
   }
 
   useEffect(() => {
+    //console.log("diseasesList: ", diseasesList)
+    //console.log("chronicDiseasesValue: ", chronicDiseasesValue)
     const isOutrosSelected = isOtherDiseasesOpen;
     const current = chronicDiseasesValue || [];
     valueRef.current = chronicDiseasesValue || [];
@@ -138,12 +196,23 @@ export default function GeneralHealthStep1() {
       return;
     }
 
-    setNotEmpty(hasOtherSelections);
-  }, [chronicDiseasesValue, diseasesList, isOtherDiseasesOpen]);
+    if(generalHealthData.chronic_diseases && generalHealthData.chronic_diseases?.length > 0) {
+      setNotEmpty(true);
+      setIsDiseasesOpen(true);
+    }
 
-  // useEffect(() => {
-  //   console.log(generalHealthData)
-  // }, []);
+    setNotEmpty(hasOtherSelections);
+  }, [chronicDiseasesValue, diseasesList, isOtherDiseasesOpen, isDiseasesOpen]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadChronicDiseases()
+    },[])
+  )
+
+  useEffect(() => {
+    console.log(generalHealthData)
+  }, []);
 
   return (
     <Animated.View 
@@ -178,10 +247,10 @@ export default function GeneralHealthStep1() {
 
       <Header title="Andecedentes clínicos" onPress={handleCancel} />
 
-      <ScrollView className="px-6 w-full flex-1">
+      <ScrollView className="px-8 pb-6 w-full flex-1">
         <ProgressBar step={1} totalSteps={6} />
 
-        <Text className="text-base text-gray-700 my-8">O paciente tem histórico de alguma doença crônica? </Text>
+        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente tem histórico de alguma doença crônica? </Text>
 
         <Controller
           control={control}
@@ -206,6 +275,7 @@ export default function GeneralHealthStep1() {
                   <Animated.View style={animatedStyle}>
                     <View
                       style={{ position: 'absolute', width: '100%', visibility: isDiseasesOpen ? 'visible' : 'hidden' }}
+                      className="py-2"
                       onLayout={(e) => {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
@@ -253,22 +323,22 @@ export default function GeneralHealthStep1() {
                       ))}
 
                       {isOtherDiseasesOpen && (
-                        <View className="mx-6 mt-3">
-                          <Text>Especifique</Text>
+                        <View className="mx-4 mt-2">
+                          <Text className="text-neutral-700 text-base">Especifique</Text>
                           <TouchableOpacity
-                            className="border border-gray-300 rounded-lg p-3 mb-4 mt-2"
+                            className="border border-neutral-300 rounded-lg p-4 mb-4 mt-2"
                             activeOpacity={1}
                             onPress={() => setModalSearchOpen(true)}
                           >
-                            <Text className="text-gray-300">Ex.:</Text>
+                            <Text className="text-neutral-400">Ex.:</Text>
                           </TouchableOpacity>
 
-                          <View className="gap-2 mb-3">
+                          <View className="gap-2">
                             {diseasesList.map((item) => (
-                              <View key={item} className="flex-row gap-2 items-center bg-gray-200 rounded-lg px-3 py-2 self-start">
-                                <Text className="w-auto max-w-[240px]">{item}</Text>
+                              <View key={item} className="flex-row gap-2 items-center bg-primary-100 rounded-lg px-2 py-[6px] self-start">
+                                <Text className="w-auto max-w-[240px] text-neutral-700 text-sm font-medium">{item}</Text>
                                 <TouchableOpacity onPress={() => removeItemFromList(item)}>
-                                  <AntDesign name="close" size={12} color="#2C2C2C" />
+                                  <XIcon size={12} color="#7D83A0" weight="bold" />
                                 </TouchableOpacity>
                               </View>
                             ))}
@@ -288,7 +358,7 @@ export default function GeneralHealthStep1() {
                     onChange(newValue);
                     setNotEmpty(true);
                     setIsDiseasesOpen(false);
-                    updateGeneralHealthData({ chronic_diseases: newValue });
+                    updateGeneralHealthData({ chronic_diseases: [] });
                     router.push('/(app)/register-patient/general-health/step2');
                   }}
                 />
@@ -299,17 +369,17 @@ export default function GeneralHealthStep1() {
         />
       </ScrollView>
 
-      <View className="px-6 w-full justify-start mb-4">
+      <View className="px-8 w-full justify-start mb-4">
         <Button 
           title="Próximo" 
           iconRight 
-          icon={<AntDesign name="arrowright" size={14} color={`${notEmpty ? 'white' : '#B3B3B3'}`} />} 
-          style={{ marginTop: 24 }} 
+          icon={<ArrowRightIcon size={20} color={`${notEmpty ? 'white' : '#D4D6DF'}`} />} 
           onPress={handleSubmit(handleNext)} 
           activeOpacity={notEmpty ? 0.2 : 1}
           disabled={notEmpty}
         />
       </View>
+      
     </Animated.View>
   );
 }

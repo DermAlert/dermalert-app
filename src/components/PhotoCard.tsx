@@ -6,21 +6,22 @@ import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-nativ
 
 type Props = TouchableOpacityProps & {
   image: string,
-  isDeletable?: boolean
-  isOncodermato?: boolean
+  isDeletable?: boolean,
+  isOncodermato?: boolean,
+  isUlcera?: boolean,
   isPatient?: boolean
 };
 
 
-export default function PhotoCard({image, isDeletable = false, isOncodermato = false, isPatient = false, ...rest }: Props) {
+export default function PhotoCard({image, isDeletable = false, isOncodermato = false, isUlcera = false, isPatient = false, ...rest }: Props) {
 
   return (
     <TouchableOpacity 
-      className="w-[30%] h-[105] border border-gray-300 rounded-lg justify-center items-center overflow-hidden bg-gray-300 relative"
+      className="w-[30.2%] h-[95] border border-neutral-300 rounded-lg justify-center items-center overflow-hidden bg-neutral-300 relative"
       // onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: 'true' }})}
       onPress={() => {
         setImageUri(image);
-        router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: isDeletable ? 'true': '', isOncodermato: isOncodermato ? 'true' : '', isPatient: isPatient ? 'true' : '' } })
+        router.push({pathname: "/(app)/(patient)/termoConsentimento/details", params: { deletar: isDeletable ? 'true': '', isOncodermato: isOncodermato ? 'true' : '', isPatient: isPatient ? 'true' : '', isUlcera: isUlcera ? 'true' : '' } })
       }}
       {...rest}
     >
@@ -30,8 +31,8 @@ export default function PhotoCard({image, isDeletable = false, isOncodermato = f
         contentFit="cover"
         contentPosition="top"
       />
-      <View className="bg-gray-600 absolute bottom-4 w-[73] h-[24] rounded-md justify-center items-center">
-        <Text className="text-white text-sm">Visualizar</Text>
+      <View className="bg-primary-800 absolute bottom-4 w-[73] py-1 rounded-xs justify-center items-center">
+        <Text className="text-white text-sm font-semibold">Visualizar</Text>
       </View>
     </TouchableOpacity>
   )

@@ -23,14 +23,15 @@ export default function RadioButton({
       {indented ? (
         <TouchableOpacity 
           activeOpacity={1} 
-          className={`flex-row items-center rounded-lg p-3 z-10 bg-white ml-6`} 
+          className={`flex-row items-center rounded-lg p-3 z-10 bg-white`} 
+          style={{marginLeft: 10}}
           onPress={onPress} 
           {...rest}
         >
           <View
-            className="h-[18px] w-[18px] rounded-full border-2 border-gray-800 items-center justify-center mr-4"
+            className={`h-[20px] w-[20px] rounded-full border-2 items-center justify-center mr-4 ${checked ? 'border-primary-600' : 'border-neutral-300'}`}
           >
-            {checked && <View className="rounded-full h-[10px] w-[10px] bg-gray-800" />}
+            {checked && <View className="rounded-full h-[10px] w-[10px] bg-primary-600" />}
           </View>
           <Text className="text-gray-800 text-base flex-1">{label}</Text>
           
@@ -38,15 +39,15 @@ export default function RadioButton({
       ) : (
         <TouchableOpacity 
           activeOpacity={1} 
-          className={`flex-row gap-4 items-center rounded-lg p-4 z-10 ${checked ? `bg-gray-300`: `bg-gray-200`}`} 
+          className={`flex-row gap-4 items-center rounded-2xl py-5 px-4 z-10 border ${checked ? `bg-primary-200 border-primary-600`: `bg-primary-100 border-primary-100`}`} 
           onPress={onPress} 
           {...rest}
         >
-          <Text className="text-gray-800 text-base flex-1">{label}</Text>
+          <Text className={`text-base flex-1 ${checked ? `text-primary-600 font-medium`: `text-neutral-700 font-normal`}`}>{label}</Text>
           <View
-            className="h-[20px] w-[20px] rounded-full border-2 border-gray-800 items-center justify-center"
+            className={`h-[20px] w-[20px] rounded-full border-2 items-center justify-center ${checked ? 'border-primary-600' : 'bg-white border-neutral-300'}`}
           >
-            {checked && <View className="rounded-full h-[10px] w-[10px] bg-gray-800" />}
+            {checked && <View className="rounded-full h-[12px] w-[12px] bg-primary-600" />}
           </View>
         </TouchableOpacity>
       )}

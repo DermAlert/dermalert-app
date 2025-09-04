@@ -1,17 +1,26 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
+import Icon from "@/components/Icon";
 import Input from '@/components/Input';
+import { Label } from "@/components/Label";
+import { Loading } from "@/components/Loading";
+import { TitleText } from "@/components/TitleText";
+import { api } from "@/services/api";
 import { FormPatientEditPhoneData } from "@/types/forms";
 import { formatPhone } from "@/utils/formatPhone";
-import Feather from '@expo/vector-icons/Feather';
-import { router } from "expo-router";
+import axios from "axios";
+import { router, useLocalSearchParams } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 export default function PatientEditPhone() {
   const [step1, setStep1] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { id } = useLocalSearchParams();
 
   const {
     control,
@@ -20,10 +29,28 @@ export default function PatientEditPhone() {
     formState: { errors },
   } = useForm<FormPatientEditPhoneData>()
 
-  const onSubmit = (data: FormPatientEditPhoneData): void => {
-    console.log(data);
-    reset();
-    setStep1(false)
+
+  const onSubmit = async (data: FormPatientEditPhoneData): Promise<void> => {
+    try {
+      setIsLoading(true);
+
+      const response = await api.patch(`/patients/${id}/`, data);
+
+      //console.log(response.data);
+
+      reset();
+      setStep1(false)
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        console.log('STATUS:', error.response?.status);
+        console.log('HEADERS:', error.response?.headers);
+        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
+      } 
+    }
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -36,64 +63,72 @@ export default function PatientEditPhone() {
     return () => clearTimeout(timeout);
   }, []);
 
+  if(isLoading){
+      return (
+        <View className="flex-1 p-safe justify-center items-center">
+          <Loading />
+        </View>
+      )
+    }
+
   return (
     <Animated.View 
       entering={SlideInDown} 
       exiting={SlideOutDown} 
       className="flex-1 bg-white p-safe justify-start items-center"
     >
-      <Header title="Alterar telefone" onPress={() => router.push('/(app)/(patient)/patientDetails/[id]')} />
+      <Header title="Alterar telefone" onPress={() => router.push({pathname: '/(app)/(patient)/patientDetails/[id]', params: {id: id.toString()}})} />
 
       {step1 && (
-        <View className="px-6 w-full justify-start flex-1 mt-[70]">
+        <View className="p-8 w-full justify-start flex-1 gap-8">
 
-          <Text className="mb-4 text-2xl font-semibold">Telefone de contato do paciente</Text>
+          <TitleText title="Telefone de contato do paciente" description="Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa." />
 
-          <Text className="text-base text-gray-500">Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa.</Text>
-        
-          <Text className="text-base mb-2 text-gray-700 mt-8">Telefone de contato</Text>
+          <View>
+            <Label text="Telefone de contato" />          
+
+            <Input 
+              error={errors.phone_number?.message}
+              formProps={{
+                control,
+                name: "phone_number",
+                rules: {
+                  required: "O telefone é obrigatório.",
+                  pattern: {
+                    //value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
+                    value: /^\(\d{2}\)\s?\d{4,5}-\d{4}$/,
+                    message: "Telefone inválido."
+                  }
+                }
+              }}
+              inputProps={{
+                placeholder: "Informe o telefone do paciente",
+                returnKeyType: "next",
+                keyboardType: "numeric",
+                maxLength: 15
+              }}
+              onChangeTextFormat={formatPhone}
+              
+            />
+          </View>
 
           
 
-          <Input 
-            error={errors.phone?.message}
-            formProps={{
-              control,
-              name: "phone",
-              rules: {
-                required: "O telefone é obrigatório.",
-                pattern: {
-                  //value: /^(\(\d{2}\)\s?|\d{2})(\s?|\d{1})(\d{4,5})-(\d{4})$/,
-                  value: /^\(\d{2}\)\s?\d{4,5}-\d{4}$/,
-                  message: "Telefone inválido."
-                }
-              }
-            }}
-            inputProps={{
-              placeholder: "Informe o telefone do paciente",
-              returnKeyType: "next",
-              keyboardType: "numeric",
-              maxLength: 15
-            }}
-            onChangeTextFormat={formatPhone}
-            
-          />
-
-          <Button title="Salvar" style={{ marginTop: 24 }} onPress={handleSubmit(onSubmit)} />
+          <Button title="Salvar" onPress={handleSubmit(onSubmit)} />
 
         </View>
       )}
 
       {!step1 && (
-        <View className="px-6 w-full justify-start flex-1 mt-[70]">
+        <View className="p-8 w-full justify-start flex-1 gap-10">
 
-          <Feather name="check-circle" size={40} color="#1E1E1E" />
+          <Icon iconName="CheckCircleIcon" />
 
-          <Text className="mb-4 text-2xl font-semibold mt-8">Telefone de contato atualizado!</Text>
+          <TitleText title="Telefone de contato atualizado!" description="O telefone de contato informado pelo paciente foi atualizado com sucesso." />
 
-          <Text className="text-base text-gray-500">O telefone de contato informado pelo paciente foi atualizado com sucesso.</Text>
 
-          <Button title="Voltar" secondary style={{ marginTop: 32, width: 112 }} onPress={() => router.push('/(app)/(patient)/patientDetails/[id]')} />
+          <Button title="Voltar" secondary style={{ alignSelf: "flex-start" }} full={false} onPress={() => router.push({pathname: '/(app)/(patient)/patientDetails/[id]', params: { id: id.toString() }})} iconLeft 
+          icon={(<ArrowLeftIcon size={18} color="#4052A1"/>)}  />
 
         </View>
       )}

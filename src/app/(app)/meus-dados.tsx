@@ -1,10 +1,7 @@
 import Header from '@/components/Header';
 import UnidadeCard from "@/components/UnidadeCard";
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import Fontisto from '@expo/vector-icons/Fontisto';
-import Octicons from '@expo/vector-icons/Octicons';
 import { router } from 'expo-router';
+import { EnvelopeSimpleIcon, IdentificationCardIcon, KeyIcon, PencilSimpleLineIcon, UserIcon } from 'phosphor-react-native';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MeusDados() {
@@ -15,47 +12,53 @@ export default function MeusDados() {
       <Header icon="back" title="Meus dados" onPress={()=> router.push("/(app)/home")} />
 
       <View className="flex-1">
-        <Text className="text-base mb-4 font-semibold px-4">Dados pessoais</Text>
+        <Text className="text-lg mb-4 font-medium px-4 mt-6 text-neutral-900">Dados pessoais</Text>
 
-        <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
-          <FontAwesome5 name="user" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
+          <UserIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-gray-800'>Nome completo</Text>
-            <Text className='text-base text-gray-800'>Paulo Henrique Gusmão</Text>
+            <Text className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
+            <Text className='text-base text-neutral-900'>Paulo Henrique Gusmão</Text>
           </View>
         </View>
         
-        <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
-          <FontAwesome5 name="user" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
+          <IdentificationCardIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-gray-800'>CPF</Text>
-            <Text className='text-base text-gray-800'>123.456.789-12</Text>
+            <Text className='text-xs text-neutral-600 font-semibold'>CPF</Text>
+            <Text className='text-base text-neutral-900'>123.456.789-12</Text>
           </View>
         </View>
 
-        <View className="border-b border-gray-400 flex-row justify-between px-5 py-3 items-center gap-5">
-          <Fontisto name="email" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-4">
+          <EnvelopeSimpleIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-gray-800'>E-mail</Text>
-            <Text className='text-base text-gray-800'>paulohg@email.com</Text>
+            <Text className='text-xs text-neutral-600 font-semibold'>E-mail</Text>
+            <Text className='text-base text-neutral-900'>paulohg@email.com</Text>
           </View>
-          <TouchableOpacity onPress={()=> router.push("/(app)/edit-email")}>
-            <Octicons name="pencil" size={18} color="#49454F" />
+          <TouchableOpacity 
+            onPress={()=> router.push("/(app)/edit-email")}
+            className="h-10 w-10 justify-center items-center"
+          >
+            <PencilSimpleLineIcon size={24} color="#4052A1" />
           </TouchableOpacity>
         </View>
 
-        <View className="border-b border-gray-400 flex-row justify-between px-5 py-3 items-center gap-5">
-          <Feather name="key" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-5">
+          <KeyIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-gray-800'>Senha</Text>
-            <Text className='text-base text-gray-800'>Alterar senha</Text>
+            <Text className='text-xs text-neutral-600 font-semibold'>Senha</Text>
+            <Text className='text-base text-neutral-900'>Alterar senha</Text>
           </View>
-          <TouchableOpacity onPress={()=> router.push("/(app)/edit-password")}>
-            <Octicons name="pencil" size={18} color="#49454F" />
+          <TouchableOpacity 
+            onPress={()=> router.push("/(app)/edit-password")} 
+            className="h-10 w-10 justify-center items-center"
+          >
+            <PencilSimpleLineIcon size={24} color="#4052A1" />
           </TouchableOpacity>
         </View>
 
-        <Text className="text-base mb-4 font-semibold px-4 mt-8">Unidades</Text>
+        <Text className="text-lg mb-4 font-medium px-4 mt-8 text-neutral-900">Unidades</Text>
         
         <FlatList
           data={[1, 2, 3, 4, 5, 6]}

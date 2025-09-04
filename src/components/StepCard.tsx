@@ -1,5 +1,5 @@
 
-import Feather from '@expo/vector-icons/Feather';
+import { CheckIcon, ListDashesIcon } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
 type Props = TouchableOpacityProps & {
@@ -15,15 +15,18 @@ export default function StepCard({ steps, title, stepCheck = false,  ...rest }: 
   return (
     <TouchableOpacity 
       activeOpacity={0.7} 
-      className={`flex-row items-center justify-between border border-gray-300 rounded-lg px-4 py-2 mb-4 ${stepCheck ? 'bg-green-100' : 'bg-white'}`}
+      className={`flex-row items-center justify-between gap-4 border rounded-lg px-4 h-[90] ${stepCheck ? 'bg-primary-50 border-primary-300' : 'bg-primary-50 border-primary-50'}`}
       {...rest}
     >
-      <Feather name="server" size={24} color="#1E1E1E" />
-      <View className="flex-1 px-4 py-1">
-        <Text className="leading-4 text-xs">{stepCheck ? steps : 0}/{steps} etapas</Text>
-        <Text className="leading-6 text-base">{title}</Text>
+      <View className={`justify-center items-center rounded-lg h-10 w-10 ${stepCheck ? 'bg-primary-200' : 'bg-neutral-200'}`}>
+        <ListDashesIcon size={24} color={`${stepCheck ? '#6775B4' : '#D4D6DF'}`} />
       </View>
-      <Feather name="check" size={22} color={`${stepCheck ? '#14AE5C' : '#E6E6E6'}`} />
+      
+      <View className="flex-1">
+        <Text className="text-xs text-neutral-500 font-semibold">{stepCheck ? steps : 0}/{steps} etapas</Text>
+        <Text className="text-base text-neutral-900">{title}</Text>
+      </View>
+      <CheckIcon size={22} color={`${stepCheck ? '#00A63E' : '#D4D6DF'}`} />
     </TouchableOpacity>
   )
 }

@@ -10,14 +10,14 @@ export default function ProgressBar({ step, totalSteps}: ProgressBarProps) {
 
   return (
     <View className="mt-2">
-      <View className="w-full h-2 bg-gray-300">
+      <View className="w-full h-2 bg-primary-50 rounded-lg overflow-hidden">
         <View
-          className="bg-gray-800 h-2"
+          className="bg-secondary-500 h-2"
           style={{ width: `${progress * 100}%` }}
         />
       </View>
       <View className="flex-row justify-center my-2">
-        <Text className="text-sm text-gray-800">
+        <Text className="text-sm text-neutral-500">
           Passo <Text className="font-bold">{step}</Text> de {totalSteps}
         </Text>
       </View>

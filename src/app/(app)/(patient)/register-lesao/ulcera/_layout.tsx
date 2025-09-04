@@ -1,5 +1,4 @@
 // /app/(app)/_layout.tsx
-import { RegisterLesionUlceraProvider } from '@/contexts/Ulcera/RegisterLesionUlceraContext';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -17,9 +16,6 @@ export default function AppLayout() {
 
   
   return (
-    <RegisterLesionUlceraProvider>
-      <Stack screenOptions={{ headerShown: false}} />
-    </RegisterLesionUlceraProvider>
-    
+    <Stack screenOptions={{ headerShown: false}} />
   );
 }

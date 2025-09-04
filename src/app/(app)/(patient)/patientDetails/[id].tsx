@@ -1,76 +1,126 @@
 import Header from '@/components/Header';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import Fontisto from '@expo/vector-icons/Fontisto';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Octicons from '@expo/vector-icons/Octicons';
-import { router } from "expo-router";
+import { Loading } from '@/components/Loading';
+import { api } from '@/services/api';
+import { PatientProps } from '@/types/forms';
+import { formatCNS } from '@/utils/CNS';
+import { formatCPF } from '@/utils/formatCPF';
+import { formatPhone } from '@/utils/formatPhone';
+import { useFocusEffect } from '@react-navigation/native';
+import { router, useLocalSearchParams } from "expo-router";
+import { EnvelopeSimpleIcon, GenderMaleIcon, IdentificationBadgeIcon, IdentificationCardIcon, PencilSimpleLineIcon, PhoneIcon, UserIcon } from 'phosphor-react-native';
+import { useCallback, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 export default function PatientDetails() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [patient, setPatient] = useState<PatientProps>();
+
+  const { id } = useLocalSearchParams();
+
+  async function loadPatientById() {
+    try {
+      setIsLoading(true)
+      const response = await api.get(`/patients/${id}`);
+
+      setPatient(response.data);
+      //console.log(response.data);
+
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      console.log(error);
+    } 
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadPatientById()
+    },[])
+  )
+
+  if(isLoading){
+    return (
+      <Loading />
+    )
+  }
 
   return (
     <View className="flex-1 bg-white p-safe relative">
 
-      <Header icon="back" title="Dados pessoais do paciente" onPress={()=> router.push("/(app)/(patient)/patient/[id]")} />
+      <Header icon="back" title="Dados pessoais do paciente" onPress={()=> router.push({pathname: "/(app)/(patient)/patient/[id]", params: {id: id.toString()}})} />
 
       <View className="flex-1 mt-6">
-        <Text className="text-base mb-4 font-semibold px-4">Dados pessoais</Text>
+      <Text className="text-lg mb-4 font-medium px-4 text-neutral-900">Dados pessoais</Text>
 
-        <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
-          <FontAwesome5 name="user" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
+          <UserIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-gray-800'>Nome completo</Text>
-            <Text className='text-base text-gray-800'>Gustavo Andrade de Souza</Text>
-          </View>
-        </View>
-        
-        <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
-          <Feather name="list" size={15} color="#49454F" />
-          <View>
-            <Text className='text-xs text-gray-800'>CPF</Text>
-            <Text className='text-base text-gray-800'>123.456.789-12</Text>
-          </View>
-        </View>
-        
-        <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
-          <Ionicons name="accessibility" size={15} color="#49454F" />
-          <View>
-            <Text className='text-xs text-gray-800'>Gênero que se identifica</Text>
-            <Text className='text-base text-gray-800'>Masculino</Text>
-          </View>
-        </View>
-        
-        <View className="border-b border-gray-400 flex-row justify-start px-5 py-3 items-center gap-5">
-          <AntDesign name="idcard" size={15} color="#49454F" />
-          <View>
-            <Text className='text-xs text-gray-800'>Número do Cartão SUS</Text>
-            <Text className='text-base text-gray-800'>700 9674 9916 0003</Text>
+            <Text className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
+            <Text className='text-base text-neutral-900'>{patient?.user?.name}</Text>
           </View>
         </View>
 
-        <View className="border-b border-gray-400 flex-row justify-between px-5 py-3 items-center gap-5">
-          <Fontisto name="email" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
+          <IdentificationCardIcon size={24} color="#6775B4" />
+          <View>
+            <Text className='text-xs text-neutral-600 font-semibold'>CPF</Text>
+            <Text className='text-base text-neutral-900'>{formatCPF(patient?.user?.cpf || '')}</Text>
+          </View>
+        </View>
+
+        <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
+          <GenderMaleIcon size={24} color="#6775B4" />
+          <View>
+            <Text className='text-xs text-neutral-600 font-semibold'>Gênero que se identifica</Text>
+            <Text className='text-base text-neutral-900'>
+            {
+                patient?.gender === 'M' ? 'Masculino' :
+                patient?.gender === 'F' ? 'Feminino' :
+                patient?.gender === 'N' ? 'Não binário' :
+                patient?.gender === 'O' ? patient?.other_gender || 'Outro' :
+                'Não informado'
+              }
+            </Text>
+          </View>
+        </View>
+
+        <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
+          <IdentificationBadgeIcon size={24} color="#6775B4" />
+          <View>
+            <Text className='text-xs text-neutral-600 font-semibold'>Número do Cartão SUS</Text>
+            <Text className='text-base text-neutral-900'>{formatCNS(patient?.sus_number || '')}</Text>
+          </View>
+        </View>
+
+        <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-4">
+          <EnvelopeSimpleIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-gray-800'>E-mail</Text>
-            <Text className='text-base text-gray-800'>E-mail para retorno</Text>
+            <Text className='text-xs text-neutral-600 font-semibold'>E-mail para retorno</Text>
+            <Text className='text-base text-neutral-900'>{patient?.user?.email}</Text>
           </View>
-          <TouchableOpacity onPress={()=> router.push("/(app)/(patient)/patientDetails/patient-edit-email")}>
-            <Octicons name="pencil" size={18} color="#49454F" />
+          <TouchableOpacity 
+            onPress={()=> router.push({ pathname: "/(app)/(patient)/patientDetails/patient-edit-email", params: { id }})}
+            className="h-10 w-10 justify-center items-center"
+          >
+            <PencilSimpleLineIcon size={24} color="#4052A1" />
           </TouchableOpacity>
         </View>
 
-        <View className="border-b border-gray-400 flex-row justify-between px-5 py-3 items-center gap-5">
-          <Feather name="phone" size={15} color="#49454F" />
+        <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-5">
+          <PhoneIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-gray-800'>Telefone de contato</Text>
-            <Text className='text-base text-gray-800'>(61) 91234-5678</Text>
+            <Text className='text-xs text-neutral-600 font-semibold'>Telefone de contato</Text>
+            <Text className='text-base text-neutral-900'>{formatPhone(patient?.phone_number || '')}</Text>
           </View>
-          <TouchableOpacity onPress={()=> router.push("/(app)/(patient)/patientDetails/patient-edit-phone")}>
-            <Octicons name="pencil" size={18} color="#49454F" />
+          <TouchableOpacity 
+            onPress={()=> router.push({pathname: "/(app)/(patient)/patientDetails/patient-edit-phone", params: { id }})}
+            className="h-10 w-10 justify-center items-center"
+          >
+            <PencilSimpleLineIcon size={24} color="#4052A1" />
           </TouchableOpacity>
         </View>
+        
+
       </View>
 
 
