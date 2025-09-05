@@ -1,6 +1,7 @@
 import Input from '@/components/Input';
 import { api } from '@/services/api';
 import { PatientProps } from '@/types/forms';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeftIcon, MagnifyingGlassIcon } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -140,6 +141,11 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
             ListFooterComponent={() => isLoading ? <Loading /> : null}
             ListEmptyComponent={() => !isLoading && <EmptyPatients title="Nenhum paciente encontrado" description="Nenhum resultado encontrado para esta busca." />}
             initialNumToRender={7}
+          />
+          <LinearGradient
+            colors={['rgba(255,255,255,0)', '#F5F6FA']}
+            className="absolute bottom-0 left-0 right-0 h-[30]"
+            pointerEvents="none"
           />
         </View>
       </View>

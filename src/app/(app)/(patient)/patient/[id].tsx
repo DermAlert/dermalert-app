@@ -12,6 +12,7 @@ import { PatientProps } from '@/types/forms';
 import { formatCPF } from '@/utils/formatCPF';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import { useCallback, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
@@ -24,6 +25,7 @@ export default function Patient() {
   const [hasOncodermatoAnamnesis, setHasOncodermatoAnamnesis] = useState(false);
   const [hasUlceraAnamnesis, setHasUlceraAnamnesis] = useState(false);
   const [hasGeneralHealth, setHasGeneralHealth] = useState(false);
+  const [hasTerms, setHasTerms] = useState(false);
 
   const { patientId, updatePatientId, setPatientId } = usePatientId();
   const { updateLesionId } = useLesionId();
@@ -98,6 +100,24 @@ export default function Patient() {
     }
   }
 
+  async function checkTermsById() {
+    try {
+      setIsLoading(true)
+      const response = await api.get(`/patients/${patientId}/consent/signed-terms/`);
+      const hasAnySigned = response.data.some((term: any) => term.has_signed);
+
+      if(hasAnySigned){
+        setHasTerms(true)
+      }
+
+      setIsLoading(false)
+    } catch (error) {
+      console.log("erro termos")
+      setHasTerms(false)
+      setIsLoading(false);
+    }
+  }
+
   async function loadLesionsById() {
     try {
       setIsLoading(true)
@@ -125,14 +145,17 @@ export default function Patient() {
 
   useFocusEffect(
     useCallback(() => {
+      if (!patientId) return;
+  
       (async () => {
         await loadPatientById();
         await loadLesionsById();
         await checkGeneralHealth();
         await checkOncodermatoAnamnesisById();
         await checkUlceraAnamnesisById();
+        await checkTermsById();
       })();
-
+  
       updateLesionId(null);
     }, [patientId])
   );
@@ -185,17 +208,19 @@ if(isLoading){
           )}
 
           
-
-          <View className="border-b border-neutral-300">
-            <TouchableOpacity 
-              className="flex-row justify-start px-4 py-[10] items-center gap-5"
-              onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/[id]", params: { id: patientId || "" }})}
-            >
-              <ScrollIcon size={24} color="#6775B4" />
-              <Text className='text-base text-neutral-900 flex-1'>Termo de consentimento</Text>
-              <CaretRightIcon size={16} color="#7D83A0" />
-            </TouchableOpacity>
-          </View>
+          {hasTerms && (
+            <View className="border-b border-neutral-300">
+              <TouchableOpacity 
+                className="flex-row justify-start px-4 py-[10] items-center gap-5"
+                onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/[id]", params: { id: patientId || "" }})}
+              >
+                <ScrollIcon size={24} color="#6775B4" />
+                <Text className='text-base text-neutral-900 flex-1'>Termo de consentimento</Text>
+                <CaretRightIcon size={16} color="#7D83A0" />
+              </TouchableOpacity>
+            </View>
+          )}
+          
 
           {hasOncodermatoAnamnesis && (
             <View className="border-b border-neutral-300">
@@ -247,6 +272,11 @@ if(isLoading){
               gap: 10
             }}
             ListEmptyComponent={() => !isLoading && <EmptyPatients title="Nenhuma lesão registrada" description="Não há nenhuma lesão registrada ainda para este paciente. Registre uma nova lesão." />}
+          />
+          <LinearGradient
+            colors={['rgba(255,255,255,0)', '#F5F6FA']}
+            className="absolute bottom-0 left-0 right-0 h-[20]"
+            pointerEvents="none"
           />
         </View>
 

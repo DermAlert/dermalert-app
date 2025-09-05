@@ -214,3 +214,9 @@ export type LesionImagesProps = {
   wound?: number,
   image: string
 }
+
+export type TermsImagesProps = {
+  id?: number,
+  image: string,
+  page_number?: number
+}

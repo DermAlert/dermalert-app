@@ -26,14 +26,27 @@ export default function RegisterPatientStep9() {
   const { patientId, updatePatientId, setPatientId } = usePatientId();
 
   const handleSendtoServer = async () => {
-    // console.log(patientData);
+     console.log(patientData);
     // console.log(generalHealthData)
 
     try {
       setIsLoading(true)
 
       // 1. Envia patientData
-      const response = await api.post(`/patients/`, patientData, {
+      const response = await api.post(`/patients/`, 
+        {
+          "date_of_birth": patientData.date_of_birth, 
+          "gender": patientData.gender,
+          "other_gender": patientData.other_gender, 
+          "phone_number": patientData.phone_number, 
+          "sus_number": patientData.sus_number, 
+          "user": {
+            "cpf": patientData.user?.cpf, 
+            "email": patientData.user?.email, 
+            "name": patientData.user?.name
+          }
+        }, 
+        {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -41,8 +54,10 @@ export default function RegisterPatientStep9() {
 
       console.log("patientData enviado com sucesso:", response.data);
 
-      // 2. Pega o user ID da resposta
-      const userId = response.data?.user?.id;
+      // // 2. Pega o user ID da resposta
+       const userId = response.data?.user?.id;
+
+      
 
       console.log("ID do usuário retornado:", userId);
 
@@ -52,6 +67,8 @@ export default function RegisterPatientStep9() {
       }
 
       if (userId){
+
+        // 3. Envia generalHealthData para a rota com userId
         const formattedChronicDiseases = generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length > 0 ? generalHealthData.chronic_diseases.map((d) => ({ name: d })) : [];
 
         const formattedMedicines = generalHealthData.medicines && generalHealthData.medicines.length > 0 ? generalHealthData.medicines.map((d) => ({ name: d })) : [];
@@ -69,7 +86,7 @@ export default function RegisterPatientStep9() {
         // });
         // console.log(`/patients/${userId}/forms/general-health/`)
 
-        // 3. Envia generalHealthData para a rota com userId
+        
         const generalResponse = await api.post(
           `/patients/${userId}/forms/general-health/`,
           {
@@ -88,13 +105,66 @@ export default function RegisterPatientStep9() {
 
         console.log("generalHealthData enviado com sucesso:", generalResponse.data);
 
-        setPatientData({});
-        setGeneralHealthData({});
-        setImages([]);
+        // 4. pega versao do termo de consentimento:
+        const termVersionResponse = await api.get(`/consent-terms/latest/`);
 
-        updatePatientId(userId.toString());
+        const termVersion = termVersionResponse.data?.id;
 
-        router.push("/(app)/(patient)/patient/[id]")
+        console.log("ID do termo:", termVersion);
+
+        if (!termVersion) {
+          console.error("ID do termo não encontrado na resposta");
+          return;
+        }
+
+        if(termVersion) {
+          // 5. envia os termos:
+
+          const form = new FormData();
+
+          form.append("term", termVersion.toString());
+          form.append("has_signed", "true");
+
+          if (patientData.terms_photos && patientData.terms_photos.length > 0) {
+            patientData.terms_photos.forEach((image, index) => {
+              const filename = image.split("/").pop() || `image_${index}.jpg`;
+              const ext = /\.(\w+)$/.exec(filename)?.[1] || "jpg";
+              const mimeType = `image/${ext}`;
+
+              form.append("images", {
+                uri: image,
+                type: mimeType,
+                name: filename,
+              } as any);
+            });
+          }
+
+          console.log(form)
+
+          const termsResponse = await api.post(
+            `/patients/${userId}/consent/sign/`,
+            form,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          console.log("Terms enviados com sucesso:", termsResponse.data);
+
+          setPatientData({});
+          setGeneralHealthData({});
+          setImages([]);
+
+          updatePatientId(userId.toString());
+
+          router.push("/(app)/(patient)/patient/[id]")
+
+
+        }
+
+
       }
       
 
@@ -123,15 +193,15 @@ export default function RegisterPatientStep9() {
     }
   }, [generalHealthData]);
 
-  // useEffect(() => {
-  //   //console.log(patientData)
-  //   const formattedChronicDiseases = generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length > 0 ? generalHealthData.chronic_diseases.map((d) => ({ name: d })) : [];
+  useEffect(() => {
+    console.log(patientData)
+    // const formattedChronicDiseases = generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length > 0 ? generalHealthData.chronic_diseases.map((d) => ({ name: d })) : [];
 
-  //   const formattedMedicines = generalHealthData.medicines && generalHealthData.medicines.length > 0 ? generalHealthData.medicines.map((d) => ({ name: d })) : [];
+    // const formattedMedicines = generalHealthData.medicines && generalHealthData.medicines.length > 0 ? generalHealthData.medicines.map((d) => ({ name: d })) : [];
 
-  //   const formattedAllergies = generalHealthData.allergies && generalHealthData.allergies.length > 0 ? generalHealthData.allergies.map((d) => ({ name: d })) : [];
-  //   console.log(formattedChronicDiseases)
-  // }, []);
+    // const formattedAllergies = generalHealthData.allergies && generalHealthData.allergies.length > 0 ? generalHealthData.allergies.map((d) => ({ name: d })) : [];
+    // console.log(formattedChronicDiseases)
+  }, []);
 
 
   if(isLoading){

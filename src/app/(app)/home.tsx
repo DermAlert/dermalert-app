@@ -8,6 +8,7 @@ import { TitleText } from "@/components/TitleText";
 import { api } from "@/services/api";
 import { PatientProps } from "@/types/forms";
 import { useFocusEffect } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import { MagnifyingGlassIcon, PlusIcon } from 'phosphor-react-native';
 import { useCallback, useState } from "react";
@@ -180,12 +181,12 @@ export default function Home() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom: 70,
-              gap: 16
+              gap: 14
             }}
             onEndReached={()=> {
               if (!isLoading && hasMore) {
                 loadPatients();
-              }
+              } 
             }}
             onEndReachedThreshold={0.3}
             ListFooterComponent={() => isLoading ? <Loading /> : null}
@@ -193,6 +194,11 @@ export default function Home() {
             maxToRenderPerBatch={7}
             windowSize={5}
             ListEmptyComponent={() => !isLoading && <EmptyPatients title="Nenhum paciente encontrado" description="Não há nenhum paciente cadastrado no momento. Cadaste um novo paciente no botão abaixo." />}
+          />
+          <LinearGradient
+            colors={['rgba(255,255,255,0)', '#F5F6FA']}
+            className="absolute bottom-0 left-0 right-0 h-[20]"
+            pointerEvents="none"
           />
         </View>
 

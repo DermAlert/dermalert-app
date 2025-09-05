@@ -9,6 +9,7 @@ import { api } from '@/services/api';
 import { LesionOncoProps, LesionProps } from '@/types/forms';
 import axios from 'axios';
 
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { CaretRightIcon, FilePdfIcon, PlusIcon } from 'phosphor-react-native';
 import { useCallback, useEffect, useState } from 'react';
@@ -182,6 +183,11 @@ export default function Lesao() {
                 paddingBottom:50,
                 gap: 10
               }}
+            />
+            <LinearGradient
+              colors={['rgba(255,255,255,0)', '#F5F6FA']}
+              className="absolute bottom-0 left-0 right-0 h-[20]"
+              pointerEvents="none"
             />
         </View>
 

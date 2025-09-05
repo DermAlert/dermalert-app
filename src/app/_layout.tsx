@@ -8,6 +8,11 @@ import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import "../styles/global.css";
 
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+
 SplashScreen.preventAutoHideAsync()
 
 

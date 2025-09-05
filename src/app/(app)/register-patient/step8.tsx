@@ -23,7 +23,7 @@ export default function RegisterPatientStep8() {
   const handleNext = (data: PatientProps) => {
       if (data.terms_photos && data.terms_photos.length > 0 || images.length > 0) {
         console.log(data);
-        //updatePatientData(data);
+        updatePatientData(data);
         router.push('/(app)/register-patient/step9');
       } else {
         return;
