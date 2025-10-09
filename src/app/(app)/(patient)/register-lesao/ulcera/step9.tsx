@@ -62,7 +62,7 @@ export default function RegisterLesaoUlceraStep9() {
 
       // Envia Avaliação de Fototipo
 
-      console.log("Enviando dados");
+      console.log("Enviando dados pro calculo");
 
       const dimensionToNumber = registerLesionUlceraData.lesion_dimension === '0'? 0 :
                                   registerLesionUlceraData.lesion_dimension === '3'? 3 :
@@ -73,12 +73,13 @@ export default function RegisterLesaoUlceraStep9() {
                                   registerLesionUlceraData.lesion_dimension === '101'? 101 : 0;
 
         const dimensionValue = calcularLadoEmMM(dimensionToNumber)
+        //console.log(Math.round(dimensionValue))
 
       const scoreResponse = await api.post(
-        `/patients/${patientId}/skin-conditions/0/wounds/calculate/`,
+        `/wounds/calculate/`,
         {
-          "height_mm": dimensionValue,
-            "width_mm": dimensionValue,
+          "height_mm": Math.round(dimensionValue),
+            "width_mm": Math.round(dimensionValue),
             "wound_edges": registerLesionUlceraData.wound_edges,
             "wound_bed_tissue": registerLesionUlceraData.wound_bed_tissue,
             "depth_of_tissue_injury": registerLesionUlceraData.depth_of_tissue_injury,
@@ -116,7 +117,7 @@ export default function RegisterLesaoUlceraStep9() {
       if (axios.isAxiosError(error)) {
         console.log('STATUS:', error.response?.status);
         console.log('HEADERS:', error.response?.headers);
-        //console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
+        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
       } 
     }
   }

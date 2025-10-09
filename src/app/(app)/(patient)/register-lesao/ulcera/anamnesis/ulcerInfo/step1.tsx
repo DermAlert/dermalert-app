@@ -14,7 +14,7 @@ import Animated, {
   SlideInRight, SlideOutLeft
 } from 'react-native-reanimated';
 
-export default function UlceraUlcerInfoStep1() {
+export default function UlceraUlcerInfoEditStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   
   const { ulceraUlcerInfoData, setUlceraUlcerInfoData, updateUlceraUlcerInfoData } = useUlceraUlcerInfoForm();

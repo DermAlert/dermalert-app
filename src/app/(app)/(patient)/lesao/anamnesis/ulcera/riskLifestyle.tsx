@@ -116,7 +116,14 @@ export default function RiskLifestyleDetails() {
 
         </View>
 
-        <Button title="Editar" secondary style={{ marginTop: 24, alignSelf: "flex-start"}} full={false} iconLeft icon={<PencilSimpleLineIcon size={24} color="#4052A1" />} />
+        <Button 
+          title="Editar" 
+          secondary 
+          style={{ marginTop: 24, alignSelf: "flex-start"}} 
+          full={false} iconLeft 
+          icon={<PencilSimpleLineIcon size={24} color="#4052A1" />} 
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/ulcera/anamnesis/riskLifestyle/edit/step1')}
+        />
 
       </ScrollView>
     </Animated.View>

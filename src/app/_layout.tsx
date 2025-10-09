@@ -3,7 +3,7 @@ import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, Text } from 'react-native';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import "../styles/global.css";
@@ -13,7 +13,11 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-SplashScreen.preventAutoHideAsync()
+SplashScreen.preventAutoHideAsync();
+
+(Text as any).defaultProps = (Text as any).defaultProps || {};
+(Text as any).defaultProps.allowFontScaling = false;
+(Text as any).defaultProps.textBreakStrategy = 'simple';
 
 
 export default function Layout() {

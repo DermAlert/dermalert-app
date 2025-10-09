@@ -37,7 +37,7 @@ export default function ForgotPasswordEmail() {
       exiting={SlideOutDown} 
       className="flex-1 bg-white p-safe justify-start items-center"
     >
-      <Header title="Esqueceu a senha?" onPress={() => router.push('/(auth)/index')} />
+      <Header title="Esqueceu a senha?" onPress={() => router.push('/(auth)')} />
 
       {step1 && (
         <View className="p-8 w-full justify-start flex-1">
@@ -84,7 +84,7 @@ export default function ForgotPasswordEmail() {
 
           <TitleText title="Verifique seu e-mail" description="Enviamos um link de recuperação de senha no endereço de e-mail vinculado ao CPF informado." className="mt-8" />
           
-          <Button title="Fazer login" secondary style={{ marginTop: 32, alignSelf: "flex-start"}} full={false} onPress={() => router.push('/(auth)/index')} />
+          <Button title="Fazer login" secondary style={{ marginTop: 32, alignSelf: "flex-start"}} full={false} onPress={() => router.push('/(auth)')} />
 
           <View className="bg-warning-100 rounded-2xl flex-row p-3 mt-10 gap-2">
             <WarningCircleIcon size={24} color="#D08700" />

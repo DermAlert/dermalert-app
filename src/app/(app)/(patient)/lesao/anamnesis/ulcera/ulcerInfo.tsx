@@ -95,7 +95,7 @@ export default function UlcerInfoDetails() {
               ulcerInfo?.treated_elsewhere === 'HOSPITAL'? 'Sim, em hospital' :
               ulcerInfo?.treated_elsewhere === 'UBS'? 'Sim, na UBS' :
               ulcerInfo?.treated_elsewhere === 'OTHER'? 'Sim, em outro local' :
-              ulcerInfo?.treated_elsewhere === 'NONE'? 'não' :
+              ulcerInfo?.treated_elsewhere === 'NONE'? 'Não' :
               'Não informado'
             }
           </SummaryQuestion>
@@ -111,8 +111,14 @@ export default function UlcerInfoDetails() {
 
         </View>
 
-        <Button title="Editar" secondary style={{ marginTop: 24, alignSelf: "flex-start"}} full={false} iconLeft icon={<PencilSimpleLineIcon size={24} color="#4052A1" />} />
-
+        <Button 
+          title="Editar" 
+          secondary 
+          style={{ marginTop: 24, alignSelf: "flex-start"}} 
+          full={false} iconLeft 
+          icon={<PencilSimpleLineIcon size={24} color="#4052A1" />} 
+          onPress={()=> router.push('/(app)/(patient)/register-lesao/ulcera/anamnesis/ulcerInfo/edit/step1')}
+        />
       </ScrollView>
     </Animated.View>
   );
