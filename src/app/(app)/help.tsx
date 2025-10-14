@@ -1,10 +1,27 @@
 import Header from "@/components/Header";
 import HelpBox from "@/components/HelpBox";
 import { TitleText } from "@/components/TitleText";
-import { router } from "expo-router";
-import { View } from 'react-native';
+import { router, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
+import { BackHandler, View } from 'react-native';
 
 export default function Help() {
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.push("/(app)/home")
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   return (
     <View className="flex-1 bg-primary-50 p-safe relative">

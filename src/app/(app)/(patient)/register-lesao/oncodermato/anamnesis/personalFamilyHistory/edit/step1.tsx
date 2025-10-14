@@ -15,7 +15,7 @@ import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon, XIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { Text, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft, useAnimatedStyle,
@@ -238,6 +238,22 @@ export default function PersonalFamilyHistoryStep1() {
   useEffect(() => {
     console.log(familyHistoryData)
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        handleCancel()
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   if(isLoading){
     return (

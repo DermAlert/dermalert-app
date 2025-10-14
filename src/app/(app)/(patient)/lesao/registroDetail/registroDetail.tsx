@@ -40,8 +40,8 @@ export default function LesaoRegistroDetail() {
         setPhotos(
           lesionsResponse.data.images.map((img: LesionImagesProps) => ({
             ...img,
-            image: img.image.replace("localhost", "192.168.15.82"), // seu IP local
-            //image: img.image,
+            // image: img.image.replace("localhost", "192.168.15.82"), // seu IP local
+            image: img.image,
           }))
         );
         console.log(lesionsResponse.data);
@@ -52,8 +52,8 @@ export default function LesaoRegistroDetail() {
         setPhotos(
           lesionsResponse.data.images.map((img: LesionImagesProps) => ({
             ...img,
-            image: img.image.replace("localhost", "192.168.15.82"), // seu IP local
-            //image: img.image
+            // image: img.image.replace("localhost", "192.168.15.82"), // seu IP local
+            image: img.image
           }))
         );
         console.log(lesionsResponse.data);

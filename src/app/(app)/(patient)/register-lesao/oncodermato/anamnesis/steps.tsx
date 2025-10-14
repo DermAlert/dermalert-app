@@ -12,10 +12,10 @@ import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
 import { api } from "@/services/api";
 import axios from "axios";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
-import { View } from 'react-native';
+import { useCallback, useEffect, useState } from "react";
+import { BackHandler, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterAnamnesisOncodermato() {
@@ -230,6 +230,27 @@ export default function RegisterAnamnesisOncodermato() {
       setCancerResearch(hasData);
     }
   }, [familyHistoryData, phototypeAssessmentData, riskProtectiveFactorsData, cancerResearchData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        setFamilyHistoryData({});
+        setPhototypeAssessmentData({});
+        setRiskProtectiveFactorsData({});
+        setCancerResearchData({});
+        setLesionType(null)
+        setModalAlert(true);
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   if(isLoading){
     return (

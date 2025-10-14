@@ -27,10 +27,10 @@ export default function ModalAlert({ modalAlert, setModalAlert, description, tit
         <View className="flex-1 justify-center items-center bg-[rgba(0,0,0,0.4)] px-7">
           <View className="bg-white h-auto w-full rounded-2xl shadow-md p-8 items-center">
             <Icon iconName="WarningIcon" style={{ alignSelf: "center"}} />
-            <Text textBreakStrategy="simple" className="text-xl text-center text-neutral-900 mt-4 font-medium">{title}</Text>
+            <Text adjustsFontSizeToFit={false} allowFontScaling={false} textBreakStrategy="simple" className="text-xl text-center text-neutral-900 mt-4 font-medium">{title}</Text>
 
             {description && (
-              <Text className="text-base text-neutral-700 text-center mt-4">  {description} </Text>
+              <Text allowFontScaling={false} textBreakStrategy="simple" className="text-base text-neutral-700 text-center mt-4">  {description} </Text>
             )}
             
 
@@ -40,14 +40,14 @@ export default function ModalAlert({ modalAlert, setModalAlert, description, tit
                 onPress={handleCancel}
                 {...rest}
               >
-                <Text textBreakStrategy="simple" className="text-primary-600 text-base ">{btnYesText}</Text>
+                <Text textBreakStrategy="balanced" className="text-primary-600 text-base ">{btnYesText}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
-                className="bg-primary-600 border-primary-600 flex-grow h-[40] rounded-full justify-center items-center border"
+                className="bg-primary-600 border-primary-600 flex-grow rounded-full justify-center items-center border px-3 py-[10]"
                 onPress={() => setModalAlert(!modalAlert)}
                 {...rest}
               >
-                <Text textBreakStrategy="simple" className="text-white text-base  font-semibold">{btnNoText}</Text>
+                <Text className="text-white text-base  font-semibold">{btnNoText}</Text>
               </TouchableOpacity>
             </View>
             

@@ -11,7 +11,7 @@ import { router } from "expo-router";
 import { ArrowRightIcon, FlowerIcon, HandIcon, HeadCircuitIcon, PersonIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { Text, View } from 'react-native';
+import { BackHandler, Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
@@ -78,6 +78,22 @@ export default function RegisterLesaoOncodermatoStep1() {
     console.log(lesionType)
     console.log(openAccordion)
   }, [openAccordion]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        handleCancel()
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   return (
     <Animated.View 

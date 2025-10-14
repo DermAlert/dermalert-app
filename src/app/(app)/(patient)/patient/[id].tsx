@@ -15,7 +15,7 @@ import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import { useCallback, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { BackHandler, FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Patient() {
   const [modalLesoesVisible, setModalLesoesVisible] = useState(false);
@@ -159,6 +159,22 @@ export default function Patient() {
       updateLesionId(null);
     }, [patientId])
   );
+
+  useFocusEffect(
+      useCallback(() => {
+        const onBackPress = () => {
+          handleBack()
+          return true;
+        };
+    
+        const subscription = BackHandler.addEventListener(
+          "hardwareBackPress",
+          onBackPress
+        );
+    
+        return () => subscription.remove();
+      }, [])
+    );
 
 
 if(isLoading){

@@ -1,10 +1,27 @@
 import Header from '@/components/Header';
 import UnidadeCard from "@/components/UnidadeCard";
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { EnvelopeSimpleIcon, IdentificationCardIcon, KeyIcon, PencilSimpleLineIcon, UserIcon } from 'phosphor-react-native';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback } from 'react';
+import { BackHandler, FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MeusDados() {
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.push("/(app)/home")
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   return (
     <View className="flex-1 bg-white p-safe relative">

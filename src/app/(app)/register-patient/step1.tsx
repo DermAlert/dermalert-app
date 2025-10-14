@@ -6,11 +6,11 @@ import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextInput, View } from 'react-native';
+import { BackHandler, TextInput, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep1() {
@@ -49,6 +49,24 @@ export default function RegisterPatientStep1() {
   
     return () => clearTimeout(timeout);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        setPatientData({});
+        setImages([]);
+        setModalAlert(true);
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   useEffect(() => {
       console.log(patientData)

@@ -317,8 +317,8 @@ export default function RegisterLesaoUlceraStep9() {
           const registerLesionResponse = await api.post(
             `/patients/${patientId}/skin-conditions/${userLesionId}/wounds/`,
             {
-              "height_mm": dimensionValue,
-              "width_mm": dimensionValue,
+              "height_mm": Math.round(dimensionValue),
+              "width_mm": Math.round(dimensionValue),
               "wound_edges": registerLesionUlceraData.wound_edges,
               "wound_bed_tissue": registerLesionUlceraData.wound_bed_tissue,
               "depth_of_tissue_injury": registerLesionUlceraData.depth_of_tissue_injury,

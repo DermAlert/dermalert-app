@@ -28,7 +28,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
     <Controller {...formProps}
         render={({ field: { onChange, value } }) => (
           <>
-            <View className={`bg-white border rounded-lg flex-row justify-between p-3 items-center ${error.length > 0 ? 'border-danger-400' : focused ? 'border-primary-600' : 'border-neutral-300'}`}>
+            <View className={`bg-white border rounded-lg flex-row justify-between items-center overflow-hidden ${error.length > 0 ? 'border-danger-400' : focused ? 'border-primary-600' : 'border-neutral-300'}`}>
               <TextInput 
                 onChangeText={(text) => {
                   const formatted = onChangeTextFormat ? onChangeTextFormat(text) : text;
@@ -38,18 +38,22 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
                 ref={ref}
                 secureTextEntry={visiblePassword}
                 placeholderTextColor="#A9ADC0"
-                className="py-0 flex-1 text-base" 
+                className="py-3 px-4 flex-1 text-base text-neutral-900 bg-white" 
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 {...inputProps} 
               />
-              {icon}
+              {icon && (
+                <View className="mr-4">
+                  {icon}
+                </View>
+              )}
               {password && (
-                <TouchableOpacity onPress={()=> setvisiblePassword(!visiblePassword)}>
+                <TouchableOpacity className="h-10 w-10 mr-1 items-center justify-center" onPress={()=> setvisiblePassword(!visiblePassword)}>
                   {!visiblePassword ? (
-                    <EyeIcon size={16} color="#7D83A0" />
+                    <EyeIcon size={20} color="#7D83A0" />
                   ) : (
-                    <EyeClosedIcon size={16} color="#7D83A0" />
+                    <EyeClosedIcon size={20} color="#7D83A0" />
                   )}
                   
                 </TouchableOpacity>

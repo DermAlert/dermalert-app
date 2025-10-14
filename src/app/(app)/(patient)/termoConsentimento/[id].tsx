@@ -30,8 +30,8 @@ export default function TermoConsentimentoDetails() {
         setPhotos(
           firstTerm.images.map((img: TermsImagesProps) => ({
             ...img,
-            image: img.image.replace("localhost", "192.168.15.82"),
-            //image: img.image,
+            // image: img.image.replace("localhost", "192.168.15.82"),
+            image: img.image,
           }))
         );
       } else {

@@ -6,7 +6,7 @@ import { api } from "@/services/api";
 import { router, useFocusEffect } from "expo-router";
 import { CaretRightIcon, DiceFiveIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterLesaoSelect() {
@@ -70,6 +70,22 @@ export default function RegisterLesaoSelect() {
         await checkUlceraAnamnesisById();
       })();
     }, [patientId])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        setModalAlert(true);
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
   );
 
   useEffect(() => {

@@ -7,11 +7,11 @@ import { useUlceraUlcerInfoForm } from "@/hooks/Ulcera/useUlceraUlcerInfoForm";
 import { usePatientId } from "@/hooks/usePatientId";
 import { api } from "@/services/api";
 import { UlceraUlcerInfoProps } from "@/types/forms";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { Text, View } from 'react-native';
+import { BackHandler, Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft
@@ -89,6 +89,22 @@ export default function UlceraUlcerInfoStep1() {
   useEffect(() => {
     console.log(ulceraUlcerInfoData)
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        handleCancel()
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   if(isLoading){
     return (

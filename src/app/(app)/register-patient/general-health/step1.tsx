@@ -13,7 +13,7 @@ import { router } from "expo-router";
 import { ArrowRightIcon, XIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { Text, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   SlideInRight, SlideOutLeft, useAnimatedStyle,
@@ -209,6 +209,23 @@ useEffect(() => {
       loadChronicDiseases()
     },[])
   )
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        setGeneralHealthData({});
+        router.push('/(app)/register-patient/step9');
+        return true;
+      };
+  
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+  
+      return () => subscription.remove();
+    }, [])
+  );
 
   useEffect(() => {
     console.log(generalHealthData)
