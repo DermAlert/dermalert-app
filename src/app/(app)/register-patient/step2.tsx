@@ -11,7 +11,8 @@ import { router } from "expo-router";
 import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextInput, View } from 'react-native';
+import { InteractionManager, TextInput, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep2() {
@@ -43,14 +44,21 @@ export default function RegisterPatientStep2() {
     router.push('/(app)/home');
   }
 
+  const scrollRef = useRef<KeyboardAwareScrollView>(null);
   const inputFocus = useRef<TextInput>(null);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    const task = InteractionManager.runAfterInteractions(() => {
       inputFocus.current?.focus();
-    }, 300);
   
-    return () => clearTimeout(timeout);
+      setTimeout(() => {
+        if (inputFocus.current) {
+          scrollRef.current?.scrollToFocusedInput(inputFocus.current);
+        }
+      }, 80);
+    });
+  
+    return () => task.cancel();
   }, []);
 
   return (
@@ -71,54 +79,66 @@ export default function RegisterPatientStep2() {
 
       <Header title="Cadastrar paciente" onPress={() => setModalAlert(!modalAlert)} />
 
-      <View className="px-8 pb-6 w-full justify-start flex-1 gap-6">
+      <KeyboardAwareScrollView
+        ref={scrollRef}
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+        keyboardOpeningTime={0}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between', width: '100%' }}
+      >
 
-        <ProgressBar step={2} totalSteps={9} />
+        <View className="flex-1 px-8 justify-between w-full gap-6">
+          <ProgressBar step={2} totalSteps={9} />
 
-        <View className="flex-1">
-          <Label title="CPF" text="Informe o CPF do paciente."  />
+          <View className="flex-1">
+            <Label title="CPF" text="Informe o CPF do paciente."  />
 
-          <Input 
-            error={errors.user?.cpf?.message}
-            ref={inputFocus} 
-            formProps={{
-              control,
-              name: "user.cpf",
-              rules: {
-                required: "O CPF é obrigatório.",
-                pattern: {
-                  value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-                  message: "CPF inválido."
-                },
-                validate: value => isValidCPF(value) || "CPF inválido.",
-              }
-            }}
-            inputProps={{
-              placeholder: "CPF do paciente",
-              returnKeyType: "next",
-              maxLength: 14,
-              keyboardType: "numeric"
-            }}
-            onChangeTextFormat={formatCPF}
-          />
+            <Input 
+              error={errors.user?.cpf?.message}
+              ref={inputFocus} 
+              formProps={{
+                control,
+                name: "user.cpf",
+                rules: {
+                  required: "O CPF é obrigatório.",
+                  pattern: {
+                    value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
+                    message: "CPF inválido."
+                  },
+                  validate: value => isValidCPF(value) || "CPF inválido.",
+                }
+              }}
+              inputProps={{
+                placeholder: "CPF do paciente",
+                returnKeyType: "next",
+                maxLength: 14,
+                keyboardType: "numeric"
+              }}
+              onChangeTextFormat={formatCPF}
+            />
+          </View>
+
+          <View className="gap-4 w-full justify-start flex-row pb-6">
+            <Button title="Voltar" 
+              iconLeft 
+              secondary 
+              icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
+              onPress={()=> router.push("/(app)/register-patient/step1")} 
+              style={{ flexGrow: 1, width: '47%' }}
+            />
+            <Button title="Próximo" 
+              iconRight 
+              icon={(<ArrowRightIcon size={24} color="white" />)} 
+              onPress={handleSubmit(handleNext)} 
+              style={{ flexGrow: 1, width: '47%' }}
+            />
+          </View>
         </View>
 
-        <View className="gap-4 w-full justify-start flex-row">
-          <Button title="Voltar" 
-            iconLeft 
-            secondary 
-            icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
-            onPress={()=> router.push("/(app)/register-patient/step1")} 
-            style={{ flexGrow: 1, width: '47%' }}
-          />
-          <Button title="Próximo" 
-            iconRight 
-            icon={(<ArrowRightIcon size={24} color="white" />)} 
-            onPress={handleSubmit(handleNext)} 
-            style={{ flexGrow: 1, width: '47%' }}
-          />
-        </View>
-      </View>
+        
+      </KeyboardAwareScrollView>
+
+      
 
       
 

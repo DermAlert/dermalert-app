@@ -19,9 +19,9 @@ export default function ModalUnidades({ modalUnidadesVisible, setModalUnidadesVi
       <View className="flex-1 justify-center items-center bg-[rgba(0,0,0,0.4)] px-7">
         <View className="bg-white h-[405] w-full rounded-2xl">
           <View className="flex-row justify-between px-8 pt-8 pb-4 border-b border-neutral-300 border-solid">
-            <Text className="font-medium text-base text-neutral-900">Trocar a unidade</Text>
+            <Text allowFontScaling={false} className="font-medium text-base text-neutral-900">Trocar a unidade</Text>
             <TouchableOpacity onPress={() => setModalUnidadesVisible(!modalUnidadesVisible)}>
-              <Text className="text-primary-600 text-base font-semibold">Fechar</Text>
+              <Text allowFontScaling={false} className="text-primary-600 text-base font-semibold">Fechar</Text>
             </TouchableOpacity>
           </View>
 

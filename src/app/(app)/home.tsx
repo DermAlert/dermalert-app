@@ -168,7 +168,7 @@ export default function Home() {
             className="bg-white border border-neutral-300 rounded-lg flex-row justify-between py-3 px-4 items-center" 
             onPress={() => setModalVisible(!modalVisible)}
           >
-            <Text className="text-neutral-400 text-sm">Buscar paciente</Text> 
+            <Text allowFontScaling={false} className="text-neutral-400 text-sm">Buscar paciente</Text> 
             <MagnifyingGlassIcon size={22} color="#7D83A0" />
           </TouchableOpacity>
         </View>

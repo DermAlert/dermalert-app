@@ -10,11 +10,11 @@ export const SummaryQuestion: React.FC<SummaryQuestionProps> = ({ question, chil
   return (
     <View className="gap-2">
 
-      <Text className="text-base text-neutral-900 font-semibold">
+      <Text allowFontScaling={false} className="text-base text-neutral-900 font-semibold">
         {question}
       </Text>
 
-      <Text className="text-base text-neutral-700">
+      <Text allowFontScaling={false} className="text-base text-neutral-700">
         {children}
       </Text>
 

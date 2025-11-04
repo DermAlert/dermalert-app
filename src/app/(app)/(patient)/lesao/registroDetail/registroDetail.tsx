@@ -158,7 +158,7 @@ export default function LesaoRegistroDetail() {
             <TitleText title="Questionário ABCDE" />
 
             <View>
-              <Text className="font-bold text-neutral-900 text-base mb-2">A - Assimetria</Text>
+              <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">A - Assimetria</Text>
               <SummaryQuestion question="A lesão apresenta simetria entre suas metades?">
                 {
                   registroOnco.asymmetry === 'symmetric'? 'Sim, a lesão é simétrica (forma uniforme)' :
@@ -169,7 +169,7 @@ export default function LesaoRegistroDetail() {
             </View>
 
             <View>
-              <Text className="font-bold text-neutral-900 text-base mb-2">B - Bordas</Text>
+              <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">B - Bordas</Text>
               <SummaryQuestion question="Como são as bordas da lesão?">
                 {
                   registroOnco.border === 'regular_well_defined'? 'Regulares e bem definidas' :
@@ -180,7 +180,7 @@ export default function LesaoRegistroDetail() {
             </View>
 
             <View>
-              <Text className="font-bold text-neutral-900 text-base mb-2">C - Cor</Text>
+              <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">C - Cor</Text>
               <SummaryQuestion question="A lesão apresenta variação de cor?">
                 {
                   registroOnco.color_variation === 'single_color'? 'Uma única cor (ex: castanho claro ou escuro)' :
@@ -191,7 +191,7 @@ export default function LesaoRegistroDetail() {
             </View>
 
             <View>
-              <Text className="font-bold text-neutral-900 text-base mb-2">D - Diâmetro</Text>
+              <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">D - Diâmetro</Text>
               <SummaryQuestion question="Qual o tamanho aproximado da lesão?">
                 {
                   registroOnco.diameter === 'under_6mm'? 'Menor que 6 mm (menor que uma borracha de lápis)' :
@@ -202,7 +202,7 @@ export default function LesaoRegistroDetail() {
             </View>
 
             <View>
-              <Text className="font-bold text-neutral-900 text-base mb-2">E - Evolução</Text>
+              <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">E - Evolução</Text>
               <SummaryQuestion question="A lesão mudou ao longo do tempo?">
                 {
                   registroOnco.evolution === 'no_changes'? 'Não houve mudanças perceptíveis nos últimos meses' :
@@ -223,8 +223,8 @@ export default function LesaoRegistroDetail() {
               </View>
 
               <View>
-                <Text className="text-sm text-neutral-700">Pontuação total</Text>
-                <Text className="text-lg font-medium text-neutral-900">{registroUlcer?.total_score}</Text>
+                <Text allowFontScaling={false} className="text-sm text-neutral-700">Pontuação total</Text>
+                <Text allowFontScaling={false} className="text-lg font-medium text-neutral-900">{registroUlcer?.total_score}</Text>
               </View>
 
             </View>

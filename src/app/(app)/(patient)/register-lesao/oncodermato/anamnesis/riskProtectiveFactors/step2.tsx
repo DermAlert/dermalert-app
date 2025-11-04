@@ -73,7 +73,7 @@ export default function RiskProtectiveFactorsStep2() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={2} totalSteps={8} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">Quantas vezes ao longo da vida o paciente já teve queimaduras solares graves (com formação de bolhas)?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">Quantas vezes ao longo da vida o paciente já teve queimaduras solares graves (com formação de bolhas)?</Text>
 
         <Controller
           control={control}

@@ -8,8 +8,7 @@ import { formatCPF } from "@/utils/formatCPF";
 import { Link, router } from "expo-router";
 import { useRef } from "react";
 import { useForm } from 'react-hook-form';
-import { TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, SafeAreaView, TextInput, View } from 'react-native';
 
 
 export default function Login() {
@@ -35,68 +34,69 @@ export default function Login() {
 
   return (
     <SafeAreaView className="flex-1 bg-white p-safe justify-center items-center">
-      <View className="px-8 w-full gap-20">
-      
-        <Logo width={304} />
+      <KeyboardAvoidingView className="flex-1 justify-center w-full" behavior="padding">
+        <View className="px-8 w-full gap-20">
+        
+          <Logo width={304} />
 
-        <View className="gap-8">
-          <TitleText title="Acesse sua conta"/>
+          <View className="gap-8">
+            <TitleText title="Acesse sua conta"/>
 
-          {!isLogged && (
-            <View className="">
-              <Label title="CPF" />
+            {!isLogged && (
+              <View className="">
+                <Label title="CPF" />
+                <Input 
+                  error={errors.cpf?.message}
+                  formProps={{
+                    control,
+                    name: "cpf",
+                    rules: {
+                      required: "O CPF é obrigatório.",
+                      pattern: {
+                        value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
+                        message: "CPF inválido."
+                      }
+                    }
+                  }}
+                  inputProps={{
+                    placeholder: "Informe seu CPF",
+                    onSubmitEditing: () => passwordRef.current?.focus(),
+                    returnKeyType: "next",
+                    maxLength: 14,
+                    keyboardType: "numeric"
+                  }}
+                  onChangeTextFormat={formatCPF}
+                />
+              </View>
+            )}
+            
+            <View>
+              <Label title="Senha" />
               <Input 
-                error={errors.cpf?.message}
+                ref={passwordRef} 
+                error={errors.password?.message}
                 formProps={{
                   control,
-                  name: "cpf",
+                  name: "password",
                   rules: {
-                    required: "O CPF é obrigatório.",
-                    pattern: {
-                      value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-                      message: "CPF inválido."
-                    }
+                    required: "A senha é obrigatória."
                   }
                 }}
                 inputProps={{
-                  placeholder: "Informe seu CPF",
-                  onSubmitEditing: () => passwordRef.current?.focus(),
-                  returnKeyType: "next",
-                  maxLength: 14,
-                  keyboardType: "numeric"
+                  placeholder: "Informe sua senha",
+                  returnKeyType: "send",
+                  //secureTextEntry: true,
                 }}
-                onChangeTextFormat={formatCPF}
+                password
               />
             </View>
-          )}
-          
-          <View>
-            <Label title="Senha" />
-            <Input 
-              ref={passwordRef} 
-              error={errors.password?.message}
-              formProps={{
-                control,
-                name: "password",
-                rules: {
-                  required: "A senha é obrigatória."
-                }
-              }}
-              inputProps={{
-                placeholder: "Informe sua senha",
-                returnKeyType: "send",
-                //secureTextEntry: true,
-              }}
-              password
-            />
+            
+            <Button title="Entrar" onPress={handleSubmit(onSubmit)} />
+            <Link allowFontScaling={false} push href="/(auth)/forgot-password" className="text-primary-600 font-semibold text-base">Esqueceu a senha?</Link>
           </View>
-          
-          <Button title="Entrar" onPress={handleSubmit(onSubmit)} />
-          <Link push href="/(auth)/forgot-password" className="text-primary-600 font-semibold text-base">Esqueceu a senha?</Link>
-        </View>
 
-      </View>
-      
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

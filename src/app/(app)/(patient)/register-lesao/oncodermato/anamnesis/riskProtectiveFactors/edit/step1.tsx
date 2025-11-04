@@ -129,7 +129,7 @@ export default function RiskProtectiveFactorsEditStep1() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={8} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">Com que frequência o paciente se expõe ao sol por longos períodos?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">Com que frequência o paciente se expõe ao sol por longos períodos?</Text>
 
         <Controller
           control={control}

@@ -57,7 +57,7 @@ export default function ModalTagSearch({
       <View className="flex-row px-4 py-2 flex-wrap gap-2 border-t border-neutral-300">
         {contentList.map((item) => (
           <View key={item} className="flex-row gap-2 items-center bg-primary-100 rounded-lg px-3 py-1 h-[32px]">
-            <Text className="text-neutral-700 text-sm font-medium">{item}</Text>
+            <Text allowFontScaling={false} className="text-neutral-700 text-sm font-medium">{item}</Text>
             <TouchableOpacity onPress={() => onRemoveItem(item)}>
               <XIcon size={12} color="#7D83A0" weight="bold" />
             </TouchableOpacity>
@@ -82,7 +82,7 @@ export default function ModalTagSearch({
               className="border-t border-neutral-300 px-4 py-3 w-full"
               key={item}
             >
-              <Text className='text-neutral-900 text-base'>{item}</Text>
+              <Text allowFontScaling={false} className='text-neutral-900 text-base'>{item}</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item}

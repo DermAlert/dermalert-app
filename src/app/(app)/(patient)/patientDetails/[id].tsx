@@ -50,29 +50,29 @@ export default function PatientDetails() {
       <Header icon="back" title="Dados pessoais do paciente" onPress={()=> router.push({pathname: "/(app)/(patient)/patient/[id]", params: {id: id.toString()}})} />
 
       <View className="flex-1 mt-6">
-      <Text className="text-lg mb-4 font-medium px-4 text-neutral-900">Dados pessoais</Text>
+      <Text allowFontScaling={false} className="text-lg mb-4 font-medium px-4 text-neutral-900">Dados pessoais</Text>
 
         <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
           <UserIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
-            <Text className='text-base text-neutral-900'>{patient?.user?.name}</Text>
+            <Text allowFontScaling={false} className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{patient?.user?.name}</Text>
           </View>
         </View>
 
         <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
           <IdentificationCardIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-neutral-600 font-semibold'>CPF</Text>
-            <Text className='text-base text-neutral-900'>{formatCPF(patient?.user?.cpf || '')}</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>CPF</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{formatCPF(patient?.user?.cpf || '')}</Text>
           </View>
         </View>
 
         <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
           <GenderMaleIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-neutral-600 font-semibold'>Gênero que se identifica</Text>
-            <Text className='text-base text-neutral-900'>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>Gênero que se identifica</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>
             {
                 patient?.gender === 'M' ? 'Masculino' :
                 patient?.gender === 'F' ? 'Feminino' :
@@ -87,16 +87,16 @@ export default function PatientDetails() {
         <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
           <IdentificationBadgeIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-neutral-600 font-semibold'>Número do Cartão SUS</Text>
-            <Text className='text-base text-neutral-900'>{formatCNS(patient?.sus_number || '')}</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>Número do Cartão SUS</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{formatCNS(patient?.sus_number || '')}</Text>
           </View>
         </View>
 
         <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-4">
           <EnvelopeSimpleIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-neutral-600 font-semibold'>E-mail para retorno</Text>
-            <Text className='text-base text-neutral-900'>{patient?.user?.email}</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>E-mail para retorno</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{patient?.user?.email}</Text>
           </View>
           <TouchableOpacity 
             onPress={()=> router.push({ pathname: "/(app)/(patient)/patientDetails/patient-edit-email", params: { id }})}
@@ -109,8 +109,8 @@ export default function PatientDetails() {
         <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-5">
           <PhoneIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-neutral-600 font-semibold'>Telefone de contato</Text>
-            <Text className='text-base text-neutral-900'>{formatPhone(patient?.phone_number || '')}</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>Telefone de contato</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{formatPhone(patient?.phone_number || '')}</Text>
           </View>
           <TouchableOpacity 
             onPress={()=> router.push({pathname: "/(app)/(patient)/patientDetails/patient-edit-phone", params: { id }})}

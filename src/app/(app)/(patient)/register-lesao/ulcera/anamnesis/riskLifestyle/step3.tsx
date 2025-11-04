@@ -69,7 +69,7 @@ export default function UlceraRiskLifestyleStep3() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={3} totalSteps={5} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente fuma ou já fumou?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente fuma ou já fumou?</Text>
 
         <Controller
           control={control}

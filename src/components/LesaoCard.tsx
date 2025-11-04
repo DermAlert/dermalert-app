@@ -29,7 +29,7 @@ export default function LesaoCard({title, type, lesionId, ...rest}: LesaoCardPro
 
       <View>
 
-        <Text className='font-medium text-sm self-start mb-2 text-neutral-900'>
+        <Text allowFontScaling={false} className='font-medium text-sm self-start mb-2 text-neutral-900'>
           {
             title === 'head_neck.scalp' ? 'Couro cabeludo' :
             title === 'head_neck.forehead' ? 'Testa' :
@@ -68,7 +68,7 @@ export default function LesaoCard({title, type, lesionId, ...rest}: LesaoCardPro
         </Text>
 
         <View className={`rounded-full px-2 py-1 self-start ${type === "cancer" ? 'bg-secondary-100' : 'bg-primary-200'}`}>
-          <Text className={`text-xs font-semibold ${type === "cancer" ? 'text-secondary-700' : 'text-primary-600'}`}>
+          <Text allowFontScaling={false} className={`text-xs font-semibold ${type === "cancer" ? 'text-secondary-700' : 'text-primary-600'}`}>
             {type === "cancer" ? 'Oncodermato' : 'Úlcera venosa'}
           </Text>
         </View>

@@ -212,7 +212,7 @@ export default function GeneralHealthStep3() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={3} totalSteps={6} />
 
-        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente possui alergias?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-900 mt-6 mb-8">O paciente possui alergias?</Text>
 
         <Controller
           control={control}
@@ -242,19 +242,19 @@ export default function GeneralHealthStep3() {
                       }}
                     >
                       <View className="mx-4 mt-6">
-                          <Text className="text-neutral-900 font-semibold text-base">A quais substâncias?</Text>
+                          <Text allowFontScaling={false} className="text-neutral-900 font-semibold text-base">A quais substâncias?</Text>
                           <TouchableOpacity
                             className="border border-gray-300 rounded-lg p-3 mb-4 mt-2"
                             activeOpacity={1}
                             onPress={() => setModalSearchOpen(true)}
                           >
-                            <Text className="text-neutral-400">Especifique as substâncias</Text>
+                            <Text allowFontScaling={false} className="text-neutral-400">Especifique as substâncias</Text>
                           </TouchableOpacity>
 
                           <View className="gap-2 mb-3">
                             {allergiesList.map((item) => (
                               <View key={item} className="flex-row gap-2 items-center bg-primary-100 rounded-lg px-2 py-[6px] self-start">
-                              <Text className="w-auto max-w-[240px] text-neutral-700 text-sm font-medium">{item}</Text>
+                              <Text allowFontScaling={false} className="w-auto max-w-[240px] text-neutral-700 text-sm font-medium">{item}</Text>
                               <TouchableOpacity onPress={() => removeItemFromList(item)}>
                                 <XIcon size={12} color="#7D83A0" weight="bold" />
                               </TouchableOpacity>

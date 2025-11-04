@@ -51,7 +51,7 @@ export default function Accordion({ title, isOpen, onToggle, children, icon, ind
     <View className="gap-2">
       <TouchableOpacity className={containerStyle} onPress={onToggle}>
         {leftIcon}
-        <Text className="text-neutral-700 text-base flex-1">{title}</Text>
+        <Text allowFontScaling={false} className="text-neutral-700 text-base flex-1">{title}</Text>
         {rightIcon}
       </TouchableOpacity>
       

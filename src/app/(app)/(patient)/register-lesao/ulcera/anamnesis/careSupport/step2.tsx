@@ -69,7 +69,7 @@ export default function UlceraCareSupportStep2() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={2} totalSteps={3} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente tem ajuda para cuidar da ferida em casa?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente tem ajuda para cuidar da ferida em casa?</Text>
 
         <Controller
           control={control}

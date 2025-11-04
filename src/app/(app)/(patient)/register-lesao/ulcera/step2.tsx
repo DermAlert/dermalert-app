@@ -78,8 +78,8 @@ export default function RegisterLesaoUlceraStep2() {
         <View className="flex-row items-start justify-start mt-8 gap-3 rounded-2xl p-3 bg-information-100">
           <InfoIcon size={24} color="#0084D1" />
           <View>
-            <Text className="text-information-800 font-semibold text-base">Como coletar imagens?</Text>
-            <Text className="text-information-800 text-sm">Saiba como utilizar o dermatoscopio</Text>
+            <Text allowFontScaling={false} className="text-information-800 font-semibold text-base">Como coletar imagens?</Text>
+            <Text allowFontScaling={false} className="text-information-800 text-sm">Saiba como utilizar o dermatoscopio</Text>
           </View>
         </View>
 

@@ -476,8 +476,8 @@ export default function RegisterLesaoUlceraStep9() {
           </View>
 
           <View>
-            <Text className="text-sm text-neutral-700">Pontuação total</Text>
-            <Text className="text-lg font-medium text-neutral-900">{resvechScore?.total_score}</Text>
+            <Text allowFontScaling={false} className="text-sm text-neutral-700">Pontuação total</Text>
+            <Text allowFontScaling={false} className="text-lg font-medium text-neutral-900">{resvechScore?.total_score}</Text>
           </View>
 
         </View>
@@ -497,7 +497,7 @@ export default function RegisterLesaoUlceraStep9() {
               }
             </SummaryQuestion>
             <View className="py-[6px] px-2 rounded-lg bg-success-100 self-start mt-2">
-              <Text className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.lesion_dimension_points} pontos</Text>
+              <Text allowFontScaling={false} className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.lesion_dimension_points} pontos</Text>
             </View>
           </View>
 
@@ -513,7 +513,7 @@ export default function RegisterLesaoUlceraStep9() {
               }
             </SummaryQuestion>
             <View className="py-[6px] px-2 rounded-lg bg-success-100 self-start mt-2">
-              <Text className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.depth_points} pontos</Text>
+              <Text allowFontScaling={false} className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.depth_points} pontos</Text>
             </View>
           </View>
 
@@ -529,7 +529,7 @@ export default function RegisterLesaoUlceraStep9() {
               }
             </SummaryQuestion>
             <View className="py-[6px] px-2 rounded-lg bg-success-100 self-start mt-2">
-              <Text className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.edges_points} pontos</Text>
+              <Text allowFontScaling={false} className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.edges_points} pontos</Text>
             </View>
           </View>
 
@@ -545,7 +545,7 @@ export default function RegisterLesaoUlceraStep9() {
               }
             </SummaryQuestion>
             <View className="py-[6px] px-2 rounded-lg bg-success-100 self-start mt-2">
-              <Text className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.bed_tissue_points} pontos</Text>
+              <Text allowFontScaling={false} className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.bed_tissue_points} pontos</Text>
             </View>
           </View>
 
@@ -561,7 +561,7 @@ export default function RegisterLesaoUlceraStep9() {
             }
             </SummaryQuestion>
             <View className="py-[6px] px-2 rounded-lg bg-success-100 self-start mt-2">
-              <Text className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.exudate_points} pontos</Text>
+              <Text allowFontScaling={false} className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.exudate_points} pontos</Text>
             </View>
           </View>
 
@@ -570,7 +570,7 @@ export default function RegisterLesaoUlceraStep9() {
             { registerLesionUlceraData?.inflamacao && registerLesionUlceraData?.inflamacao?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name).join(', ')}
             </SummaryQuestion>
             <View className="py-[6px] px-2 rounded-lg bg-success-100 self-start mt-2">
-              <Text className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.infection_flags_points} pontos</Text>
+              <Text allowFontScaling={false} className="text-success-700 font-semibold text-xs">+ {resvechScore?.breakdown?.infection_flags_points} pontos</Text>
             </View>
           </View>
         </View>

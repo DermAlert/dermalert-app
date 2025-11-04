@@ -74,7 +74,7 @@ export default function RegisterLesaoUlceraStep3() {
         <ProgressBar step={3} totalSteps={9} />
 
         <TitleText title="RESVECH" description="Dimensão da lesão"/>
-        <Text className="text-sm text-neutral-700 mb-6">(0-6 pontos)</Text>
+        <Text allowFontScaling={false} className="text-sm text-neutral-700 mb-6">(0-6 pontos)</Text>
 
 
         <Controller

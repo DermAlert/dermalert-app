@@ -40,8 +40,8 @@ export default function PatientCard({name, cpf, id, ...rest}: PatientCardProps) 
       </View>
 
       <View>
-        <Text className='font-semibold text-base text-neutral-900'>{name}</Text>
-        <Text className='text-sm mt-1 text-neutral-600'>{formatCPF(cpf)}</Text>
+        <Text allowFontScaling={false} className='font-semibold text-base text-neutral-900'>{name}</Text>
+        <Text allowFontScaling={false} className='text-sm mt-1 text-neutral-600'>{formatCPF(cpf)}</Text>
       </View>
     </TouchableOpacity>
   )

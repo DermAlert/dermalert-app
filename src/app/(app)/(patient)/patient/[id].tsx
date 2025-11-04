@@ -203,8 +203,8 @@ if(isLoading){
               onPress={()=> patient?.user?.id && router.push({ pathname: "/(app)/(patient)/patientDetails/[id]", params: { id: patient.user.id.toString() } })}
             >
               <View className="flex-1">
-                <Text className='text-base font-semibold text-neutral-900'>{patient?.user?.name}</Text>
-                <Text className='text-sm text-neutral-600 mt-1'>{formatCPF(patient?.user?.cpf || '')}</Text>
+                <Text allowFontScaling={false} className='text-base font-semibold text-neutral-900'>{patient?.user?.name}</Text>
+                <Text allowFontScaling={false} className='text-sm text-neutral-600 mt-1'>{formatCPF(patient?.user?.cpf || '')}</Text>
               </View>
               <CaretRightIcon size={16} color="#7D83A0" />
             </TouchableOpacity>
@@ -217,7 +217,7 @@ if(isLoading){
                 onPress={()=> router.push("/(app)/(patient)/GeneralHealth/[id]")}
               >
                 <ClipboardTextIcon size={24} color="#6775B4" />
-                <Text className='text-base text-neutral-900 flex-1'>Antecedentes clínicos</Text>
+                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Antecedentes clínicos</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -231,7 +231,7 @@ if(isLoading){
                 onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/[id]", params: { id: patientId || "" }})}
               >
                 <ScrollIcon size={24} color="#6775B4" />
-                <Text className='text-base text-neutral-900 flex-1'>Termo de consentimento</Text>
+                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Termo de consentimento</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -245,7 +245,7 @@ if(isLoading){
                 onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/anamnesisDetails')}
               >
                 <ListDashesIcon size={24} color="#6775B4" />
-                <Text className='text-base text-neutral-900 flex-1'>Anamnese Oncodermato</Text>
+                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Anamnese Oncodermato</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -258,7 +258,7 @@ if(isLoading){
                 onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/ulcera/anamnesisDetails')}
               >
                 <ListDashesIcon size={24} color="#6775B4" />
-                <Text className='text-base text-neutral-900 flex-1'>Anamnese Úlcera Venosa</Text>
+                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Anamnese Úlcera Venosa</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -268,7 +268,7 @@ if(isLoading){
 
         
         <View className="flex-row justify-between items-center">
-          <Text className="text-xl mb-4 font-semibold mt-8 text-neutral-900">Lesões registradas</Text>
+          <Text allowFontScaling={false} className="text-xl mb-4 font-semibold mt-8 text-neutral-900">Lesões registradas</Text>
           {/* <TouchableOpacity 
             className="w-10 h-10 justify-center items-center"
             onPress={() => setModalLesoesVisible(!modalLesoesVisible)}

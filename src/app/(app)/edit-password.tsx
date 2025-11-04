@@ -159,23 +159,23 @@ export default function EditPassword() {
 
           
           <View>
-            <Text className="text-sm mb-2 font-medium text-neutral-600 mt-4">A senha deve conter:</Text>
+            <Text allowFontScaling={false} className="text-sm mb-2 font-medium text-neutral-600 mt-4">A senha deve conter:</Text>
 
             <View className="flex-row gap-2 items-center mb-2">
               <CheckIcon size={18} color="#D4D6DF" />
-              <Text className="text-sm text-neutral-600">Mínimo de 8 caracteres</Text>
+              <Text allowFontScaling={false} className="text-sm text-neutral-600">Mínimo de 8 caracteres</Text>
             </View>
             <View className="flex-row gap-2 items-center mb-2">
               <CheckIcon size={18} color="#D4D6DF" />
-              <Text className="text-sm text-neutral-600">Pelo menos 1 letra maiúscula</Text>
+              <Text allowFontScaling={false} className="text-sm text-neutral-600">Pelo menos 1 letra maiúscula</Text>
             </View>
             <View className="flex-row gap-2 items-center mb-2">
               <CheckIcon size={18} color="#D4D6DF" />
-              <Text className="text-sm text-neutral-600">Pelo menos 1 número</Text>
+              <Text allowFontScaling={false} className="text-sm text-neutral-600">Pelo menos 1 número</Text>
             </View>
             <View className="flex-row gap-2 items-center">
               <CheckIcon size={18} color="#D4D6DF" />
-              <Text className="text-sm text-neutral-600">Pelo menos 1 caractere especial (@, #, $, etc.)</Text>
+              <Text allowFontScaling={false} className="text-sm text-neutral-600">Pelo menos 1 caractere especial (@, #, $, etc.)</Text>
             </View>
           </View>
           

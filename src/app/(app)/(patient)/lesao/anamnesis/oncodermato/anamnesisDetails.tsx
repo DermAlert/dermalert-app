@@ -66,14 +66,14 @@ export default function OncodermatoAnamnesisDetails() {
 
         <TouchableOpacity 
           activeOpacity={0.7} 
-          className="flex-row items-center justify-between rounded-lg px-4 h-[85] shadow-sm shadow-neutral-900 bg-white gap-4"
+          className="flex-row items-center justify-between rounded-lg py-6 px-4 shadow-sm shadow-neutral-900 bg-white gap-4"
           onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/personalFamilyHistory')}
         >
           <View className={`justify-center items-center rounded-lg h-10 w-10 bg-secondary-100`}>
             <ListDashesIcon size={24} color="#FF765E" />
           </View>
           <View className="flex-1">
-            <Text className="text-base text-neutral-900">Histórico Familiar e Pessoal de Câncer de Pele</Text>
+            <Text allowFontScaling={false} className="text-base text-neutral-900">Histórico Familiar e Pessoal de Câncer de Pele</Text>
           </View>          
           <CaretRightIcon size={18} color="#7D83A0" weight="bold" />
         </TouchableOpacity>
@@ -81,15 +81,15 @@ export default function OncodermatoAnamnesisDetails() {
 
         <TouchableOpacity 
           activeOpacity={0.7} 
-          className="flex-row items-center justify-between rounded-lg px-4 h-[85] shadow-sm shadow-neutral-900 bg-white gap-4"
+          className="flex-row items-center justify-between rounded-lg px-4 py-6 shadow-sm shadow-neutral-900 bg-white gap-4"
           onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/phototypeAssessment')}
         >
           <View className={`justify-center items-center rounded-lg h-10 w-10 bg-secondary-100`}>
             <ListDashesIcon size={24} color="#FF765E" />
           </View>
           <View className="flex-1">
-            <Text className="text-base text-neutral-900">Avaliação de Fototipo</Text>
-            <Text className="text-sm">Fototipo {phototype?.phototype}, Pontuação {phototype?.score}</Text>
+            <Text allowFontScaling={false} className="text-base text-neutral-900">Avaliação de Fototipo</Text>
+            <Text allowFontScaling={false} className="text-sm">Fototipo {phototype?.phototype}, Pontuação {phototype?.score}</Text>
           </View>          
           <CaretRightIcon size={18} color="#7D83A0" weight="bold" />
         </TouchableOpacity>
@@ -97,14 +97,14 @@ export default function OncodermatoAnamnesisDetails() {
 
         <TouchableOpacity 
           activeOpacity={0.7} 
-          className="flex-row items-center justify-between rounded-lg px-4 h-[85] shadow-sm shadow-neutral-900 bg-white gap-4"
+          className="flex-row items-center justify-between rounded-lg px-4 py-6 shadow-sm shadow-neutral-900 bg-white gap-4"
           onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/riskProtectiveFactors')}
         >
           <View className={`justify-center items-center rounded-lg h-10 w-10 bg-secondary-100`}>
             <ListDashesIcon size={24} color="#FF765E" />
           </View>
           <View className="flex-1">
-            <Text className="text-base text-neutral-900">Fatores de Risco e Proteção para Câncer de Pele</Text>
+            <Text allowFontScaling={false} className="text-base text-neutral-900">Fatores de Risco e Proteção para Câncer de Pele</Text>
           </View>          
           <CaretRightIcon size={18} color="#7D83A0" weight="bold" />
         </TouchableOpacity>
@@ -112,14 +112,14 @@ export default function OncodermatoAnamnesisDetails() {
 
         <TouchableOpacity 
           activeOpacity={0.7} 
-          className="flex-row items-center justify-between rounded-lg px-4 h-[85] shadow-sm shadow-neutral-900 bg-white gap-4"
+          className="flex-row items-center justify-between rounded-lg px-4 py-6 shadow-sm shadow-neutral-900 bg-white gap-4"
           onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/cancerResearch')}
         >
           <View className={`justify-center items-center rounded-lg h-10 w-10 bg-secondary-100`}>
             <ListDashesIcon size={24} color="#FF765E" />
           </View>
           <View className="flex-1">
-            <Text className="text-base text-neutral-900">Investigação de Câncer de Pele e Lesões Suspeitas</Text>
+            <Text allowFontScaling={false} className="text-base text-neutral-900">Investigação de Câncer de Pele e Lesões Suspeitas</Text>
           </View>          
           <CaretRightIcon size={18} color="#7D83A0" weight="bold" />
         </TouchableOpacity>

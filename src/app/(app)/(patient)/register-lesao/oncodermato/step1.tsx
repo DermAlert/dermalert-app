@@ -107,7 +107,7 @@ export default function RegisterLesaoOncodermatoStep1() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={8} />
 
-        <Text className="text-base text-neutral-900 my-8">Informe o local da lesão</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-900 my-8">Informe o local da lesão</Text>
 
         <Controller
           control={control}

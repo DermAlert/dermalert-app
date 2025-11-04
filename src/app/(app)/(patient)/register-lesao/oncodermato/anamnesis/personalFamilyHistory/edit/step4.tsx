@@ -222,7 +222,7 @@ export default function PersonalFamilyHistoryEditStep4() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={4} totalSteps={5} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente já passou por tratamento para lesões na pele?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente já passou por tratamento para lesões na pele?</Text>
 
         <Controller
           control={control}
@@ -251,7 +251,7 @@ export default function PersonalFamilyHistoryEditStep4() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <Text className="px-0 mt-5 text-neutral-900 text-base">Qual foi o tratamento?</Text>
+                      <Text allowFontScaling={false} className="px-0 mt-5 text-neutral-900 text-base">Qual foi o tratamento?</Text>
                       {["Cirurgia", "Crioterapia", "Radioterapia", "Outros"].map(item => (
                         <CheckButton
                           key={item}
@@ -296,19 +296,19 @@ export default function PersonalFamilyHistoryEditStep4() {
 
                       {isOtherOpen && (
                         <View className="mx-4 mt-2">
-                          <Text className="text-neutral-700 text-base">Especifique</Text>
+                          <Text allowFontScaling={false} className="text-neutral-700 text-base">Especifique</Text>
                           <TouchableOpacity
                             className="border border-neutral-300 rounded-lg p-4 mb-4 mt-2"
                             activeOpacity={1}
                             onPress={() => setModalSearchOpen(true)}
                           >
-                            <Text className="text-neutral-400">Ex.:</Text>
+                            <Text allowFontScaling={false} className="text-neutral-400">Ex.:</Text>
                           </TouchableOpacity>
 
                           <View className="gap-2">
                             {treatmentsList.map((item) => (
                               <View key={item} className="flex-row gap-2 items-center bg-primary-100 rounded-lg px-2 py-[6px] self-start">
-                              <Text className="w-auto max-w-[240px] text-neutral-700 text-sm font-medium">{item}</Text>
+                              <Text allowFontScaling={false} className="w-auto max-w-[240px] text-neutral-700 text-sm font-medium">{item}</Text>
                               <TouchableOpacity onPress={() => removeItemFromList(item)}>
                                 <XIcon size={12} color="#7D83A0" weight="bold" />
                               </TouchableOpacity>

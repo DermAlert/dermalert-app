@@ -20,8 +20,8 @@ export default function HelpBox({ iconName, title, description, ...rest }: HelpP
         <IconComponent size={30} color="#FF765E" />
       </View>
 
-      <Text className="font-semibold text-neutral-800 mt-4">{title}</Text>
-      <Text className="text-neutral-600 text-sm mt-1">{description}</Text>
+      <Text allowFontScaling={false} className="font-semibold text-neutral-800 mt-4">{title}</Text>
+      <Text allowFontScaling={false} className="text-neutral-600 text-sm mt-1">{description}</Text>
     </TouchableOpacity>
   );
 }

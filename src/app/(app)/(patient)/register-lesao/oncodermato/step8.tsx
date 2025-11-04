@@ -312,7 +312,7 @@ export default function RegisterLesaoOncodermatoStep8() {
         
         <View className="gap-8 my-8">
           <View>
-            <Text className="font-bold text-neutral-900 text-base mb-2">A - Assimetria</Text>
+            <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">A - Assimetria</Text>
             <SummaryQuestion question="A lesão apresenta simetria entre suas metades?">
               {
                 registerLesionData.asymmetry === 'symmetric'? 'Sim, a lesão é simétrica (forma uniforme)' :
@@ -323,7 +323,7 @@ export default function RegisterLesaoOncodermatoStep8() {
           </View>
 
           <View>
-            <Text className="font-bold text-neutral-900 text-base mb-2">B - Bordas</Text>
+            <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">B - Bordas</Text>
             <SummaryQuestion question="Como são as bordas da lesão?">
               {
                 registerLesionData.border === 'regular_well_defined'? 'Regulares e bem definidas' :
@@ -334,7 +334,7 @@ export default function RegisterLesaoOncodermatoStep8() {
           </View>
 
           <View>
-            <Text className="font-bold text-neutral-900 text-base mb-2">C - Cor</Text>
+            <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">C - Cor</Text>
             <SummaryQuestion question="A lesão apresenta variação de cor?">
               {
                 registerLesionData.color_variation === 'single_color'? 'Uma única cor (ex: castanho claro ou escuro)' :
@@ -345,7 +345,7 @@ export default function RegisterLesaoOncodermatoStep8() {
           </View>
 
           <View>
-            <Text className="font-bold text-neutral-900 text-base mb-2">D - Diâmetro</Text>
+            <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">D - Diâmetro</Text>
             <SummaryQuestion question="Qual o tamanho aproximado da lesão?">
               {
                 registerLesionData.diameter === 'under_6mm'? 'Menor que 6 mm (menor que uma borracha de lápis)' :
@@ -356,7 +356,7 @@ export default function RegisterLesaoOncodermatoStep8() {
           </View>
 
           <View>
-            <Text className="font-bold text-neutral-900 text-base mb-2">E - Evolução</Text>
+            <Text allowFontScaling={false} className="font-bold text-neutral-900 text-base mb-2">E - Evolução</Text>
             <SummaryQuestion question="A lesão mudou ao longo do tempo?">
               {
                 registerLesionData.evolution === 'no_changes'? 'Não houve mudanças perceptíveis nos últimos meses' :

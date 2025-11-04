@@ -69,7 +69,7 @@ export default function UlceraFamilyHistoryEditStep2() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={2} totalSteps={3} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">Alguém na família do paciente tem varizes importantes ou problemas circulatórios?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">Alguém na família do paciente tem varizes importantes ou problemas circulatórios?</Text>
 
         <Controller
           control={control}

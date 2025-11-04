@@ -112,7 +112,7 @@ export default function RegisterLesaoSelect() {
 
       <View className="px-8 py-6 w-full justify-start flex-1">
 
-        <Text className="text-base text-neutral-900 mb-8">Escolha o tipo de lesão que deseja registrar</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-900 mb-8">Escolha o tipo de lesão que deseja registrar</Text>
 
         <View className="gap-3">
           <TouchableOpacity 
@@ -134,8 +134,8 @@ export default function RegisterLesaoSelect() {
             </View>
             
             <View className="flex-1">
-              <Text className="text-base text-neutral-900 font-semibold">Oncodermato</Text>
-              <Text className="text-sm text-neutral-700">Registrar lesão oncodermato</Text>
+              <Text allowFontScaling={false} className="text-base text-neutral-900 font-semibold">Oncodermato</Text>
+              <Text allowFontScaling={false} className="text-sm text-neutral-700">Registrar lesão oncodermato</Text>
             </View>
 
             <CaretRightIcon size={20} color="#7D83A0" />
@@ -161,8 +161,8 @@ export default function RegisterLesaoSelect() {
               <DiceFiveIcon size={24} color="#6775B4" />
             </View>
             <View className="flex-1">
-              <Text className="text-base text-neutral-900 font-semibold">Úlcera venosa</Text>
-              <Text className="text-sm text-neutral-700">Registrar lesão úlcera venosa</Text>
+              <Text allowFontScaling={false} className="text-base text-neutral-900 font-semibold">Úlcera venosa</Text>
+              <Text allowFontScaling={false} className="text-sm text-neutral-700">Registrar lesão úlcera venosa</Text>
             </View>
 
             <CaretRightIcon size={20} color="#7D83A0" />

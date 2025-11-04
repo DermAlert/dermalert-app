@@ -32,7 +32,7 @@ export default function PhotoCard({image, isDeletable = false, isOncodermato = f
         contentPosition="top"
       />
       <View className="bg-primary-800 absolute bottom-4 w-[73] py-1 rounded-xs justify-center items-center">
-        <Text className="text-white text-sm font-semibold">Visualizar</Text>
+        <Text allowFontScaling={false} className="text-white text-sm font-semibold">Visualizar</Text>
       </View>
     </TouchableOpacity>
   )

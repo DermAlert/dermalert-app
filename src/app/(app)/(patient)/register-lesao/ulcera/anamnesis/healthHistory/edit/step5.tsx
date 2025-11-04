@@ -69,7 +69,7 @@ export default function UlceraHealthHistoryEditStep5() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={6} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente usa ou já usou meias de compressão?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente usa ou já usou meias de compressão?</Text>
 
         <Controller
           control={control}

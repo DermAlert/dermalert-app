@@ -73,7 +73,7 @@ export default function PhototypeAssessmentStep6() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={6} totalSteps={8} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">A pele do paciente bronzeia?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">A pele do paciente bronzeia?</Text>
 
         <Controller
           control={control}

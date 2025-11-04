@@ -73,7 +73,7 @@ export default function CancerResearchEditStep3() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={3} totalSteps={6} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">Há quanto tempo o paciente notou essas alterações?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">Há quanto tempo o paciente notou essas alterações?</Text>
 
         <Controller
           control={control}

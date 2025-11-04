@@ -75,7 +75,7 @@ export default function RegisterPatientStep5() {
         <ProgressBar step={5} totalSteps={9} />
 
         <View className="flex-1 gap-8">
-          <Text className="text-base text-neutral-700">Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa.</Text>
+          <Text allowFontScaling={false} className="text-base text-neutral-700">Ao informar os dados de contato, o paciente concorda que poderá ser contatado a partir deles para receber informações sobre a pesquisa.</Text>
 
           <View>
             <Label title="E-mail para retorno" text="Endereço de e-mail para contatar o paciente"/>
@@ -102,7 +102,7 @@ export default function RegisterPatientStep5() {
           </View>
 
           <View>
-            <Text className="text-base mb-2 text-neutral-900 font-semibold">Telefone de contato <Text className="text-base text-neutral-700 mb-2 font-normal">(Opcional)</Text></Text>
+            <Text allowFontScaling={false} className="text-base mb-2 text-neutral-900 font-semibold">Telefone de contato <Text allowFontScaling={false} className="text-base text-neutral-700 mb-2 font-normal">(Opcional)</Text></Text>
 
             <Input 
               error={errors.phone_number?.message}

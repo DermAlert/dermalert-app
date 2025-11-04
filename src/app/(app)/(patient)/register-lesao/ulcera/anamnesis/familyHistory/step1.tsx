@@ -85,7 +85,7 @@ export default function UlceraFamilyHistoryStep1() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={3} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">Alguém na família do paciente tem ou teve úlceras nas pernas?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">Alguém na família do paciente tem ou teve úlceras nas pernas?</Text>
 
         <Controller
           control={control}

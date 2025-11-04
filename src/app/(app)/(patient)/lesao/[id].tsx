@@ -88,7 +88,7 @@ export default function Lesao() {
               className="flex-row justify-start p-4 items-center gap-5"
             >
               <View className="flex-1">
-                <Text className='text-base font-semibold text-neutral-900 mb-1'>
+                <Text allowFontScaling={false} className='text-base font-semibold text-neutral-900 mb-1'>
                   {
                     lesion.location === 'head_neck.scalp' ? 'Couro cabeludo' :
                     lesion.location === 'head_neck.forehead' ? 'Testa' :
@@ -126,7 +126,7 @@ export default function Lesao() {
                   }
                 </Text>
                 <View className={`rounded-full px-2 py-1 self-start ${type === "cancer" ? 'bg-secondary-200' : 'bg-primary-200'}`}>
-                  <Text className={`text-xs font-semibold ${type === "cancer" ? 'text-secondary-700' : 'text-primary-600'}`}>
+                  <Text allowFontScaling={false} className={`text-xs font-semibold ${type === "cancer" ? 'text-secondary-700' : 'text-primary-600'}`}>
                     {type === "cancer" ? 'Oncodermato' : 'Úlcera venosa'}
                   </Text>
                 </View>
@@ -139,7 +139,7 @@ export default function Lesao() {
               className="flex-row justify-start px-4 py-[10] items-center gap-5"
             >
               <FilePdfIcon size={24} color="#6775B4" />
-              <Text className='text-base text-neutral-900 flex-1'>Gerar PDF</Text>
+              <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Gerar PDF</Text>
               <CaretRightIcon size={16} color="#7D83A0" />
             </TouchableOpacity>
           </View>
@@ -151,7 +151,7 @@ export default function Lesao() {
                 onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/anamnesisDetails')}
               >
                 <FilePdfIcon size={24} color="#6775B4" />
-                <Text className='text-base text-neutral-900 flex-1'>Anamnese Oncodermato</Text>
+                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Anamnese Oncodermato</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             )
@@ -161,7 +161,7 @@ export default function Lesao() {
                 onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/ulcera/anamnesisDetails')}
               >
                 <FilePdfIcon size={24} color="#6775B4" />
-                <Text className='text-base text-neutral-900 flex-1'>Anamnese Úlcera Venosa</Text>
+                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Anamnese Úlcera Venosa</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             )}
@@ -171,7 +171,7 @@ export default function Lesao() {
         </View>
 
         
-        <Text className="text-xl mb-4 font-semibold mt-8 text-neutral-900">Histórico de registros</Text>
+        <Text allowFontScaling={false} className="text-xl mb-4 font-semibold mt-8 text-neutral-900">Histórico de registros</Text>
 
         <View className="flex-1">
           <FlatList

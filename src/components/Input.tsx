@@ -37,6 +37,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
                 value={value}
                 ref={ref}
                 secureTextEntry={visiblePassword}
+                allowFontScaling={false}
                 placeholderTextColor="#A9ADC0"
                 className="py-3 px-4 flex-1 text-base text-neutral-900 bg-white" 
                 onFocus={() => setFocused(true)}
@@ -61,7 +62,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
             </View>
             {
               error.length > 0 &&
-              <Text className="text-danger-700 mt-2 text-xs font-semibold tracking-wide">
+              <Text allowFontScaling={false} className="text-danger-700 mt-2 text-xs font-semibold tracking-wide">
                 {error}
               </Text>
             }

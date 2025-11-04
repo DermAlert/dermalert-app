@@ -135,7 +135,7 @@ export default function RegisterPatientStep4() {
                     }}
                   >
                     <View className="p-4">
-                      <Text className="mb-2 text-neutral-900 font-semibold">Especifique</Text>
+                      <Text allowFontScaling={false} className="mb-2 text-neutral-900 font-semibold">Especifique</Text>
                       <Input
                         error={errors.other_gender?.message}
                         formProps={{

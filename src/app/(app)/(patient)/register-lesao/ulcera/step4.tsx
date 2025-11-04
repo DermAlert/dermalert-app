@@ -74,7 +74,7 @@ export default function RegisterLesaoUlceraStep4() {
         <ProgressBar step={4} totalSteps={9} />
 
         <TitleText title="RESVECH" description="Profundidade do tecido atingido"/>
-        <Text className="text-sm text-neutral-700 mb-6">(0-4 pontos)</Text>
+        <Text allowFontScaling={false} className="text-sm text-neutral-700 mb-6">(0-4 pontos)</Text>
 
 
         <Controller

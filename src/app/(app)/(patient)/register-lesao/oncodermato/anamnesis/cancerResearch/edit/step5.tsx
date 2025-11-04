@@ -99,7 +99,7 @@ export default function CancerResearchEditStep5() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={6} />
 
-        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente já procurou um médico para avaliar essas lesões?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-900 mt-6 mb-8">O paciente já procurou um médico para avaliar essas lesões?</Text>
 
         <Controller
           control={control}
@@ -130,7 +130,7 @@ export default function CancerResearchEditStep5() {
                       }}
                     >
                       <View className="mx-4 mt-6 mb-6">
-                          <Text className="text-neutral-900 font-semibold text-base mb-2">Qual foi o diagnóstico?</Text>
+                          <Text allowFontScaling={false} className="text-neutral-900 font-semibold text-base mb-2">Qual foi o diagnóstico?</Text>
                           
                           <Input 
                             error={errors.diagnosis?.message}

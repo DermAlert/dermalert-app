@@ -71,7 +71,7 @@ export default function GeneralHealthStep5() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={5} totalSteps={6} />
 
-        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente pratica atividade física regularmente com alguma frequencia? </Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-900 mt-6 mb-8">O paciente pratica atividade física regularmente com alguma frequencia? </Text>
 
         <Controller
           control={control}

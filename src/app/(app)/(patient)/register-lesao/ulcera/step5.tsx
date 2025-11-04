@@ -74,7 +74,7 @@ export default function RegisterLesaoUlceraStep5() {
         <ProgressBar step={5} totalSteps={9} />
 
         <TitleText title="RESVECH" description="Bordos"/>
-        <Text className="text-sm text-neutral-700 mb-6">(0-4 pontos)</Text>
+        <Text allowFontScaling={false} className="text-sm text-neutral-700 mb-6">(0-4 pontos)</Text>
 
 
         <Controller

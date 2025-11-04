@@ -11,7 +11,7 @@ export default function AddPhotoButton({...rest }: TouchableOpacityProps) {
       {...rest}
     >
       <CameraPlusIcon size={30} color="#6775B4" />
-      <Text className="text-sm mt-1 text-center text-neutral-900">Adicionar imagem</Text>
+      <Text allowFontScaling={false} className="text-sm mt-1 text-center text-neutral-900">Adicionar imagem</Text>
     </TouchableOpacity>
   )
 }

@@ -39,11 +39,11 @@ export default function LesaoRegistroCard({ lesionType, registroId, imagesNumber
 
       <View>
 
-        <Text className='font-medium text-sm mb-1 text-neutral-900'>
+        <Text allowFontScaling={false} className='font-medium text-sm mb-1 text-neutral-900'>
           Registro de {lesionDate ? formatDateFromApi(lesionDate) : 'Data não disponível'}
         </Text>
 
-        <Text className='text-xs font-semibold text-neutral-700'>
+        <Text allowFontScaling={false} className='text-xs font-semibold text-neutral-700'>
           {imagesNumber && imagesNumber > 1 ? `${imagesNumber} imagens` : `${imagesNumber} imagem`}
         </Text>
         

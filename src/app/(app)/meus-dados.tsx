@@ -29,29 +29,29 @@ export default function MeusDados() {
       <Header icon="back" title="Meus dados" onPress={()=> router.push("/(app)/home")} />
 
       <View className="flex-1">
-        <Text className="text-lg mb-4 font-medium px-4 mt-6 text-neutral-900">Dados pessoais</Text>
+        <Text allowFontScaling={false} className="text-lg mb-4 font-medium px-4 mt-6 text-neutral-900">Dados pessoais</Text>
 
         <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
           <UserIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
-            <Text className='text-base text-neutral-900'>Paulo Henrique Gusmão</Text>
+            <Text allowFontScaling={false} className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>Paulo Henrique Gusmão</Text>
           </View>
         </View>
         
         <View className="border-b border-neutral-300 flex-row justify-start px-4 py-3 items-center gap-4">
           <IdentificationCardIcon size={24} color="#6775B4" />
           <View>
-            <Text className='text-xs text-neutral-600 font-semibold'>CPF</Text>
-            <Text className='text-base text-neutral-900'>123.456.789-12</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>CPF</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>123.456.789-12</Text>
           </View>
         </View>
 
         <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-4">
           <EnvelopeSimpleIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-neutral-600 font-semibold'>E-mail</Text>
-            <Text className='text-base text-neutral-900'>paulohg@email.com</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>E-mail</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>paulohg@email.com</Text>
           </View>
           <TouchableOpacity 
             onPress={()=> router.push("/(app)/edit-email")}
@@ -64,8 +64,8 @@ export default function MeusDados() {
         <View className="border-b border-neutral-300 flex-row justify-between px-4 py-3 items-center gap-5">
           <KeyIcon size={24} color="#6775B4" />
           <View className='flex-1'>
-            <Text className='text-xs text-neutral-600 font-semibold'>Senha</Text>
-            <Text className='text-base text-neutral-900'>Alterar senha</Text>
+            <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>Senha</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>Alterar senha</Text>
           </View>
           <TouchableOpacity 
             onPress={()=> router.push("/(app)/edit-password")} 
@@ -75,7 +75,7 @@ export default function MeusDados() {
           </TouchableOpacity>
         </View>
 
-        <Text className="text-lg mb-4 font-medium px-4 mt-8 text-neutral-900">Unidades</Text>
+        <Text allowFontScaling={false} className="text-lg mb-4 font-medium px-4 mt-8 text-neutral-900">Unidades</Text>
         
         <FlatList
           data={[1, 2, 3, 4, 5, 6]}

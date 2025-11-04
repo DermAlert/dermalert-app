@@ -125,7 +125,7 @@ export default function UlceraHealthHistoryEditStep1() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={6} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente possui diagnóstico de hipertensão arterial?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente possui diagnóstico de hipertensão arterial?</Text>
 
         <Controller
           control={control}

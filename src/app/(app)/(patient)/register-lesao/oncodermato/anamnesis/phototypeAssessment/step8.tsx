@@ -138,8 +138,8 @@ export default function PhototypeAssessmentStep8() {
               <ChartBarIcon size={30} color="#4052A1" />
             </View>
       
-            <Text className="font-normal text-sm text-neutral-700 mt-4">Classificação do Fototipo</Text>
-            <Text className="text-neutral-900 text-lg font-medium">Fototipo {phototypeAssessmentScore?.phototype}</Text>
+            <Text allowFontScaling={false} className="font-normal text-sm text-neutral-700 mt-4">Classificação do Fototipo</Text>
+            <Text allowFontScaling={false} className="text-neutral-900 text-lg font-medium">Fototipo {phototypeAssessmentScore?.phototype}</Text>
           </View>
 
           <View 
@@ -150,8 +150,8 @@ export default function PhototypeAssessmentStep8() {
               <MedalIcon size={30} color="#4052A1" />
             </View>
       
-            <Text className="font-normal text-sm text-neutral-700 mt-4">Pontuação total</Text>
-            <Text className="text-neutral-900 text-lg font-medium">{phototypeAssessmentScore?.score}</Text>
+            <Text allowFontScaling={false} className="font-normal text-sm text-neutral-700 mt-4">Pontuação total</Text>
+            <Text allowFontScaling={false} className="text-neutral-900 text-lg font-medium">{phototypeAssessmentScore?.score}</Text>
           </View>
 
         </View>

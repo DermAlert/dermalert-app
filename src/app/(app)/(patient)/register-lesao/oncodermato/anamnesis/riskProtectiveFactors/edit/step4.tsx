@@ -72,7 +72,7 @@ export default function RiskProtectiveFactorsEditStep4() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={4} totalSteps={8} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente usa chapéus ou roupas de proteção ao se expor ao sol? </Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente usa chapéus ou roupas de proteção ao se expor ao sol? </Text>
 
         <Controller
           control={control}

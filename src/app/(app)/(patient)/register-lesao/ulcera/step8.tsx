@@ -74,7 +74,7 @@ export default function RegisterLesaoUlceraStep8() {
         <ProgressBar step={8} totalSteps={9} />
 
         <TitleText title="RESVECH" description="Infecção/Inflamação"/>
-        <Text className="text-sm text-neutral-700 mb-6">(0-14 pontos)</Text>
+        <Text allowFontScaling={false} className="text-sm text-neutral-700 mb-6">(0-14 pontos)</Text>
 
 
         <Controller

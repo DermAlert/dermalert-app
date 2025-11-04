@@ -89,7 +89,7 @@ export default function RegisterPatientStep7() {
         <ProgressBar step={7} totalSteps={9} />
 
         <View className="flex-1">
-          <Text className="text-base mb-8 text-neutral-900">O paciente autoriza o uso dos seus dados anonimizados para fins de pesquisa?</Text>
+          <Text allowFontScaling={false} className="text-base mb-8 text-neutral-900">O paciente autoriza o uso dos seus dados anonimizados para fins de pesquisa?</Text>
 
           <CheckButton label="Autoriza" value="Autoriza" checked={autorizado} onPress={() => {
             if(autorizado) {

@@ -24,7 +24,7 @@ export default function HeaderHome() {
           onPress={() => setModalUnidadesVisible(!modalUnidadesVisible)}
         >
           <MapPinIcon size={20} color="#4052A1" weight='fill'/>
-          <Text numberOfLines={1} ellipsizeMode="tail" className="w-[157] text-base text-primary-600 font-medium">Unidade Básica de Saúde 1 Asa Sul</Text>
+          <Text allowFontScaling={false} numberOfLines={1} ellipsizeMode="tail" className="w-[157] text-base text-primary-600 font-medium">Unidade Básica de Saúde 1 Asa Sul</Text>
           <CaretDownIcon size={16} color="#7D83A0" weight="bold" />
         </TouchableOpacity>
 

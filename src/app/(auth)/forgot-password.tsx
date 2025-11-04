@@ -89,8 +89,8 @@ export default function ForgotPasswordEmail() {
           <View className="bg-warning-100 rounded-2xl flex-row p-3 mt-10 gap-2">
             <WarningCircleIcon size={24} color="#D08700" />
             <View className="flex-1">
-              <Text className="text-warning-900 text-base font-semibold">Não recebeu um e-mail?</Text>
-              <Text className="text-warning-700 text-sm">Verifique sua caixa de spam. Caso não tenha recebido o link, informe seu gestor.</Text>
+              <Text allowFontScaling={false} className="text-warning-900 text-base font-semibold">Não recebeu um e-mail?</Text>
+              <Text allowFontScaling={false} className="text-warning-700 text-sm">Verifique sua caixa de spam. Caso não tenha recebido o link, informe seu gestor.</Text>
             </View>
           </View>
 

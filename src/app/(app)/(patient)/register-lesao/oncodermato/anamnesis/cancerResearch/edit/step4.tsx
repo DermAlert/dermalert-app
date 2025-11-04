@@ -72,7 +72,7 @@ export default function CancerResearchEditStep4() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={4} totalSteps={6} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">Essas lesões têm bordas irregulares, múltiplas cores ou assimetria?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">Essas lesões têm bordas irregulares, múltiplas cores ou assimetria?</Text>
 
         <Controller
           control={control}

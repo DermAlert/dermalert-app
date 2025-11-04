@@ -33,7 +33,7 @@ export default function RadioButton({
           >
             {checked && <View className="rounded-full h-[10px] w-[10px] bg-primary-600" />}
           </View>
-          <Text className="text-gray-800 text-base flex-1">{label}</Text>
+          <Text allowFontScaling={false} className="text-gray-800 text-base flex-1">{label}</Text>
           
         </TouchableOpacity>
       ) : (
@@ -43,7 +43,7 @@ export default function RadioButton({
           onPress={onPress} 
           {...rest}
         >
-          <Text className={`text-base flex-1 ${checked ? `text-primary-600 font-medium`: `text-neutral-700 font-normal`}`}>{label}</Text>
+          <Text allowFontScaling={false} className={`text-base flex-1 ${checked ? `text-primary-600 font-medium`: `text-neutral-700 font-normal`}`}>{label}</Text>
           <View
             className={`h-[20px] w-[20px] rounded-full border-2 items-center justify-center ${checked ? 'border-primary-600' : 'bg-white border-neutral-300'}`}
           >

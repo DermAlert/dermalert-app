@@ -85,7 +85,7 @@ export default function UlceraCareSupportStep1() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={1} totalSteps={3} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente tem curativos disponíveis em casa ou fornecidos pela UBS?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente tem curativos disponíveis em casa ou fornecidos pela UBS?</Text>
 
         <Controller
           control={control}

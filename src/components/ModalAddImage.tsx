@@ -55,10 +55,10 @@ export default function ModalAddImage({ setModalAddImage, modalAddImage, images,
     >
       <View className="flex-1 justify-center items-center bg-[rgba(0,0,0,0.4)] px-7">
 
-        <View className="bg-white h-auto w-full rounded-2xl shadow-md p-8 pb-6 items-center gap-4">
+        <View className="bg-white w-full rounded-2xl shadow-md p-8 pb-6 items-center gap-4">
 
-          <Text className="text-lg text-center text-neutral-900 font-medium">Adicionar imagem</Text>
-          <Text className="text-base text-neutral-700 text-center">
+          <Text allowFontScaling={false} className="text-lg text-center text-neutral-900 font-medium">Adicionar imagem</Text>
+          <Text allowFontScaling={false} className="text-base text-neutral-700 text-center">
             Capture uma imagem da câmera do dispositivo ou selecione da galeria.
           </Text>
 
@@ -69,7 +69,7 @@ export default function ModalAddImage({ setModalAddImage, modalAddImage, images,
               {...rest}
             >
               <CameraIcon size={20} color="#4052A1" />
-              <Text className="text-neutral-700 text-base font-semibold">Abrir câmera</Text>
+              <Text allowFontScaling={false} className="text-neutral-700 text-base font-semibold">Abrir câmera</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -78,15 +78,15 @@ export default function ModalAddImage({ setModalAddImage, modalAddImage, images,
               {...rest}
             >
               <ImageIcon size={20} color="#4052A1" />
-              <Text className="text-neutral-700 text-base font-semibold">Buscar na galeria</Text>
+              <Text allowFontScaling={false} className="text-neutral-700 text-base font-semibold">Buscar na galeria</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
-              className="bg-white flex-grow h-10 mt-2 rounded-lg justify-center items-center w-full"
+              className="bg-white flex-grow py-2 mt-2 rounded-lg justify-center items-center w-full"
               onPress={() => setModalAddImage(false)}
               {...rest}
             >
-              <Text className="text-primary-600 text-base font-semibold">Cancelar</Text>
+              <Text allowFontScaling={false} className="text-primary-600 text-base font-semibold">Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>

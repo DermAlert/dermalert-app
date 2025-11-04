@@ -99,7 +99,7 @@ export default function PersonalFamilyHistoryStep2() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={2} totalSteps={5} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente já foi diagnosticado com câncer de pele?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente já foi diagnosticado com câncer de pele?</Text>
 
         <Controller
           control={control}
@@ -127,7 +127,7 @@ export default function PersonalFamilyHistoryStep2() {
                         measuredHeight.value = e.nativeEvent.layout.height;
                       }}
                     >
-                      <Text className="px-0 mt-5 text-neutral-900 text-base">Qual tipo de câncer?</Text>
+                      <Text allowFontScaling={false} className="px-0 mt-5 text-neutral-900 text-base">Qual tipo de câncer?</Text>
                       {["Melanoma", "Carcinoma Basocelular", "Carcinoma Espinocelular"].map(item => (
                         <CheckButton
                           key={item}

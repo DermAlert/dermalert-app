@@ -17,8 +17,8 @@ export default function ProgressBar({ step, totalSteps}: ProgressBarProps) {
         />
       </View>
       <View className="flex-row justify-center my-2">
-        <Text className="text-sm text-neutral-500">
-          Passo <Text className="font-bold">{step}</Text> de {totalSteps}
+        <Text allowFontScaling={false} className="text-sm text-neutral-500">
+          Passo <Text allowFontScaling={false} className="font-bold">{step}</Text> de {totalSteps}
         </Text>
       </View>
     </View>

@@ -18,7 +18,7 @@ export default function ModalLesaoFiltro({ modalLesoesVisible, setModalLesoesVis
       <View className="flex-1 justify-center items-center bg-[rgba(0,0,0,0.4)] px-7">
         <View className="bg-white h-[210] w-full rounded-2xl">
           <View className="flex-row justify-between px-8 pt-8 pb-4 border-b border-gray-400 border-solid">
-            <Text className="font-semibold text-lg">Filtrar por tipo</Text>
+            <Text allowFontScaling={false} className="font-semibold text-lg">Filtrar por tipo</Text>
             <TouchableOpacity onPress={() => setModalLesoesVisible(!modalLesoesVisible)}>
               <Text>Fechar</Text>
             </TouchableOpacity>

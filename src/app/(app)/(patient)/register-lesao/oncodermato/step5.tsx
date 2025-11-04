@@ -77,8 +77,8 @@ export default function RegisterLesaoOncodermatoStep5() {
         <ProgressBar step={5} totalSteps={8} />
 
         <TitleText title="Questionário ABCDE" style={{marginTop: 24}} />
-        <Text className="text-base mt-4 text-neutral-900 font-semibold">C - Cor</Text>
-        <Text className="text-base mt-2 mb-8 text-neutral-700">A lesão apresenta variação de cor?</Text>
+        <Text allowFontScaling={false} className="text-base mt-4 text-neutral-900 font-semibold">C - Cor</Text>
+        <Text allowFontScaling={false} className="text-base mt-2 mb-8 text-neutral-700">A lesão apresenta variação de cor?</Text>
 
         <Controller
           control={control}

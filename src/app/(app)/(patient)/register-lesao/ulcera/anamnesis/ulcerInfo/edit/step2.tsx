@@ -69,7 +69,7 @@ export default function UlceraUlcerInfoEditStep2() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={2} totalSteps={4} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente já tratou essa ferida antes em outro lugar?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente já tratou essa ferida antes em outro lugar?</Text>
 
         <Controller
           control={control}

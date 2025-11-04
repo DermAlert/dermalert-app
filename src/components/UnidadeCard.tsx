@@ -12,7 +12,7 @@ export default function UnidadeCard({...rest}: TouchableOpacityProps) {
 
       <MapPinIcon size={24} color="#6775B4" />
 
-      <Text className="text-base text-neutral-900">UBS Brasília M Boi Mirim</Text>
+      <Text allowFontScaling={false} className="text-base text-neutral-900">UBS Brasília M Boi Mirim</Text>
 
     </TouchableOpacity>
   )

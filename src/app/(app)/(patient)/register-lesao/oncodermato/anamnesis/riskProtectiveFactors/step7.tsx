@@ -73,7 +73,7 @@ export default function RiskProtectiveFactorsStep7() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={7} totalSteps={8} />
 
-        <Text className="text-base text-neutral-800 mt-4 mb-8">O paciente já participou de campanhas de prevenção contra o câncer de pele?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-800 mt-4 mb-8">O paciente já participou de campanhas de prevenção contra o câncer de pele?</Text>
 
         <Controller
           control={control}

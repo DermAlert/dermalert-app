@@ -23,14 +23,14 @@ export default function CheckButton({ value, indented = false, label, checked, o
           {checked && <View className="rounded-sm h-[18] w-[18] bg-primary-600 justify-center items-center"><CheckIcon size={14} color="white" weight="bold" /></View>}
         </View>
 
-        <Text className={`text-base flex-1 ${checked ? 'text-neutral-900 font-medium' : 'text-neutral-700 font-normal'}`}>{label}</Text>
+        <Text allowFontScaling={false} className={`text-base flex-1 ${checked ? 'text-neutral-900 font-medium' : 'text-neutral-700 font-normal'}`}>{label}</Text>
         </>
         
       )}
 
       {!indented && (
         <>
-        <Text className={`text-base flex-1 ${checked ? 'text-primary-600 font-medium' : 'text-neutral-700 font-normal'}`}>{label}</Text>
+        <Text allowFontScaling={false} className={`text-base flex-1 ${checked ? 'text-primary-600 font-medium' : 'text-neutral-700 font-normal'}`}>{label}</Text>
         <View
           className="h-[20] w-[20] border-2 rounded-sm items-center justify-center bg-white border-neutral-300"
         >

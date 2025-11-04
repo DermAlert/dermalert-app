@@ -94,7 +94,7 @@ export default function GeneralHealthStep4() {
       <ScrollView className="px-8 w-full flex-1">
         <ProgressBar step={4} totalSteps={6} />
 
-        <Text className="text-base text-neutral-900 mt-6 mb-8">O paciente já passou por cirurgias dermatológicas?</Text>
+        <Text allowFontScaling={false} className="text-base text-neutral-900 mt-6 mb-8">O paciente já passou por cirurgias dermatológicas?</Text>
 
         <Controller
           control={control}
@@ -125,7 +125,7 @@ export default function GeneralHealthStep4() {
                       }}
                     >
                       <View className="mx-4 mt-6 mb-6">
-                          <Text className="text-neutral-900 font-semibold text-base mb-2">Qual foi o procedimento?</Text>
+                          <Text allowFontScaling={false} className="text-neutral-900 font-semibold text-base mb-2">Qual foi o procedimento?</Text>
                           
                           <Input 
                             error={errors.surgeries?.message}
