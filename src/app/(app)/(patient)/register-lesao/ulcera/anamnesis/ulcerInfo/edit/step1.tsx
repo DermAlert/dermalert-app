@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraUlcerInfoForm } from "@/hooks/Ulcera/useUlceraUlcerInfoForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { UlceraUlcerInfoProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -25,6 +25,8 @@ export default function UlceraUlcerInfoStep1() {
   const { ulceraUlcerInfoData, setUlceraUlcerInfoData, updateUlceraUlcerInfoData } = useUlceraUlcerInfoForm();
 
   const { patientId } = usePatientId();
+
+  const { loadUlcerInfo, ulcerInfo } = useUlceraAnamnesisAPI();
   
 
   // formulario
@@ -37,19 +39,24 @@ export default function UlceraUlcerInfoStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "how_long" });
 
-  const loadUlcerInfo = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/current-ulcer-info/`);
-      setUlceraUlcerInfoData(prev => {
-        return prev?.how_long ? prev : data;
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setUlceraUlcerInfoData]);
+  
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadUlcerInfo(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!ulcerInfo) return;
+
+    setUlceraUlcerInfoData(prev => {
+      return prev?.how_long ? prev : ulcerInfo;
+    });
+
+    setIsLoading(false);
+  }, [ulcerInfo, setUlceraUlcerInfoData]);
 
   useEffect(() => {
     if (ulceraUlcerInfoData?.how_long) {
@@ -59,9 +66,6 @@ export default function UlceraUlcerInfoStep1() {
     }
   }, [ulceraUlcerInfoData, reset]);
 
-  useEffect(() => {
-    loadUlcerInfo();
-  }, [loadUlcerInfo]);
 
 
   const handleNext = (data: UlceraUlcerInfoProps) => {

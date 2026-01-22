@@ -3,12 +3,12 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import { UlceraRiskLifestyleProps } from "@/types/forms";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { PencilSimpleLineIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -17,39 +17,21 @@ import Animated, {
 
 export default function RiskLifestyleDetails() {
   const [isLoading, setIsLoading] = useState(false);
-  const [riskLifestyle, setRiskLifestyle] = useState<UlceraRiskLifestyleProps>();
 
   const { patientId } = usePatientId();
+  const { riskLifestyle, loadRiskLifestyle } = useUlceraAnamnesisAPI();
 
-  async function loadRiskLifestyle() {
-    try {
-      setIsLoading(true)
-      const { data } = await api.get(`/patients/${patientId}/forms/lifestyle-risk/`);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        loadRiskLifestyle(patientId);
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timeout);
 
-      setRiskLifestyle(data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      console.log(error);
-    } 
-  }
-
-
-  useEffect(() => {
-
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      loadRiskLifestyle();
-    }, 300); 
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
-
-    
-  }, []);
+    }, [patientId])
+  );
 
 
   const handleCancel = () => {

@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraHealthHistoryForm } from "@/hooks/Ulcera/useUlceraHealthHistoryForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { UlceraHealthHistoryProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -24,6 +24,7 @@ export default function UlceraHealthHistoryEditStep1() {
   const { ulceraHealthHistoryData, setUlceraHealthHistoryData, updateUlceraHealthHistoryData } = useUlceraHealthHistoryForm();
   
   const { patientId } = usePatientId();
+  const { healthHistory, loadHealthHistory } = useUlceraAnamnesisAPI();
   
 
   // formulario
@@ -34,19 +35,22 @@ export default function UlceraHealthHistoryEditStep1() {
   });
   const cancerTypeValue = useWatch({ control, name: "hypertension" });
 
-  const loadHealthHistory = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/clinical-history/`);
-      setUlceraHealthHistoryData(prev => {
-        return prev?.hypertension ? prev : data;
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setUlceraHealthHistoryData]);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadHealthHistory(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!healthHistory) return;
+
+    setUlceraHealthHistoryData(prev => {
+      return prev?.hypertension ? prev : healthHistory;
+    });
+
+    setIsLoading(false);
+  }, [healthHistory, setUlceraHealthHistoryData]);
 
   useEffect(() => {
     if (ulceraHealthHistoryData?.hypertension) {
@@ -56,9 +60,6 @@ export default function UlceraHealthHistoryEditStep1() {
     }
   }, [ulceraHealthHistoryData, reset]);
 
-  useEffect(() => {
-    loadHealthHistory();
-  }, [loadHealthHistory]);
 
 
   const handleNext = (data: UlceraHealthHistoryProps) => {

@@ -9,10 +9,11 @@ type Props = TouchableHighlightProps & {
   title: string,
   handleCancel: () => void,
   btnYesText: string,
-  btnNoText: string
+  btnNoText: string,
+  warning?: boolean
 }
 
-export default function ModalAlert({ modalAlert, setModalAlert, description, title, handleCancel, btnYesText, btnNoText, ...rest }: Props) {
+export default function ModalAlert({ modalAlert, setModalAlert, description, title, handleCancel, btnYesText, btnNoText, warning = false, ...rest }: Props) {
 
   return (
     <SafeAreaView>
@@ -26,7 +27,12 @@ export default function ModalAlert({ modalAlert, setModalAlert, description, tit
         >
         <View className="flex-1 justify-center items-center bg-[rgba(0,0,0,0.4)] px-7">
           <View className="bg-white w-full rounded-2xl shadow-md p-8 items-center">
-            <Icon iconName="WarningIcon" style={{ alignSelf: "center"}} />
+            {warning ? (
+              <Icon warning iconName="WarningOctagonIcon" style={{ alignSelf: "center"}} />
+            ): (
+              <Icon iconName="WarningIcon" style={{ alignSelf: "center"}} />
+            )}
+            
             <Text adjustsFontSizeToFit={false} allowFontScaling={false} className="text-xl text-center text-neutral-900 mt-4 font-medium">{title}</Text>
 
             {description && (

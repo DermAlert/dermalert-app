@@ -11,10 +11,11 @@ type InputProps = {
   formProps: UseControllerProps;
   error?: string;
   onChangeTextFormat?: (value: string) => string;
+  className?: string;
 };
 
 
-const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps, inputProps, error = '', icon, password }, ref) => {
+const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps, inputProps, error = '', icon, password, className }, ref) => {
   const [visiblePassword, setvisiblePassword] = useState(false);
   const [focused, setFocused] = useState(false);
 
@@ -27,7 +28,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
   return (
     <Controller {...formProps}
         render={({ field: { onChange, value } }) => (
-          <>
+          <View>
             <View className={`bg-white border rounded-lg flex-row justify-between items-center overflow-hidden ${error.length > 0 ? 'border-danger-400' : focused ? 'border-primary-600' : 'border-neutral-300'}`}>
               <TextInput 
                 onChangeText={(text) => {
@@ -39,7 +40,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
                 secureTextEntry={visiblePassword}
                 allowFontScaling={false}
                 placeholderTextColor="#A9ADC0"
-                className="py-3 px-4 flex-1 text-base text-neutral-900 bg-white" 
+                className={`py-3 px-4 flex-1 text-base text-neutral-900 bg-white ${className}`}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 {...inputProps} 
@@ -66,7 +67,7 @@ const Input = forwardRef<TextInput, InputProps>(({ onChangeTextFormat, formProps
                 {error}
               </Text>
             }
-          </>
+          </View>
           
           
         )}

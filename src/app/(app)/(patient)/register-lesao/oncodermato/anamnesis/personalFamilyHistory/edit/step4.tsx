@@ -4,10 +4,10 @@ import Header from "@/components/Header";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useFormLists } from "@/hooks/api/useFormLists";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { api } from "@/services/api";
 import { PersonalFamilyHistoryProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowLeftIcon, ArrowRightIcon, XIcon } from "phosphor-react-native";
@@ -22,38 +22,17 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-// const LESION_TREATMENTS = [
-//   "Crioterapia",
-//   "Eletrocoagulação",
-//   "Curetagem",
-//   "Excisão cirúrgica",
-//   "Biópsia excisional",
-//   "Biópsia incisional",
-//   "Laserterapia",
-//   "Terapia fotodinâmica",
-//   "Tratamento tópico com 5-fluorouracil",
-//   "Tratamento tópico com imiquimode",
-//   "Radioterapia",
-//   "Quimioterapia tópica",
-//   "Infiltração intralesional",
-//   "Microagulhamento",
-//   "Retirada com shaving",
-//   "Observação clínica",
-//   "Uso de antibióticos tópicos",
-//   "Drenagem de abscesso",
-//   "Cauterização química",
-//   "Criocirurgia"
-// ];
 
 export default function PersonalFamilyHistoryEditStep4() {
   const [isTreatmentOpen, setIsTreatmentOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
-  const [injuriesTreatmentList, setInjuriesTreatmentList] = useState<string[]>([]);
   
   const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
   const { setLesionType } = useLesionType();
+
+  const { loadInjuriesTreatment, injuriesTreatmentList } = useFormLists();
 
   const { control, handleSubmit } = useForm<PersonalFamilyHistoryProps>(
     {
@@ -63,19 +42,6 @@ export default function PersonalFamilyHistoryEditStep4() {
     }
   );
 
-  const loadInjuriesTreatmen = async () => {
-    try {
-      const { data } = await api.get('/injuries-treatments/');
-
-      if (data) {
-        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
-        setInjuriesTreatmentList(onlyNames);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   // animação accordion
   const measuredHeight = useSharedValue(0);
@@ -178,7 +144,7 @@ export default function PersonalFamilyHistoryEditStep4() {
 
   useFocusEffect(
     useCallback(() => {
-      loadInjuriesTreatmen()
+      loadInjuriesTreatment()
     },[])
   )
 

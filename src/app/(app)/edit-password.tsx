@@ -16,6 +16,7 @@ export default function EditPassword() {
   const [step1, setStep1] = useState(true);
   const [step2, setStep2] = useState(false);
   const [step3, setStep3] = useState(false);
+  const [password, setPassword] = useState('');
 
   const {
       control,
@@ -23,8 +24,11 @@ export default function EditPassword() {
       reset,
       getValues, 
       trigger,
+      watch,
       formState: { errors },
     } = useForm<FormUserEditPassData>()
+
+  const newPasswordValue = watch('newPassword', '');
 
   function validatePasswordConfirmation(passwordConfirmation: string) {
     const { newPassword } = getValues();
@@ -159,23 +163,26 @@ export default function EditPassword() {
 
           
           <View>
-            <Text allowFontScaling={false} className="text-sm mb-2 font-medium text-neutral-600 mt-4">A senha deve conter:</Text>
+            <Text allowFontScaling={false} className="text-sm mb-2 font-medium text-neutral-800 mt-4">A senha deve conter:</Text>
 
             <View className="flex-row gap-2 items-center mb-2">
-              <CheckIcon size={18} color="#D4D6DF" />
-              <Text allowFontScaling={false} className="text-sm text-neutral-600">Mínimo de 8 caracteres</Text>
+              <CheckIcon size={18} color={`${newPasswordValue && newPasswordValue.length >= 8 ? "#00A63E": "#D4D6DF"}`} weight={`${newPasswordValue && newPasswordValue.length >= 8 ? "bold" : "regular"}`} />
+              <Text allowFontScaling={false} className={`text-sm ${newPasswordValue && newPasswordValue.length >= 8 ? "text-neutral-900 font-medium": "text-neutral-800 font-normal"}`}>Mínimo de 8 caracteres</Text>
             </View>
+
             <View className="flex-row gap-2 items-center mb-2">
-              <CheckIcon size={18} color="#D4D6DF" />
-              <Text allowFontScaling={false} className="text-sm text-neutral-600">Pelo menos 1 letra maiúscula</Text>
+              <CheckIcon size={18} color={`${newPasswordValue && /[A-Z]/.test(newPasswordValue) ? "#00A63E": "#D4D6DF"}`} weight={`${newPasswordValue && /[A-Z]/.test(newPasswordValue) ? "bold" : "regular"}`} />
+              <Text allowFontScaling={false} className={`text-sm ${newPasswordValue && /[A-Z]/.test(newPasswordValue) ? "text-neutral-900 font-medium": "text-neutral-800 font-normal"}`}>Pelo menos 1 letra maiúscula</Text>
             </View>
+
             <View className="flex-row gap-2 items-center mb-2">
-              <CheckIcon size={18} color="#D4D6DF" />
-              <Text allowFontScaling={false} className="text-sm text-neutral-600">Pelo menos 1 número</Text>
+              <CheckIcon size={18} color={`${newPasswordValue && /\d/.test(newPasswordValue) ? "#00A63E": "#D4D6DF"}`} weight={`${newPasswordValue && /\d/.test(newPasswordValue) ? "bold" : "regular"}`} />
+              <Text allowFontScaling={false} className={`text-sm ${newPasswordValue && /\d/.test(newPasswordValue) ? "text-neutral-900 font-medium": "text-neutral-800 font-normal"}`}>Pelo menos 1 número</Text>
             </View>
+
             <View className="flex-row gap-2 items-center">
-              <CheckIcon size={18} color="#D4D6DF" />
-              <Text allowFontScaling={false} className="text-sm text-neutral-600">Pelo menos 1 caractere especial (@, #, $, etc.)</Text>
+              <CheckIcon size={18} color={`${newPasswordValue && /[^\w\s]/.test(newPasswordValue) ? "#00A63E": "#D4D6DF"}`} weight={`${newPasswordValue && /[^\w\s]/.test(newPasswordValue) ? "bold" : "regular"}`} />
+              <Text allowFontScaling={false} className={`text-sm ${newPasswordValue && /[^\w\s]/.test(newPasswordValue) ? "text-neutral-900 font-medium": "text-neutral-800 font-normal"}`}>Pelo menos 1 caractere especial (@, #, $, etc.)</Text>
             </View>
           </View>
           

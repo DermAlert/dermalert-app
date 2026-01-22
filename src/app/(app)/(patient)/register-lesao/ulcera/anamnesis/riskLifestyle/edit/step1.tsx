@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraRiskLifestyleForm } from "@/hooks/Ulcera/useUlceraRiskLifestyleForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { UlceraRiskLifestyleProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -24,6 +24,7 @@ export default function UlceraRiskLifestyleEditStep1() {
   const { ulceraRiskLifestyleData, setUlceraRiskLifestyleData, updateUlceraRiskLifestyleData } = useUlceraRiskLifestyleForm();
 
   const { patientId } = usePatientId();
+  const { riskLifestyle, loadRiskLifestyle } = useUlceraAnamnesisAPI();
 
   // formulario
   const { control, handleSubmit, reset } = useForm<UlceraRiskLifestyleProps>(
@@ -35,19 +36,23 @@ export default function UlceraRiskLifestyleEditStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "long_periods_posture" });
 
-  const loadRiskLifestyle = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/lifestyle-risk/`);
-      setUlceraRiskLifestyleData(prev => {
-        return prev?.long_periods_posture ? prev : data;
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setUlceraRiskLifestyleData]);
+  
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadRiskLifestyle(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!riskLifestyle) return;
+
+    setUlceraRiskLifestyleData(prev => {
+      return prev?.long_periods_posture ? prev : riskLifestyle;
+    });
+
+    setIsLoading(false);
+  }, [riskLifestyle, setUlceraRiskLifestyleData]);
 
   useEffect(() => {
     if (ulceraRiskLifestyleData?.long_periods_posture) {
@@ -56,10 +61,6 @@ export default function UlceraRiskLifestyleEditStep1() {
       });
     }
   }, [ulceraRiskLifestyleData, reset]);
-
-  useEffect(() => {
-    loadRiskLifestyle();
-  }, [loadRiskLifestyle]);
 
 
   const handleNext = (data: UlceraRiskLifestyleProps) => {

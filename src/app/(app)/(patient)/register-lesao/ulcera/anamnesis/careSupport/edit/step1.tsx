@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraCareSupportForm } from "@/hooks/Ulcera/useUlceraCareSupportForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { UlceraCareSupportProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -24,6 +24,7 @@ export default function UlceraCareSupportEditStep1() {
   const { ulceraCareSupportData, setUlceraCareSupportData, updateUlceraCareSupportData } = useUlceraCareSupportForm();
 
   const { patientId } = usePatientId();
+  const { loadCareSupport, careSupport } = useUlceraAnamnesisAPI();
 
   // formulario
   const { control, handleSubmit, reset } = useForm<UlceraCareSupportProps>(
@@ -35,19 +36,23 @@ export default function UlceraCareSupportEditStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "has_dressings_available" });
 
-  const loadCareSupport = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/care-access-support/`);
-      setUlceraCareSupportData(prev => {
-        return prev?.has_dressings_available ? prev : data;
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setUlceraCareSupportData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadCareSupport(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!careSupport) return;
+
+    setUlceraCareSupportData(prev => {
+      return prev?.has_dressings_available ? prev : careSupport;
+    });
+
+    setIsLoading(false);
+  }, [careSupport, setUlceraCareSupportData]);
 
   useEffect(() => {
     if (ulceraCareSupportData?.has_dressings_available) {
@@ -57,9 +62,6 @@ export default function UlceraCareSupportEditStep1() {
     }
   }, [ulceraCareSupportData, reset]);
 
-  useEffect(() => {
-    loadCareSupport();
-  }, [loadCareSupport]);
 
 
   const handleNext = (data: UlceraCareSupportProps) => {

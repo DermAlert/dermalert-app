@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { api } from "@/services/api";
 import { GeneralHealthProps } from "@/types/forms";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
@@ -70,9 +70,9 @@ export default function GeneralHealthStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   const [isOtherDiseasesOpen, setIsOtherDiseasesOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
-  const [chronicDiseasesList, setChronicDiseasesList] = useState<string[]>([]);
   
   const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
+  const { loadChronicDiseases, chronicDiseasesList } = usePatientAPI();
 
   const { control, handleSubmit, getValues } = useForm<GeneralHealthProps>(
     {
@@ -82,21 +82,6 @@ export default function GeneralHealthStep1() {
     }
   );
 
-  const loadChronicDiseases = async () => {
-    try {
-      const { data } = await api.get('/chronic-diseases/');
-
-      if (data) {
-        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
-        setChronicDiseasesList(onlyNames);
-        //console.log(chronicDiseasesList);
-        //console.log(data);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
 
   // animação accordion

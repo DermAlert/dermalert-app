@@ -3,12 +3,12 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import { UlceraCareSupportProps } from "@/types/forms";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { PencilSimpleLineIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -17,39 +17,21 @@ import Animated, {
 
 export default function CareSupportDetails() {
   const [isLoading, setIsLoading] = useState(false);
-  const [careSupport, setCareSupport] = useState<UlceraCareSupportProps>();
 
   const { patientId } = usePatientId();
+  const { careSupport, loadCareSupport } = useUlceraAnamnesisAPI();
 
-  async function loadCareSupport() {
-    try {
-      setIsLoading(true)
-      const { data } = await api.get(`/patients/${patientId}/forms/care-access-support/`);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        loadCareSupport(patientId);
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timeout);
 
-      setCareSupport(data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      console.log(error);
-    } 
-  }
-
-
-  useEffect(() => {
-
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      loadCareSupport();
-    }, 300); 
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
-
-    
-  }, []);
+    }, [patientId])
+  );
 
 
   const handleCancel = () => {

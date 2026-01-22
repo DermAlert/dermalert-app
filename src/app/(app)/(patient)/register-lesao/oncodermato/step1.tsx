@@ -20,7 +20,7 @@ import Animated, {
 export default function RegisterLesaoOncodermatoStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-  const [openAccordionIndented, setOpenAccordionIndented] = useState<string | null>(null);
+  // const [openAccordionIndented, setOpenAccordionIndented] = useState<string | null>(null);
 
   const { registerLesionData, setRegisterLesionData, updateRegisterLesionData } = useRegisterLesionForm();
 

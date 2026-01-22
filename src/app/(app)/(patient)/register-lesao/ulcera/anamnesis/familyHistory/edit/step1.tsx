@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraFamilyHistoryForm } from "@/hooks/Ulcera/useUlceraFamilyHistoryForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { UlceraFamilyHistoryProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -24,7 +24,8 @@ export default function UlceraFamilyHistoryEditStep1() {
   
   const { ulceraFamilyHistoryData, setUlceraFamilyHistoryData, updateUlceraFamilyHistoryData } = useUlceraFamilyHistoryForm();
 
-    const { patientId } = usePatientId();
+  const { patientId } = usePatientId();
+  const { familyHistory, loadFamilyHistory } = useUlceraAnamnesisAPI();
   
 
   // formulario
@@ -37,19 +38,23 @@ export default function UlceraFamilyHistoryEditStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "family_leg_ulcers" });
 
-  const loadFamilyHistory = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/family-vascular-history/`);
-      setUlceraFamilyHistoryData(prev => {
-        return prev?.family_leg_ulcers ? prev : data;
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setUlceraFamilyHistoryData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadFamilyHistory(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!familyHistory) return;
+
+    setUlceraFamilyHistoryData(prev => {
+      return prev?.family_leg_ulcers ? prev : familyHistory;
+    });
+
+    setIsLoading(false);
+  }, [familyHistory, setUlceraFamilyHistoryData]);
 
   useEffect(() => {
     if (ulceraFamilyHistoryData?.family_leg_ulcers) {
@@ -58,10 +63,6 @@ export default function UlceraFamilyHistoryEditStep1() {
       });
     }
   }, [ulceraFamilyHistoryData, reset]);
-
-  useEffect(() => {
-    loadFamilyHistory();
-  }, [loadFamilyHistory]);
 
 
   const handleNext = (data: UlceraFamilyHistoryProps) => {

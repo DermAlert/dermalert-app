@@ -10,7 +10,7 @@ export default function Help() {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        router.push("/(app)/home")
+        router.back()
         return true;
       };
   
@@ -26,7 +26,7 @@ export default function Help() {
   return (
     <View className="flex-1 bg-primary-50 p-safe relative">
 
-      <Header title="Ajuda" icon="back" onPress={()=> router.push("/(app)/home")} />
+      <Header title="Ajuda" icon="back" onPress={()=> router.back()} />
 
       <View className="p-8 w-full justify-start flex-1">
 

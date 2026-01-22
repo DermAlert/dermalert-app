@@ -1,49 +1,32 @@
 import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import { PhototypeAssessmentProps } from "@/types/forms";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { CaretRightIcon, ListDashesIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function OncodermatoAnamnesisDetails() {
   const [isLoading, setIsLoading] = useState(false);
-  const [phototype, setPhototype] = useState<PhototypeAssessmentProps>();
 
   const { patientId } = usePatientId();
 
-  async function loadPhototype() {
-    try {
-      setIsLoading(true)
-      const { data } = await api.get(`/patients/${patientId}/forms/phototype/`);
+  const { phototype, loadPhototype } = useOncodermatoAnamnesisAPI();
 
-      setPhototype(data);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        loadPhototype(patientId);
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timeout);
 
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      console.log(error);
-    } 
-  }
-
-
-  useEffect(() => {
-
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      loadPhototype();
-    }, 300);
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
-
-    
-  }, []);
+    }, [patientId])
+  );
 
   if(isLoading){
     return (

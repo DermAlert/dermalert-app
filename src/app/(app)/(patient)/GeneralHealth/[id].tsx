@@ -3,9 +3,8 @@ import Icon from '@/components/Icon';
 import { Loading } from '@/components/Loading';
 import { SummaryQuestion } from '@/components/SummaryQuestion';
 import { TitleText } from '@/components/TitleText';
+import { usePatientDataById } from '@/hooks/api/usePatientDataById';
 import { usePatientId } from '@/hooks/usePatientId';
-import { api } from '@/services/api';
-import { GeneralHealthProps } from '@/types/forms';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from "expo-router";
 import { useCallback, useState } from 'react';
@@ -13,35 +12,20 @@ import { View } from 'react-native';
 
 export default function GeneralHealth() {
   const [isLoading, setIsLoading] = useState(false);
-  const [generalHealth, setGeneralHealth] = useState<GeneralHealthProps>();
 
   const { patientId } = usePatientId();
 
-  //const { id } = useLocalSearchParams();
 
-  async function loadGeneralHealthById() {
-    try {
-      setIsLoading(true)
-      const { data } = await api.get(`/patients/${patientId}/forms/general-health/`);
+  const { loadGeneralHealthById, generalHealth } = usePatientDataById();
 
-      //const onlyNames: string[] = data.chronic_diseases.map((item: { name: string }) => item.name);
-
-      setGeneralHealth(data);
-      //console.log(data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      //setGeneralHealth({} as GeneralHealthProps);
-      console.log(error);
-    } 
-  }
-
-  
 
   useFocusEffect(
     useCallback(() => {
-      loadGeneralHealthById()
+      (async () => {
+        setIsLoading(true)
+        await loadGeneralHealthById(patientId)
+        setIsLoading(false)
+      })();
     },[])
   )
 

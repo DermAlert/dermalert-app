@@ -8,15 +8,20 @@ type PatientCardProps = TouchableOpacityProps & {
   name: string;
   cpf: string;
   id: string;
+  profissional?: boolean;
 }
 
-export default function PatientCard({name, cpf, id, ...rest}: PatientCardProps) {
+export default function PatientCard({name, cpf, id, profissional = false, ...rest}: PatientCardProps) {
 
   const { patientId, updatePatientId, setPatientId } = usePatientId();
 
   const handleGoToPatient = () => {
     updatePatientId(id.toString());
-    router.push("/(app)/(patient)/patient/[id]");
+    if(profissional === true){
+      router.push("/(app)/(profissional)/profissionalDetails/[id]");
+    } else {
+      router.push("/(app)/(patient)/patient/[id]");
+    }
   }
 
   // useEffect(() => {

@@ -3,10 +3,10 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { usePhototypeAssessmentForm } from "@/hooks/Oncodermato/usePhototypeAssessmentForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { PhototypeAssessmentProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -27,6 +27,8 @@ export default function PhototypeAssessmentEditStep1() {
 
   const { patientId } = usePatientId();
 
+  const { phototype, loadPhototype } = useOncodermatoAnamnesisAPI()
+
 
   // formulario
   const { control, handleSubmit, reset } = useForm<PhototypeAssessmentProps>(
@@ -38,19 +40,24 @@ export default function PhototypeAssessmentEditStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "skin_color" });
 
-  const loadPhototypeAssessment = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/phototype/`);
-      setPhototypeAssessmentData(prev => {
-        return prev?.skin_color ? prev : data;
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadPhototype(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!phototype) return;
+
+    
+    setPhototypeAssessmentData(prev => {
+        return prev?.skin_color ? prev : phototype;
       });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setPhototypeAssessmentData]);
+
+    setIsLoading(false);
+  }, [phototype, setPhototypeAssessmentData]);
+
 
   useEffect(() => {
     if (phototypeAssessmentData?.skin_color) {
@@ -60,9 +67,9 @@ export default function PhototypeAssessmentEditStep1() {
     }
   }, [phototypeAssessmentData, reset]);
 
-  useEffect(() => {
-    loadPhototypeAssessment();
-  }, [loadPhototypeAssessment]);
+  // useEffect(() => {
+  //   loadPhototypeAssessment();
+  // }, [loadPhototypeAssessment]);
 
 
   

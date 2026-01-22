@@ -4,11 +4,10 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -24,72 +23,13 @@ export default function PersonalFamilyHistoryEditStep5() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { patientId } = usePatientId();
+  const { updateAnamnesisOncodermatoFamilyHistory } = useOncodermatoAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar historico familiar e pessoal
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/family-history/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        // 1. Atualiza Histórico Familiar e Pessoal de Câncer de Pele
-        const formattedfamilyHistory = familyHistoryData.family_history && familyHistoryData.family_history.length > 0 ? familyHistoryData.family_history.map((d) => ({ name: d })) : [];
-        
-        const formattedfamilyHistoryTypes = familyHistoryData.family_history_types && familyHistoryData.family_history_types.length > 0 ? familyHistoryData.family_history_types.map((d) => ({ name: d })) : [];
-        
-        const formattedCancerType = familyHistoryData.patient_cancer_type && familyHistoryData.patient_cancer_type.length > 0 ? familyHistoryData.patient_cancer_type.map((d) => ({ name: d })) : [];
-        
-        const formattedInjuriesTreatment = familyHistoryData.injuries_treatment && familyHistoryData.injuries_treatment.length > 0 ? familyHistoryData.injuries_treatment.map((d) => ({ name: d })) : [];
-
-        console.log("Atualizando familyHistoryData com os seguintes dados:");
-        // console.log({
-        //   "family_history": formattedfamilyHistory,
-        //   "family_history_types": formattedfamilyHistoryTypes,
-        //   "patient_cancer_type": formattedCancerType,
-        //   "removed_injuries": familyHistoryData.removed_injuries,
-        //   "injuries_treatment": formattedInjuriesTreatment
-        // });
-
-        const familyHistoryResponse = await api.put(
-          `/patients/${patientId}/forms/family-history/${dataId}/`,
-          {
-            "family_history": formattedfamilyHistory,
-            "family_history_types": formattedfamilyHistoryTypes,
-            "patient_cancer_type": formattedCancerType,
-            "removed_injuries": familyHistoryData.removed_injuries,
-            "injuries_treatment": formattedInjuriesTreatment
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("familyHistoryData atualizado:", familyHistoryResponse.data);
-
-        setFamilyHistoryData({});
-
-        router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/personalFamilyHistory');
-      }
-      
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisOncodermatoFamilyHistory(patientId);
+    setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/personalFamilyHistory');
   }
 
 

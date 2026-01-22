@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import ModalAlert from "@/components/ModalAlert";
+import { usePatientDataById } from "@/hooks/api/usePatientDataById";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { router, useFocusEffect } from "expo-router";
 import { CaretRightIcon, DiceFiveIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useState } from "react";
@@ -12,51 +12,10 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterLesaoSelect() {
   const [modalAlert, setModalAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasOncodermatoAnamnesis, setHasOncodermatoAnamnesis] = useState(false);
-  const [hasUlceraAnamnesis, setHasUlceraAnamnesis] = useState(false);
-
   const { patientId } = usePatientId();
   const { lesionType, updateLesionType } = useLesionType();
+  const { checkOncodermatoAnamnesisById, checkUlceraAnamnesisById, hasOncodermatoAnamnesis, hasUlceraAnamnesis } = usePatientDataById();
 
-  async function checkOncodermatoAnamnesisById() {
-      try {
-        setIsLoading(true)
-        const response = await api.get(`/patients/${patientId}/forms/family-history/`);
-        //console.log(response.data);
-
-        if(response.data){
-          setHasOncodermatoAnamnesis(true)
-        }
-  
-        setIsLoading(false)
-      } catch (error) {
-        setHasOncodermatoAnamnesis(false)
-        setIsLoading(false);
-        // if (axios.isAxiosError(error)) {
-        //   console.log('AXIOS ERROR', error.message);
-        //   console.log('CONFIG', error.config?.url);
-        // } else {
-        //   console.log('UNKNOWN ERROR', error);
-        // }
-      }
-    }
-
-  async function checkUlceraAnamnesisById() {
-      try {
-        setIsLoading(true)
-        const response = await api.get(`/patients/${patientId}/forms/clinical-history/`);
-        //console.log(response.data);
-
-        if(response.data){
-          setHasUlceraAnamnesis(true)
-        }
-  
-        setIsLoading(false)
-      } catch (error) {
-        setHasUlceraAnamnesis(false)
-        setIsLoading(false);
-      }
-    }
 
   const handleCancel = () => {
     setModalAlert(!modalAlert);
@@ -66,8 +25,10 @@ export default function RegisterLesaoSelect() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        await checkOncodermatoAnamnesisById();
-        await checkUlceraAnamnesisById();
+        setIsLoading(true);
+        await checkOncodermatoAnamnesisById(patientId);
+        await checkUlceraAnamnesisById(patientId);
+        setIsLoading(false);
       })();
     }, [patientId])
   );

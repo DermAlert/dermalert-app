@@ -4,11 +4,10 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -26,69 +25,13 @@ export default function CancerResearchEditStep6() {
   const { setLesionType } = useLesionType();
 
   const { patientId } = usePatientId();
+  const { updateAnamnesisOncodermatoCancerResearch } = useOncodermatoAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualiza Investigação de Câncer de Pele e Lesões Suspeitas
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/cancer-research/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        console.log("Atualizando cancerResearchData com os seguintes dados:");
-        // console.log({
-        //   "suspicious_moles": cancerResearchData.suspicious_moles,
-        //   "bleed_itch": cancerResearchData.bleed_itch,
-        //   "how_long": cancerResearchData.how_long,
-        //   "lesion_aspect": cancerResearchData.lesion_aspect,
-        //   "diagnosis": cancerResearchData.diagnosis
-        // });
-
-        const cancerResearchResponse = await api.put(
-          `/patients/${patientId}/forms/cancer-research/${dataId}/`,
-          {
-            "suspicious_moles": cancerResearchData.suspicious_moles,
-            "bleed_itch": cancerResearchData.bleed_itch,
-            "how_long": cancerResearchData.how_long,
-            "lesion_aspect": cancerResearchData.lesion_aspect,
-            "diagnosis": cancerResearchData.diagnosis
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("cancerResearchData atualizado", cancerResearchResponse.data);
-
-        setCancerResearchData({});
-
-        setLesionType(null)
-       
-
-        router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/cancerResearch');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisOncodermatoCancerResearch(patientId);
+    setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/cancerResearch');
   }
   
   const handleCancel = () => {

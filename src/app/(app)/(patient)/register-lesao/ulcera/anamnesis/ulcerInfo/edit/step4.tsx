@@ -4,10 +4,9 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraUlcerInfoForm } from "@/hooks/Ulcera/useUlceraUlcerInfoForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -23,62 +22,13 @@ export default function UlceraUlcerInfoEditStep4() {
   const { ulceraUlcerInfoData, setUlceraUlcerInfoData } = useUlceraUlcerInfoForm();
 
   const { patientId } = usePatientId();
+  const { updateAnamnesisUlceraUlcerInfo } = useUlceraAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar Info ulcera
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/current-ulcer-info/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        console.log("Enviando ulceraUlcerInfoData com os seguintes dados:");
-        // console.log({
-          // "how_long": ulceraUlcerInfoData.how_long,
-          // "treated_elsewhere": ulceraUlcerInfoData.treated_elsewhere,
-          // "used_antibiotics": ulceraUlcerInfoData.used_antibiotics,
-        // });
-
-        const ulceraUlcerInfoResponse = await api.put(
-          `/patients/${patientId}/forms/current-ulcer-info/${dataId}/`,
-          {
-            "how_long": ulceraUlcerInfoData.how_long,
-            "treated_elsewhere": ulceraUlcerInfoData.treated_elsewhere,
-            "used_antibiotics": ulceraUlcerInfoData.used_antibiotics,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("ulceraUlcerInfoData atualizado com sucesso:", ulceraUlcerInfoResponse.data);
-
-        setUlceraUlcerInfoData({});
-
-        router.push('/(app)/(patient)/lesao/anamnesis/ulcera/ulcerInfo');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisUlceraUlcerInfo(patientId);
+    // setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/ulcerInfo');
   }
 
 

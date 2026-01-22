@@ -4,10 +4,9 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraFamilyHistoryForm } from "@/hooks/Ulcera/useUlceraFamilyHistoryForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -24,60 +23,13 @@ export default function UlceraFamilyHistoryEditStep3() {
   const { ulceraFamilyHistoryData, setUlceraFamilyHistoryData } = useUlceraFamilyHistoryForm();
 
   const { patientId } = usePatientId();
+  const { updateAnamnesisUlceraFamilyHistory } = useUlceraAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar Histórico clinico geral
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/family-vascular-history/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        console.log("Enviando ulceraFamilyHistoryData com os seguintes dados:");
-        // console.log({
-          // "family_leg_ulcers": ulceraFamilyHistoryData.family_leg_ulcers,
-          // "family_varicose_or_circulatory": ulceraFamilyHistoryData.family_varicose_or_circulatory
-        // });
-
-        const ulceraFamilyHistoryDataResponse = await api.put(
-          `/patients/${patientId}/forms/family-vascular-history/${dataId}/`,
-          {
-            "family_leg_ulcers": ulceraFamilyHistoryData.family_leg_ulcers,
-            "family_varicose_or_circulatory": ulceraFamilyHistoryData.family_varicose_or_circulatory
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("ulceraFamilyHistoryData atualizado com sucesso:", ulceraFamilyHistoryDataResponse.data);
-
-        setUlceraFamilyHistoryData({});
-
-        router.push('/(app)/(patient)/lesao/anamnesis/ulcera/familyHistory');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisUlceraFamilyHistory(patientId);
+    // setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/familyHistory');
   }
 
   const handleCancel = () => {

@@ -3,12 +3,12 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import { PersonalFamilyHistoryProps } from "@/types/forms";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { PencilSimpleLineIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -18,40 +18,20 @@ import Animated, {
 export default function PersonalFamilyHistoryDetails() {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [personalFamilyHistory, setPersonalFamilyHistory] = useState<PersonalFamilyHistoryProps>();
-
   const { patientId } = usePatientId();
+  const { loadPersonalFamilyHistory, personalFamilyHistory } = useOncodermatoAnamnesisAPI();
 
-  async function loadPersonalFamilyHistory() {
-    try {
-      setIsLoading(true)
-      const { data } = await api.get(`/patients/${patientId}/forms/family-history/`);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        loadPersonalFamilyHistory(patientId);
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timeout);
 
-      setPersonalFamilyHistory(data);
-
-    } catch (error) {
-      console.log(error);
-    }  finally {
-      setIsLoading(false)
-    }
-  }
-
-  
-
-  useEffect(() => {
-
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      loadPersonalFamilyHistory();
-    }, 300); 
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
-
-    
-  }, []);
+    }, [patientId])
+  );
 
   const handleCancel = () => {
     router.push("/(app)/(patient)/lesao/anamnesis/oncodermato/anamnesisDetails");

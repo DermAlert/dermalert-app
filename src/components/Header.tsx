@@ -13,7 +13,7 @@ type Props = TouchableOpacityProps & {
 export default function Header({ title, icon='close' , ...rest}: Props) {
 
   return (
-    <View className="flex-row w-full px-1 py-4 items-center justify-start gap-1">
+    <View className="flex-row w-full px-1 py-2 items-center justify-start gap-1">
         <TouchableOpacity activeOpacity={0.7} className="justify-center items-center w-12 h-12" {...rest}>
         {icon==='close' ? (
           <XIcon size={18} color="#4052A1" />

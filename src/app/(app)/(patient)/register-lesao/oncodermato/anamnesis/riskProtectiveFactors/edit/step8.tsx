@@ -4,11 +4,10 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { useRiskProtectiveFactorsForm } from "@/hooks/Oncodermato/useRiskProtectiveFactorsForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -26,80 +25,19 @@ export default function RiskProtectiveFactorsEditStep8() {
   const { setLesionType } = useLesionType();
 
   const { patientId } = usePatientId();
+  const { updateAnamnesisOncodermatoRiskProtectiveFactor } = useOncodermatoAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar Histórico clinico geral
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/risk-protective-factors/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        // 2. Atualiza Avaliação de Fototipo
-
-        console.log("Atualizando riskProtectiveFactorsData com os seguintes dados:");
-        // console.log({
-          // "sun_exposure_period": riskProtectiveFactorsData.sun_exposure_period,
-          // "sun_burn": riskProtectiveFactorsData.sun_burn,
-          // "uv_protection": riskProtectiveFactorsData.uv_protection,
-          // "hat_use": riskProtectiveFactorsData.hat_use,
-          // "artifitial_tan": riskProtectiveFactorsData.artifitial_tan,
-          // "checkups_frequency": riskProtectiveFactorsData.checkups_frequency,
-          // "cancer_campaigns": riskProtectiveFactorsData.cancer_campaigns
-        // });
-
-        const phototypeAssessmentResponse = await api.put(
-          `/patients/${patientId}/forms/risk-protective-factors/${dataId}/`,
-          {
-            "sun_exposure_period": riskProtectiveFactorsData.sun_exposure_period,
-            "sun_burn": riskProtectiveFactorsData.sun_burn,
-            "uv_protection": riskProtectiveFactorsData.uv_protection,
-            "hat_use": riskProtectiveFactorsData.hat_use,
-            "artifitial_tan": riskProtectiveFactorsData.artifitial_tan,
-            "checkups_frequency": riskProtectiveFactorsData.checkups_frequency,
-            "cancer_campaigns": riskProtectiveFactorsData.cancer_campaigns
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("riskProtectiveFactorsData atualizado:", phototypeAssessmentResponse.data);
-
-        setRiskProtectiveFactorsData({});
-        setLesionType(null)
-       
-
-        router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/riskProtectiveFactors');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisOncodermatoRiskProtectiveFactor(patientId);
+    setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/riskProtectiveFactors');
   }
 
   const handleCancel = () => {
     setRiskProtectiveFactorsData({});
     setLesionType(null) 
-    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/phototypeAssessment');  
+    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/riskProtectiveFactors');  
   }
 
   useEffect(() => {

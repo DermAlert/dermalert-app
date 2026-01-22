@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { api } from "@/services/api";
 import { GeneralHealthProps } from "@/types/forms";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
@@ -58,25 +58,12 @@ export default function GeneralHealthStep3() {
   const [isYesOpen, setIsYesOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
-  const [allergiesDataList, setAllergiesDataList] = useState<string[]>([]);
 
   
   const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
+  const { loadAllergies, allergiesDataList } = usePatientAPI();
 
-  const loadAllergies = async () => {
-    try {
-      const { data } = await api.get('/allergies/');
-
-      if (data) {
-        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
-        setAllergiesDataList(onlyNames);
-        //console.log(allergiesDataList);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  
 
 
   // animação accordion

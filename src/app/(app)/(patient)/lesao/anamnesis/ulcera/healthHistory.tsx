@@ -3,12 +3,12 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import { UlceraHealthHistoryProps } from "@/types/forms";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { PencilSimpleLineIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -17,40 +17,21 @@ import Animated, {
 
 export default function HealthHistoryDetails() {
   const [isLoading, setIsLoading] = useState(false);
-  const [healthHistory, setHealthHistory] = useState<UlceraHealthHistoryProps>();
 
   const { patientId } = usePatientId();
-  
+  const { healthHistory, loadHealthHistory } = useUlceraAnamnesisAPI();
 
-  async function loadHealthHistory() {
-    try {
-      setIsLoading(true)
-      const { data } = await api.get(`/patients/${patientId}/forms/clinical-history/`);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        loadHealthHistory(patientId);
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timeout);
 
-      setHealthHistory(data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      console.log(error);
-    } 
-  }
-
-
-  useEffect(() => {
-
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      loadHealthHistory();
-    }, 300); 
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
-
-    
-  }, []);
+    }, [patientId])
+  );
 
 
   const handleCancel = () => {

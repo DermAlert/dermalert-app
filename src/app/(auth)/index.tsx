@@ -3,6 +3,7 @@ import Button from "@/components/Button";
 import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { TitleText } from "@/components/TitleText";
+import { useLoginId } from "@/hooks/useLoginId";
 import { FormLoginData } from "@/types/forms";
 import { formatCPF } from "@/utils/formatCPF";
 import { Link, router } from "expo-router";
@@ -14,6 +15,7 @@ import { KeyboardAvoidingView, SafeAreaView, TextInput, View } from 'react-nativ
 export default function Login() {
 
   const isLogged = false;
+  const { loginId, setLoginId } = useLoginId();
 
   const {
     control,
@@ -26,7 +28,15 @@ export default function Login() {
 
   const onSubmit = (data: FormLoginData): void => {
     console.log(data);
-    router.push('/(app)/home');
+    if (data.cpf === '111.111.111-11') {
+      setLoginId("supervisor")
+      console.log("é supervisor")
+      router.push('/(app)/(supervisor)/supervisor');
+      
+    } else {
+      setLoginId("profissional")
+      router.push('/(app)/home');
+    }
     reset();
   };
 

@@ -4,14 +4,14 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { usePhototypeAssessmentForm } from "@/hooks/Oncodermato/usePhototypeAssessmentForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { ArrowLeftIcon, ChartBarIcon, MedalIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -22,122 +22,16 @@ export default function PhototypeAssessmentEditStep8() {
   
   const { phototypeAssessmentData, setPhototypeAssessmentData } = usePhototypeAssessmentForm();
   const [isLoading, setIsLoading] = useState(false);
-  const [phototypeAssessmentScore, setPhototypeAssessmentScore] = useState<{ phototype?: string; score?: number } | null>(null);
   const { setLesionType } = useLesionType();
-
   const { patientId } = usePatientId();
+  const { phototypeAssessmentScore, getScore, updateAnamnesisOncodermatoPhototype } = useOncodermatoAnamnesisAPI();
 
-  const getScore = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-
-      // Envia Avaliação de Fototipo
-
-      console.log("Enviando phototypeAssessmentData");
-
-      const phototypeAssessmentResponse = await api.post(
-        `/patients/${patientId}/forms/phototype/calculate/`,
-        {
-          "skin_color": phototypeAssessmentData.skin_color,
-          "eyes_color": phototypeAssessmentData.eyes_color,
-          "hair_color": phototypeAssessmentData.hair_color,
-          "freckles": phototypeAssessmentData.freckles,
-          "sun_exposed": phototypeAssessmentData.sun_exposed,
-          "tanned_skin": phototypeAssessmentData.tanned_skin,
-          "sun_sensitive_skin": phototypeAssessmentData.sun_sensitive_skin
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("phototypeAssessmentData enviado com sucesso:", phototypeAssessmentResponse.data);
-
-      setPhototypeAssessmentScore(phototypeAssessmentResponse.data);
-
-      setIsLoading(false);
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        //console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
-  }
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar Histórico clinico geral
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/phototype/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        // 2. Atualiza Avaliação de Fototipo
-
-        console.log("Atualizando phototypeAssessmentData com os seguintes dados:");
-        // console.log({
-        //   "skin_color": phototypeAssessmentData.skin_color,
-        //   "eyes_color": phototypeAssessmentData.eyes_color,
-        //   "hair_color": phototypeAssessmentData.hair_color,
-        //   "freckles": phototypeAssessmentData.freckles,
-        //   "sun_exposed": phototypeAssessmentData.sun_exposed,
-        //   "tanned_skin": phototypeAssessmentData.tanned_skin,
-        //   "sun_sensitive_skin": phototypeAssessmentData.sun_sensitive_skin
-        // });
-
-        const phototypeAssessmentResponse = await api.put(
-          `/patients/${patientId}/forms/phototype/${dataId}/`,
-          {
-            "skin_color": phototypeAssessmentData.skin_color,
-            "eyes_color": phototypeAssessmentData.eyes_color,
-            "hair_color": phototypeAssessmentData.hair_color,
-            "freckles": phototypeAssessmentData.freckles,
-            "sun_exposed": phototypeAssessmentData.sun_exposed,
-            "tanned_skin": phototypeAssessmentData.tanned_skin,
-            "sun_sensitive_skin": phototypeAssessmentData.sun_sensitive_skin
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("phototypeAssessmentData atualizado:", phototypeAssessmentResponse.data);
-
-        setPhototypeAssessmentData({});
-        setLesionType(null)
-       
-
-        router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/phototypeAssessment');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisOncodermatoPhototype(patientId);
+    setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/phototypeAssessment');
   }
 
 
@@ -147,28 +41,16 @@ export default function PhototypeAssessmentEditStep8() {
     router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/phototypeAssessment');
   }
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     (async () => {
-  //       await getScore();
-  //     })();
-  //   }, [patientId])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        setIsLoading(true);
+        await getScore(patientId);
+        setIsLoading(false);
+      })();
+    }, [patientId])
+  );
 
-  useEffect(() => {
-
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      getScore();
-    }, 300);
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
-
-    
-  }, [patientId]);
 
   useEffect(() => {
     console.log(phototypeAssessmentData)

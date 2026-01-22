@@ -5,11 +5,9 @@ import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import StepCard from "@/components/StepCard";
 import { TitleText } from "@/components/TitleText";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { usePatientForm } from "@/hooks/usePatientForm";
-import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -23,159 +21,13 @@ export default function RegisterPatientStep9() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { generalHealthData, setGeneralHealthData } = useGeneralHealthForm();
-  const { patientId, updatePatientId, setPatientId } = usePatientId();
+
+  const { sendRegisterPatient } = usePatientAPI();
 
   const handleSendtoServer = async () => {
-     console.log(patientData);
-    // console.log(generalHealthData)
-
-    try {
-      setIsLoading(true)
-
-      // 1. Envia patientData
-      const response = await api.post(`/patients/`, 
-        {
-          "date_of_birth": patientData.date_of_birth, 
-          "gender": patientData.gender,
-          "other_gender": patientData.other_gender, 
-          "phone_number": patientData.phone_number, 
-          "sus_number": patientData.sus_number, 
-          "user": {
-            "cpf": patientData.user?.cpf, 
-            "email": patientData.user?.email, 
-            "name": patientData.user?.name
-          }
-        }, 
-        {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      });
-
-      console.log("patientData enviado com sucesso:", response.data);
-
-      // // 2. Pega o user ID da resposta
-       const userId = response.data?.user?.id;
-
-      
-
-      console.log("ID do usuário retornado:", userId);
-
-      if (!userId) {
-        console.error("ID do usuário não encontrado na resposta");
-        return;
-      }
-
-      if (userId){
-
-        // 3. Envia generalHealthData para a rota com userId
-        const formattedChronicDiseases = generalHealthData.chronic_diseases && generalHealthData.chronic_diseases.length > 0 ? generalHealthData.chronic_diseases.map((d) => ({ name: d })) : [];
-
-        const formattedMedicines = generalHealthData.medicines && generalHealthData.medicines.length > 0 ? generalHealthData.medicines.map((d) => ({ name: d })) : [];
-
-        const formattedAllergies = generalHealthData.allergies && generalHealthData.allergies.length > 0 ? generalHealthData.allergies.map((d) => ({ name: d })) : [];
-
-
-        console.log("Enviando generalHealthData com os seguintes dados:");
-        // console.log({
-        //   "surgeries": generalHealthData.surgeries,
-        //   "physical_activity_frequency": generalHealthData.physical_activity_frequency,
-        //   "chronic_diseases": formattedChronicDiseases,
-        //   "medicines": formattedMedicines,
-        //   "allergies": formattedAllergies
-        // });
-        // console.log(`/patients/${userId}/forms/general-health/`)
-
-        
-        const generalResponse = await api.post(
-          `/patients/${userId}/forms/general-health/`,
-          {
-            "surgeries": generalHealthData.surgeries,
-            "physical_activity_frequency": generalHealthData.physical_activity_frequency,
-            "chronic_diseases": formattedChronicDiseases,
-            "medicines": formattedMedicines,
-            "allergies": formattedAllergies
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("generalHealthData enviado com sucesso:", generalResponse.data);
-
-        // 4. pega versao do termo de consentimento:
-        const termVersionResponse = await api.get(`/consent-terms/latest/`);
-
-        const termVersion = termVersionResponse.data?.id;
-
-        console.log("ID do termo:", termVersion);
-
-        if (!termVersion) {
-          console.error("ID do termo não encontrado na resposta");
-          return;
-        }
-
-        if(termVersion) {
-          // 5. envia os termos:
-
-          const form = new FormData();
-
-          form.append("term", termVersion.toString());
-          form.append("has_signed", "true");
-
-          if (patientData.terms_photos && patientData.terms_photos.length > 0) {
-            patientData.terms_photos.forEach((image, index) => {
-              const filename = image.split("/").pop() || `image_${index}.jpg`;
-              const ext = /\.(\w+)$/.exec(filename)?.[1] || "jpg";
-              const mimeType = `image/${ext}`;
-
-              form.append("images", {
-                uri: image,
-                type: mimeType,
-                name: filename,
-              } as any);
-            });
-          }
-
-          console.log(form)
-
-          const termsResponse = await api.post(
-            `/patients/${userId}/consent/sign/`,
-            form,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-
-          console.log("Terms enviados com sucesso:", termsResponse.data);
-
-          setPatientData({});
-          setGeneralHealthData({});
-          setImages([]);
-
-          updatePatientId(userId.toString());
-
-          router.push("/(app)/(patient)/patient/[id]")
-
-
-        }
-
-
-      }
-      
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await sendRegisterPatient();
+    router.push("/(app)/(patient)/patient/[id]")
   }
   
   const handleCancel = () => {

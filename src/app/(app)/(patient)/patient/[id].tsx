@@ -5,138 +5,28 @@ import { CaretRightIcon, ClipboardTextIcon, ListDashesIcon, PlusIcon, ScrollIcon
 
 import { EmptyPatients } from '@/components/EmptyPatients';
 import { Loading } from '@/components/Loading';
+import { usePatientAPI } from '@/hooks/api/usePatientAPI';
+import { usePatientDataById } from '@/hooks/api/usePatientDataById';
+import { usePatientLesion } from '@/hooks/api/usePatientLesion';
 import { useLesionId } from '@/hooks/useLesionId';
 import { usePatientId } from '@/hooks/usePatientId';
-import { api } from "@/services/api";
-import { PatientProps } from '@/types/forms';
 import { formatCPF } from '@/utils/formatCPF';
 import { useFocusEffect } from '@react-navigation/native';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import { useCallback, useState } from 'react';
 import { BackHandler, FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Patient() {
-  const [modalLesoesVisible, setModalLesoesVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [patient, setPatient] = useState<PatientProps>();
-  const [lesion, setLesion] = useState<Array<{id: number, location: string, type: string}>>([]);
-  const [hasOncodermatoAnamnesis, setHasOncodermatoAnamnesis] = useState(false);
-  const [hasUlceraAnamnesis, setHasUlceraAnamnesis] = useState(false);
-  const [hasGeneralHealth, setHasGeneralHealth] = useState(false);
-  const [hasTerms, setHasTerms] = useState(false);
 
   const { patientId, updatePatientId, setPatientId } = usePatientId();
   const { updateLesionId } = useLesionId();
 
-
-  async function loadPatientById() {
-    try {
-      setIsLoading(true)
-      const response = await api.get(`/patients/${patientId}`);
-
-      setPatient(response.data);
-      //console.log(response.data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false);
-      if (axios.isAxiosError(error)) {
-        console.log('AXIOS ERROR', error.message);
-        console.log('CONFIG', error.config?.url);
-      } else {
-        console.log('UNKNOWN ERROR', error);
-      }
-    }
-  }
+  const { patient, loadPatientById } = usePatientAPI();
+  const { hasGeneralHealth, checkGeneralHealth, hasTerms, checkTermsById, hasOncodermatoAnamnesis, hasUlceraAnamnesis, checkOncodermatoAnamnesisById, checkUlceraAnamnesisById } = usePatientDataById();
+  const { patientLesion: lesion, loadLesionsByPatientId } = usePatientLesion();
   
-  async function checkGeneralHealth() {
-    try {
-      setIsLoading(true)
-      const response = await api.get(`/patients/${patientId}/forms/general-health/`);
-
-      if(response.data){
-        setHasGeneralHealth(true)
-      }
-
-      setIsLoading(false)
-    } catch (error) {
-      setHasGeneralHealth(false)
-      setIsLoading(false);
-    }
-  }
-
-  async function checkOncodermatoAnamnesisById() {
-    try {
-      setIsLoading(true)
-      const response = await api.get(`/patients/${patientId}/forms/family-history/`);
-
-      if(response.data){
-        setHasOncodermatoAnamnesis(true)
-      }
-
-      setIsLoading(false)
-    } catch (error) {
-      setHasOncodermatoAnamnesis(false)
-      setIsLoading(false);
-    }
-  }
-
-  async function checkUlceraAnamnesisById() {
-    try {
-      setIsLoading(true)
-      const response = await api.get(`/patients/${patientId}/forms/clinical-history/`);
-      //console.log(response.data);
-
-      if(response.data){
-        setHasUlceraAnamnesis(true)
-      }
-
-      setIsLoading(false)
-    } catch (error) {
-      setHasUlceraAnamnesis(false)
-      setIsLoading(false);
-    }
-  }
-
-  async function checkTermsById() {
-    try {
-      setIsLoading(true)
-      const response = await api.get(`/patients/${patientId}/consent/signed-terms/`);
-      const hasAnySigned = response.data.some((term: any) => term.has_signed);
-
-      if(hasAnySigned){
-        setHasTerms(true)
-      }
-
-      setIsLoading(false)
-    } catch (error) {
-      console.log("erro termos")
-      setHasTerms(false)
-      setIsLoading(false);
-    }
-  }
-
-  async function loadLesionsById() {
-    try {
-      setIsLoading(true)
-      const lesionsResponse = await api.get(`/patients/${patientId}/skin-conditions/`);
-
-      setLesion(lesionsResponse.data);
-      //console.log(lesionsResponse.data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false);
-      if (axios.isAxiosError(error)) {
-        console.log('AXIOS ERROR', error.message);
-        console.log('CONFIG', error.config?.url);
-      } else {
-        console.log('UNKNOWN ERROR', error);
-      }
-    }
-  }
 
   const handleBack = () => {
     setPatientId(null)
@@ -148,12 +38,14 @@ export default function Patient() {
       if (!patientId) return;
   
       (async () => {
-        await loadPatientById();
-        await loadLesionsById();
-        await checkGeneralHealth();
-        await checkOncodermatoAnamnesisById();
-        await checkUlceraAnamnesisById();
-        await checkTermsById();
+        setIsLoading(true)
+        await loadPatientById(patientId);
+        await loadLesionsByPatientId(patientId);
+        await checkGeneralHealth(patientId);
+        await checkOncodermatoAnamnesisById(patientId);
+        await checkUlceraAnamnesisById(patientId);
+        await checkTermsById(patientId);
+        setIsLoading(false)
       })();
   
       updateLesionId(null);
@@ -175,6 +67,7 @@ export default function Patient() {
         return () => subscription.remove();
       }, [])
     );
+
 
 
 if(isLoading){
@@ -203,8 +96,8 @@ if(isLoading){
               onPress={()=> patient?.user?.id && router.push({ pathname: "/(app)/(patient)/patientDetails/[id]", params: { id: patient.user.id.toString() } })}
             >
               <View className="flex-1">
-                <Text allowFontScaling={false} className='text-base font-semibold text-neutral-900'>{patient?.user?.name}</Text>
-                <Text allowFontScaling={false} className='text-sm text-neutral-600 mt-1'>{formatCPF(patient?.user?.cpf || '')}</Text>
+                <Text className='text-base font-semibold text-neutral-900'>{patient?.user?.name}</Text>
+                <Text className='text-sm text-neutral-600 mt-1'>{formatCPF(patient?.user?.cpf || '')}</Text>
               </View>
               <CaretRightIcon size={16} color="#7D83A0" />
             </TouchableOpacity>
@@ -217,7 +110,7 @@ if(isLoading){
                 onPress={()=> router.push("/(app)/(patient)/GeneralHealth/[id]")}
               >
                 <ClipboardTextIcon size={24} color="#6775B4" />
-                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Antecedentes clínicos</Text>
+                <Text className='text-base text-neutral-900 flex-1'>Antecedentes clínicos</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -231,7 +124,7 @@ if(isLoading){
                 onPress={()=> router.push({pathname: "/(app)/(patient)/termoConsentimento/[id]", params: { id: patientId || "" }})}
               >
                 <ScrollIcon size={24} color="#6775B4" />
-                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Termo de consentimento</Text>
+                <Text className='text-base text-neutral-900 flex-1'>Termo de consentimento</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -245,7 +138,7 @@ if(isLoading){
                 onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/anamnesisDetails')}
               >
                 <ListDashesIcon size={24} color="#6775B4" />
-                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Anamnese Oncodermato</Text>
+                <Text className='text-base text-neutral-900 flex-1'>Anamnese Oncodermato</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -258,7 +151,7 @@ if(isLoading){
                 onPress={()=> router.push('/(app)/(patient)/lesao/anamnesis/ulcera/anamnesisDetails')}
               >
                 <ListDashesIcon size={24} color="#6775B4" />
-                <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Anamnese Úlcera Venosa</Text>
+                <Text className='text-base text-neutral-900 flex-1'>Anamnese Úlcera Venosa</Text>
                 <CaretRightIcon size={16} color="#7D83A0" />
               </TouchableOpacity>
             </View>
@@ -268,7 +161,7 @@ if(isLoading){
 
         
         <View className="flex-row justify-between items-center">
-          <Text allowFontScaling={false} className="text-xl mb-4 font-semibold mt-8 text-neutral-900">Lesões registradas</Text>
+          <Text className="text-xl mb-4 font-semibold mt-8 text-neutral-900">Lesões registradas</Text>
           {/* <TouchableOpacity 
             className="w-10 h-10 justify-center items-center"
             onPress={() => setModalLesoesVisible(!modalLesoesVisible)}

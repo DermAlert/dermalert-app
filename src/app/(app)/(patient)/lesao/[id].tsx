@@ -2,12 +2,10 @@ import Button from '@/components/Button';
 import Header from '@/components/Header';
 import LesaoRegistroCard from '@/components/LesaoRegistroCard';
 import { Loading } from '@/components/Loading';
+import { usePatientLesion } from '@/hooks/api/usePatientLesion';
 import { useLesionId } from '@/hooks/useLesionId';
 import { useLesionType } from '@/hooks/useLesionType';
 import { usePatientId } from '@/hooks/usePatientId';
-import { api } from '@/services/api';
-import { LesionOncoProps, LesionProps } from '@/types/forms';
-import axios from 'axios';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -17,8 +15,6 @@ import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lesao() {
   const [isLoading, setIsLoading] = useState(false);
-  const [lesion, setLesion] = useState<LesionProps>({} as LesionProps);
-  const [registro, setRegistro] = useState<LesionOncoProps[]>([]);
 
   const { type } = useLocalSearchParams<{ type: string }>();
 
@@ -26,35 +22,15 @@ export default function Lesao() {
   const { setLesionId, lesionId } = useLesionId();
   const { updateLesionType, setLesionType } = useLesionType();
 
-  async function loadLesionsById() {
-    try {
-      setIsLoading(true)
-      const lesionsResponse = await api.get(`/patients/${patientId}/skin-conditions/${lesionId}`);
+  const { registro, loadLesionsById, lesion} = usePatientLesion()
 
-      setLesion(lesionsResponse.data);
-      if(type === "cancer"){
-        setRegistro(lesionsResponse.data.cancer_forms);
-      } else {
-        setRegistro(lesionsResponse.data.wounds);
-      }
-      //console.log(lesionsResponse.data);
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false);
-      if (axios.isAxiosError(error)) {
-        console.log('AXIOS ERROR', error.message);
-        console.log('CONFIG', error.config?.url);
-      } else {
-        console.log('UNKNOWN ERROR', error);
-      }
-    }
-  }
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        await loadLesionsById();
+        setIsLoading(true)
+        await loadLesionsById(patientId, type, lesionId);
+        setIsLoading(false)
       })();
     }, [patientId])
   );

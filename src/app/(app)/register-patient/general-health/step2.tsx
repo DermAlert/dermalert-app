@@ -3,9 +3,9 @@ import Header from "@/components/Header";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { useGeneralHealthForm } from "@/hooks/useGeneralHealthForm";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { api } from "@/services/api";
 import { GeneralHealthProps } from "@/types/forms";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
@@ -77,25 +77,12 @@ export default function GeneralHealthStep2() {
   const [isYesOpen, setIsYesOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
-  const [medicinesDataList, setMedicinesDataList] = useState<string[]>([]);
 
   
   const { generalHealthData, setGeneralHealthData, updateGeneralHealthData  } = useGeneralHealthForm();
+  const { loadMedicines, medicinesDataList } = usePatientAPI();
 
-  const loadMedicines = async () => {
-    try {
-      const { data } = await api.get('/medicines/');
-
-      if (data) {
-        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
-        setMedicinesDataList(onlyNames);
-        //console.log(medicinesDataList);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  
 
 
   // animação accordion

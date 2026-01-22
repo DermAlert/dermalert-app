@@ -3,15 +3,15 @@ import { Loading } from "@/components/Loading";
 import PhotoCard from "@/components/PhotoCard";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { usePatientLesion } from "@/hooks/api/usePatientLesion";
 import { useLesionId } from "@/hooks/useLesionId";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import { LesionImagesProps, LesionOncoProps, LesionUlcerProps } from "@/types/forms";
+import { LesionUlcerProps } from "@/types/forms";
 import { formatDateFromApi } from "@/utils/formatDate";
-import axios from "axios";
+import { useFocusEffect } from '@react-navigation/native';
 import { router, useLocalSearchParams } from "expo-router";
 import { MedalIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Text, View } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -21,63 +21,13 @@ import Animated, {
 
 export default function LesaoRegistroDetail() {
   const [isLoading, setIsLoading] = useState(false);
-  const [registroOnco, seRegistroOnco] = useState<LesionOncoProps>({} as LesionOncoProps);
-  const [registroUlcer, seRegistroUlcer] = useState<LesionUlcerProps>({} as LesionUlcerProps);
-  const [photos, setPhotos] = useState<LesionImagesProps[]>([]);
 
   const { type, registroId } = useLocalSearchParams();
   
   const { patientId } = usePatientId();
   const { setLesionId, lesionId } = useLesionId();
 
-  async function loadLesionsById() {
-    try {
-      setIsLoading(true)
-      if(type === "cancer"){
-        const lesionsResponse = await api.get(`/patients/${patientId}/skin-conditions/${lesionId}/cancer/${registroId}/`);
-
-        seRegistroOnco(lesionsResponse.data);
-        setPhotos(
-          lesionsResponse.data.images.map((img: LesionImagesProps) => ({
-            ...img,
-            // image: img.image.replace("localhost", "192.168.15.82"), // seu IP local
-            image: img.image,
-          }))
-        );
-        console.log(lesionsResponse.data);
-      } else {
-        const lesionsResponse = await api.get(`/patients/${patientId}/skin-conditions/${lesionId}/wounds/${registroId}/`);
-
-        seRegistroUlcer(lesionsResponse.data);
-        setPhotos(
-          lesionsResponse.data.images.map((img: LesionImagesProps) => ({
-            ...img,
-            // image: img.image.replace("localhost", "192.168.15.82"), // seu IP local
-            image: img.image
-          }))
-        );
-        console.log(lesionsResponse.data);
-      }
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false);
-      if (axios.isAxiosError(error)) {
-        console.log('AXIOS ERROR', error.message);
-        console.log('CONFIG', error.config?.url);
-      } else {
-        console.log('UNKNOWN ERROR', error);
-      }
-    }
-  }
-  
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     (async () => {
-  //       await loadLesionsById();
-  //     })();
-  //   }, [patientId])
-  // );
+  const { loadLesionsRegisterById, registroOnco, registroUlcer, photos} = usePatientLesion();
 
   const inflamationItems = {
     increased_pain: "Dor aumentada",
@@ -100,19 +50,18 @@ export default function LesaoRegistroDetail() {
         .filter((key) => registroUlcer[key as keyof LesionUlcerProps] === true)
         .map(key => inflamationItems[key as keyof typeof inflamationItems]);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      loadLesionsById();
-    }, 300);
-  
-    return () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-    }
 
-    
-  }, [patientId]);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        loadLesionsRegisterById(type, patientId, lesionId, registroId);
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timeout);
+
+    }, [patientId])
+  );
   
   const handleCancel = () => {
     router.back();

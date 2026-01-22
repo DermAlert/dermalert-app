@@ -1,6 +1,5 @@
 import Input from '@/components/Input';
-import { api } from '@/services/api';
-import { PatientProps } from '@/types/forms';
+import { usePatientAPI } from '@/hooks/api/usePatientAPI';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeftIcon, MagnifyingGlassIcon } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
@@ -13,17 +12,20 @@ import PatientCard from './PatientCard';
 type Props = {
   modalVisible: boolean,
   setModalVisible: (modalVisible: boolean) => void,
+  profissional?: boolean,
 }
 
-export default function PatientSearch({ modalVisible, setModalVisible }: Props) {
+export default function PatientSearch({ modalVisible, setModalVisible, profissional = false }: Props) {
   const [searchText, setSearchText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const [patients, setPatients] = useState<PatientProps[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [hasMore, setHasMore] = useState(true);
+  // const [page, setPage] = useState(1);
+  // const [patients, setPatients] = useState<PatientProps[]>([]);
 
   const searchInputRef = useRef<TextInput>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const { patients, setPatients, page, setPage, hasMore, setHasMore, loadPatientsSearch, isLoading } = usePatientAPI();
 
   const {
     control,
@@ -36,7 +38,7 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
       setPage(1);
       setPatients([]);
       setHasMore(true);
-      loadPatients(1, searchText);
+      loadPatientsSearch(1, searchText);
     }, 400);
 
     return () => {
@@ -44,33 +46,33 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
     };
   }, [searchText]);
 
-  const loadPatients = async (pageNumber: number, search: string) => {
-    if (isLoading || (!hasMore && search.length === 0)) return;
-    setIsLoading(true);
+  // const loadPatients = async (pageNumber: number, search: string) => {
+  //   if (isLoading || (!hasMore && search.length === 0)) return;
+  //   setIsLoading(true);
 
-    try {
-      const endpoint = search.length > 0
-        ? `/patients/?search=${encodeURIComponent(search)}`
-        : `/patients/?page=${pageNumber}`;
+  //   try {
+  //     const endpoint = search.length > 0
+  //       ? `/patients/?search=${encodeURIComponent(search)}`
+  //       : `/patients/?page=${pageNumber}`;
 
-      const { data } = await api.get(endpoint);
-      const newPatients = data.results || [];
+  //     const { data } = await api.get(endpoint);
+  //     const newPatients = data.results || [];
 
-      setPatients(prev => pageNumber === 1 ? newPatients : [...prev, ...newPatients]);
+  //     setPatients(prev => pageNumber === 1 ? newPatients : [...prev, ...newPatients]);
 
-      if (search.length === 0 && data.next) {
-        setHasMore(true);
-        setPage(prev => prev + 1);
-      } else if (search.length === 0) {
-        setHasMore(false);
-      }
+  //     if (search.length === 0 && data.next) {
+  //       setHasMore(true);
+  //       setPage(prev => prev + 1);
+  //     } else if (search.length === 0) {
+  //       setHasMore(false);
+  //     }
       
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -109,7 +111,7 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
                 name: "patient",
               }}
               inputProps={{
-                placeholder: "Buscar paciente",
+                placeholder: profissional ? "Buscar profissional" : "Buscar paciente",
                 returnKeyType: "send",
                 onChangeText: handleSearch,
                 value: searchText,
@@ -134,12 +136,12 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
             contentContainerStyle={{ marginBottom: 0, gap: 10 }}
             onEndReached={() => {
               if (!isLoading && hasMore && searchText.length === 0) {
-                loadPatients(page, "");
+                loadPatientsSearch(page, "");
               }
             }}
             onEndReachedThreshold={0.3}
             ListFooterComponent={() => isLoading ? <Loading /> : null}
-            ListEmptyComponent={() => !isLoading && <EmptyPatients title="Nenhum paciente encontrado" description="Nenhum resultado encontrado para esta busca." />}
+            ListEmptyComponent={() => !isLoading && <EmptyPatients title={`${profissional ? "Nenhum profissional encontrado" : "Nenhum paciente encontrado"}`} description="Nenhum resultado encontrado para esta busca." />}
             initialNumToRender={7}
           />
           <LinearGradient

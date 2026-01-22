@@ -4,8 +4,6 @@ import Header from "@/components/Header";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { usePatientForm } from "@/hooks/usePatientForm";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import React, { useEffect, useRef, useState } from 'react';
@@ -27,28 +25,6 @@ export default function RegisterPatientStep7() {
 
   const inputFocus = useRef<TextInput>(null);
 
-  const handleSendtoServer = async () => {
-    console.log(patientData);
-
-    try {
-      const response = await api.post(`/patients/`, patientData, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      });
-
-      console.log("enviou");
-
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } else {
-        console.log(error);
-      }
-    }
-  }
 
 
   useEffect(() => {
@@ -114,7 +90,6 @@ export default function RegisterPatientStep7() {
             icon={(<ArrowRightIcon size={24} color={`${autorizado ? 'white' : '#B3B3B3'}`} />)} 
             onPress={()=> {
               autorizado && router.push("/(app)/register-patient/step8")
-              //handleSendtoServer();
             }} 
             style={{ flexGrow: 1, width: '47%' }}
             activeOpacity={autorizado ? 0.2 : 1}

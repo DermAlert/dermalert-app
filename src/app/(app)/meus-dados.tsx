@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import UnidadeCard from "@/components/UnidadeCard";
+import { useLoginId } from '@/hooks/useLoginId';
 import { router, useFocusEffect } from 'expo-router';
 import { EnvelopeSimpleIcon, IdentificationCardIcon, KeyIcon, PencilSimpleLineIcon, UserIcon } from 'phosphor-react-native';
 import { useCallback } from 'react';
@@ -7,10 +8,12 @@ import { BackHandler, FlatList, Text, TouchableOpacity, View } from 'react-nativ
 
 export default function MeusDados() {
 
+  const { loginId } = useLoginId();
+
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        router.push("/(app)/home")
+        router.back()
         return true;
       };
   
@@ -26,7 +29,11 @@ export default function MeusDados() {
   return (
     <View className="flex-1 bg-white p-safe relative">
 
-      <Header icon="back" title="Meus dados" onPress={()=> router.push("/(app)/home")} />
+      <Header icon="back" title="Meus dados" 
+        onPress={()=> 
+          loginId === "supervisor" ? router.push('/(app)/(supervisor)/supervisor') : router.push('/(app)/home')
+        } 
+      />
 
       <View className="flex-1">
         <Text allowFontScaling={false} className="text-lg mb-4 font-medium px-4 mt-6 text-neutral-900">Dados pessoais</Text>

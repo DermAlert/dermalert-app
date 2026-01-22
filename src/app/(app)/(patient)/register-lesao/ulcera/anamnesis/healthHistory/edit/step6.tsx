@@ -4,10 +4,10 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraHealthHistoryForm } from "@/hooks/Ulcera/useUlceraHealthHistoryForm";
+import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -21,72 +21,20 @@ export default function UlceraHealthHistoryEditStep6() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { ulceraHealthHistoryData, setUlceraHealthHistoryData } = useUlceraHealthHistoryForm();
-
+  const { setLesionType } = useLesionType();
   const { patientId } = usePatientId();
+  const { updateAnamnesisUlceraHealthHistory } = useUlceraAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar Histórico clinico geral
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/clinical-history/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        console.log("Enviando ulceraHealthHistoryData com os seguintes dados:");
-        // console.log({
-        //   "hypertension": ulceraHealthHistoryData.hypertension,
-        //   "diabetes": ulceraHealthHistoryData.diabetes,
-        //   "deep_vein_thrombosis": ulceraHealthHistoryData.deep_vein_thrombosis,
-        //   "chronic_venous_insufficiency": ulceraHealthHistoryData.chronic_venous_insufficiency,
-        //   "compression_stockings_use": ulceraHealthHistoryData.compression_stockings_use,
-        // });
-
-        const ulceraHealthHistoryResponse = await api.put(
-          `/patients/${patientId}/forms/clinical-history/${dataId}/`,
-          {
-            "hypertension": ulceraHealthHistoryData.hypertension,
-            "diabetes": ulceraHealthHistoryData.diabetes,
-            "deep_vein_thrombosis": ulceraHealthHistoryData.deep_vein_thrombosis,
-            "chronic_venous_insufficiency": ulceraHealthHistoryData.chronic_venous_insufficiency,
-            "compression_stockings_use": ulceraHealthHistoryData.compression_stockings_use,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("ulceraHealthHistoryData atualizado com sucesso:", ulceraHealthHistoryResponse.data);
-
-        setUlceraHealthHistoryData({});
-
-        router.push('/(app)/(patient)/lesao/anamnesis/ulcera/healthHistory');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisUlceraHealthHistory(patientId);
+    // setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/healthHistory');
   }
 
   const handleCancel = () => {
     setUlceraHealthHistoryData({});
+    // setLesionType(null)
     router.push('/(app)/(patient)/lesao/anamnesis/ulcera/healthHistory');
   }
 

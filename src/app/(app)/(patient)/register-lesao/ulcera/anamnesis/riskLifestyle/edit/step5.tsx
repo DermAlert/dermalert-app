@@ -4,10 +4,9 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraRiskLifestyleForm } from "@/hooks/Ulcera/useUlceraRiskLifestyleForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -23,69 +22,18 @@ export default function UlceraRiskLifestyleEditStep5() {
   const { ulceraRiskLifestyleData, setUlceraRiskLifestyleData } = useUlceraRiskLifestyleForm();
 
   const { patientId } = usePatientId();
-
+  const { updateAnamnesisUlceraRiskLifestyle } = useUlceraAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar Fatores de risco e estilo de vida
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/lifestyle-risk/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        console.log("Enviando ulceraRiskLifestyleData com os seguintes dados:");
-        // console.log({
-            // "long_periods_posture": ulceraRiskLifestyleData.long_periods_posture,
-            // "leg_foot_trauma": ulceraRiskLifestyleData.leg_foot_trauma,
-            // "smoking": ulceraRiskLifestyleData.smoking,
-            // "physical_activity": ulceraRiskLifestyleData.physical_activity,
-        // });
-
-        const ulceraHealthHistoryResponse = await api.put(
-          `/patients/${patientId}/forms/lifestyle-risk/${dataId}/`,
-          {
-            "long_periods_posture": ulceraRiskLifestyleData.long_periods_posture,
-            "leg_foot_trauma": ulceraRiskLifestyleData.leg_foot_trauma,
-            "smoking": ulceraRiskLifestyleData.smoking,
-            "physical_activity": ulceraRiskLifestyleData.physical_activity,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("ulceraRiskLifestyleData atualizado com sucesso:", ulceraHealthHistoryResponse.data);
-
-        setUlceraRiskLifestyleData({});
-
-        router.push('/(app)/(patient)/lesao/anamnesis/ulcera/riskLifestyle');
-      }
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisUlceraRiskLifestyle(patientId);
+    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/riskLifestyle');
   }
 
 
   const handleCancel = () => {
     setUlceraRiskLifestyleData({});
-    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/healthHistory');
+    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/riskLifestyle');
   }
 
   useEffect(() => {

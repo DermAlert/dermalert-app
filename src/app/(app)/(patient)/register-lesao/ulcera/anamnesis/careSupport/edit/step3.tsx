@@ -4,10 +4,9 @@ import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import { SummaryQuestion } from "@/components/SummaryQuestion";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraCareSupportForm } from "@/hooks/Ulcera/useUlceraCareSupportForm";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
@@ -23,60 +22,13 @@ export default function UlceraCareSupportEditStep3() {
   const { ulceraCareSupportData, setUlceraCareSupportData } = useUlceraCareSupportForm();
 
   const { patientId } = usePatientId();
+  const { updateAnamnesisUlceraCareSupport } = useUlceraAnamnesisAPI();
 
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
-      setIsLoading(true);
-      // 1. Atualizar cuidados e suporte
-
-      const responseResult = await api.get(`/patients/${patientId}/forms/care-access-support/`);
-
-      const dataId = responseResult.data.id;
-
-      if(dataId){
-
-        console.log("Enviando ulceraCareSupportData com os seguintes dados:");
-        // console.log({
-            // "has_dressings_available": ulceraCareSupportData.has_dressings_available,
-            // "has_help_at_home": ulceraCareSupportData.has_help_at_home
-        // });
-
-        const ulceraCareSupportResponse = await api.put(
-          `/patients/${patientId}/forms/care-access-support/${dataId}/`,
-          {
-            "has_dressings_available": ulceraCareSupportData.has_dressings_available,
-            "has_help_at_home": ulceraCareSupportData.has_help_at_home
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        console.log("ulceraCareSupportData atualizado com sucesso:", ulceraCareSupportResponse.data);
-
-        setUlceraCareSupportData({});
-
-        router.push('/(app)/(patient)/lesao/anamnesis/ulcera/careSupport');
-      }
-      
-
-      
-
-      //setIsLoading(false);
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
+    setIsLoading(true);
+    await updateAnamnesisUlceraCareSupport(patientId);
+    // setLesionType(null)
+    router.push('/(app)/(patient)/lesao/anamnesis/ulcera/careSupport');
   }
 
   const handleCancel = () => {

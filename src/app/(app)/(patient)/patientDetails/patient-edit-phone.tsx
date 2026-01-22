@@ -5,10 +5,9 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { api } from "@/services/api";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { FormPatientEditPhoneData } from "@/types/forms";
 import { formatPhone } from "@/utils/formatPhone";
-import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
@@ -21,6 +20,7 @@ export default function PatientEditPhone() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const { updatePatientPhone } = usePatientAPI();
 
   const {
     control,
@@ -30,28 +30,13 @@ export default function PatientEditPhone() {
   } = useForm<FormPatientEditPhoneData>()
 
 
-  const onSubmit = async (data: FormPatientEditPhoneData): Promise<void> => {
-    try {
+  const onSubmit = async (data: FormPatientEditPhoneData) => {
       setIsLoading(true);
-
-      const response = await api.patch(`/patients/${id}/`, data);
-
-      //console.log(response.data);
-
+      await updatePatientPhone(data, id);
       reset();
       setStep1(false)
-
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
+      setIsLoading(false)
     }
-  };
 
   const inputFocus = useRef<TextInput>(null);
 

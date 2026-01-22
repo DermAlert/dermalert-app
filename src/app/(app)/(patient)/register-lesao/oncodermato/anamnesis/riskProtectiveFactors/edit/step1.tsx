@@ -3,10 +3,10 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { useRiskProtectiveFactorsForm } from "@/hooks/Oncodermato/useRiskProtectiveFactorsForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { RiskProtectiveFactorsProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -27,6 +27,7 @@ export default function RiskProtectiveFactorsEditStep1() {
   const { setLesionType } = useLesionType();
 
   const { patientId } = usePatientId();
+  const { riskProtectiveFactors, loadRiskProtectiveFactors } = useOncodermatoAnamnesisAPI()
 
   // formulario
   const { control, handleSubmit, reset } = useForm<RiskProtectiveFactorsProps>(
@@ -38,19 +39,23 @@ export default function RiskProtectiveFactorsEditStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "sun_exposure_period" });
 
-  const loadPhototypeAssessment = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/risk-protective-factors/`);
-      setRiskProtectiveFactorsData(prev => {
-        return prev?.sun_exposure_period ? prev : data;
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadRiskProtectiveFactors(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!riskProtectiveFactors) return;
+
+    setRiskProtectiveFactorsData(prev => {
+        return prev?.sun_exposure_period ? prev : riskProtectiveFactors;
       });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setRiskProtectiveFactorsData]);
+
+    setIsLoading(false);
+  }, [riskProtectiveFactors, setRiskProtectiveFactorsData]);
 
   useEffect(() => {
     if (riskProtectiveFactorsData?.sun_exposure_period) {
@@ -60,12 +65,7 @@ export default function RiskProtectiveFactorsEditStep1() {
     }
   }, [riskProtectiveFactorsData, reset]);
 
-  useEffect(() => {
-    loadPhototypeAssessment();
-  }, [loadPhototypeAssessment]);
 
-
-  
 
   const handleNext = (data: RiskProtectiveFactorsProps) => {
     if (data.sun_exposure_period && data.sun_exposure_period.length > 0 && notEmpty) {
@@ -79,7 +79,7 @@ export default function RiskProtectiveFactorsEditStep1() {
 
   const handleCancel = () => {
     setRiskProtectiveFactorsData({});
-    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/phototypeAssessment');  
+    router.push('/(app)/(patient)/lesao/anamnesis/oncodermato/riskProtectiveFactors');  
   }
 
   useEffect(() => {

@@ -5,11 +5,12 @@ import { Loading } from "@/components/Loading";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
+import { useFormLists } from "@/hooks/api/useFormLists";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { api } from "@/services/api";
 import { PersonalFamilyHistoryProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon, XIcon } from "phosphor-react-native";
@@ -24,33 +25,21 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-// const FAMILY_MEMBERS = [
-//   "Tio",
-//   "Tia",
-//   "Tio-avô",
-//   "Tia-avó",
-//   "Primo",
-//   "Prima",
-//   "Filho",
-//   "Filha",
-//   "Sobrinho",
-//   "Sobrinha",
-//   "Bisavô",
-//   "Bisavó"
-// ];
 
 export default function PersonalFamilyHistoryStep1() {
   const [isFamilyOpen, setIsFamilyOpen] = useState(false);
   const [notEmpty, setNotEmpty] = useState(false);
   const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
-  const [relativesList, setRelativesList] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
   const { setLesionType } = useLesionType();
 
   const { patientId } = usePatientId();
+
+  const { relativesList, loadRelatives } = useFormLists();
+  const { personalFamilyHistory, loadPersonalFamilyHistory } = useOncodermatoAnamnesisAPI()
 
 
   // animação accordion
@@ -76,30 +65,26 @@ export default function PersonalFamilyHistoryStep1() {
     }
   );
 
-  const loadPersonalFamilyHistory = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/family-history/`);
-      console.log(data);
-      const familyHistoryContent = data.family_history.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name)
-      const familyHistoryTypesContent = data.family_history_types.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name)
-      const patientCancerTypeContent = data.patient_cancer_type.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name)
-      const injuriesTreatmentContent = data.injuries_treatment.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name)
-      setFamilyHistoryData(prev => {
-        return (prev?.family_history && prev?.family_history.length > 0) || (prev?.family_history_types && prev?.family_history_types.length > 0) ? prev : { 
-          family_history: familyHistoryContent,
-          family_history_types: familyHistoryTypesContent,
-          injuries_treatment: injuriesTreatmentContent,
-          patient_cancer_type: patientCancerTypeContent,
-          removed_injuries: data.removed_injuries
-        };
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setFamilyHistoryData]);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadPersonalFamilyHistory(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!personalFamilyHistory) return;
+
+    const familyHistoryContent = personalFamilyHistory?.family_history?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name) 
+    const familyHistoryTypesContent = personalFamilyHistory?.family_history_types?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name) 
+    const patientCancerTypeContent = personalFamilyHistory?.patient_cancer_type?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name) 
+    const injuriesTreatmentContent = personalFamilyHistory?.injuries_treatment?.map((item: string | { name: string }) => typeof item === 'string' ? item : item.name) 
+    
+    setFamilyHistoryData(prev => { return (prev?.family_history && prev?.family_history.length > 0) || (prev?.family_history_types && prev?.family_history_types.length > 0) ? prev : { family_history: familyHistoryContent, family_history_types: familyHistoryTypesContent, injuries_treatment: injuriesTreatmentContent, patient_cancer_type: patientCancerTypeContent, removed_injuries: personalFamilyHistory?.removed_injuries }; });
+
+    setIsLoading(false);
+  }, [personalFamilyHistory, setFamilyHistoryData]);
+  
 
   useEffect(() => {
     if (familyHistoryData?.family_history && familyHistoryData?.family_history_types) {
@@ -111,26 +96,6 @@ export default function PersonalFamilyHistoryStep1() {
   }, [familyHistoryData, reset]);
 
 
-  useEffect(() => {
-    loadPersonalFamilyHistory();
-  }, [loadPersonalFamilyHistory]);
-
-
-  const loadRelatives = async () => {
-    try {
-      const { data } = await api.get('/relatives/');
-
-      if (data) {
-        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
-        setRelativesList(onlyNames);
-        //console.log(relativesList);
-        //console.log(data);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const fixedOptions = ["Mãe", "Pai", "Avô/Avó", "Irmão/Irmã", "Não"];
 

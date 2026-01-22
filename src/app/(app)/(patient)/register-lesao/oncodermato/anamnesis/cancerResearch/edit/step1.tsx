@@ -3,10 +3,10 @@ import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useOncodermatoAnamnesisAPI } from "@/hooks/api/oncodermato/useOncodermatoAnamnesisAPI";
 import { useCancerResearchForm } from "@/hooks/Oncodermato/useCancerResearchForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
 import { CancerResearchProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -28,6 +28,8 @@ export default function CancerResearchEditStep1() {
 
   const { patientId } = usePatientId();
 
+  const { cancerResearch, loadCancerResearch } = useOncodermatoAnamnesisAPI();
+
   // formulario
   const { control, handleSubmit, reset } = useForm<CancerResearchProps>(
     {
@@ -38,19 +40,23 @@ export default function CancerResearchEditStep1() {
   );
   const cancerTypeValue = useWatch({ control, name: "suspicious_moles" });
 
-  const loadCancerResearch = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get(`/patients/${patientId}/forms/cancer-research/`);
-      setCancerResearchData(prev => {
-        return prev?.suspicious_moles && prev?.suspicious_moles !== undefined ? prev : data
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [patientId, setCancerResearchData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadCancerResearch(patientId);
+    }, [patientId])
+  );
+
+  useEffect(() => {
+    if (!cancerResearch) return;
+
+    setCancerResearchData(prev => {
+      return prev?.suspicious_moles && prev?.suspicious_moles !== undefined ? prev : cancerResearch
+    });
+
+    setIsLoading(false);
+  }, [cancerResearch, setCancerResearchData]);
 
   useEffect(() => {
     if (cancerResearchData?.suspicious_moles !== undefined) {
@@ -60,10 +66,6 @@ export default function CancerResearchEditStep1() {
     }
   }, [cancerResearchData, reset]);
 
-  useEffect(() => {
-    loadCancerResearch();
-  }, [loadCancerResearch]);
-  
 
   const handleNext = (data: CancerResearchProps) => {
     if (data.suspicious_moles !== undefined && notEmpty) {

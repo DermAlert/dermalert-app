@@ -4,6 +4,7 @@ import { Loading } from "@/components/Loading";
 import ModalAlert from "@/components/ModalAlert";
 import StepCard from "@/components/StepCard";
 import { TitleText } from "@/components/TitleText";
+import { useUlceraAnamnesisAPI } from "@/hooks/api/ulcera/useUlceraAnamnesisAPI";
 import { useUlceraCareSupportForm } from "@/hooks/Ulcera/useUlceraCareSupportForm";
 import { useUlceraFamilyHistoryForm } from "@/hooks/Ulcera/useUlceraFamilyHistoryForm";
 import { useUlceraHealthHistoryForm } from "@/hooks/Ulcera/useUlceraHealthHistoryForm";
@@ -11,8 +12,6 @@ import { useUlceraRiskLifestyleForm } from "@/hooks/Ulcera/useUlceraRiskLifestyl
 import { useUlceraUlcerInfoForm } from "@/hooks/Ulcera/useUlceraUlcerInfoForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { usePatientId } from "@/hooks/usePatientId";
-import { api } from "@/services/api";
-import axios from "axios";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useState } from "react";
@@ -39,170 +38,17 @@ export default function RegisterAnamnesisUlcera() {
   const { patientId } = usePatientId();
   const { lesionType, setLesionType } = useLesionType();
 
+  const { sendAnamnesisUlceraCareSupport, sendAnamnesisUlceraFamilyHistory, sendAnamnesisUlceraHealthHistory, sendAnamnesisUlceraRiskLifestyle, sendAnamnesisUlceraUlcerInfo } = useUlceraAnamnesisAPI();
+
   const handleSendtoServer = async () => {
-    console.log(patientId);
-
-    try {
       setIsLoading(true);
-      // 1. Envia Histórico clinico geral
-
-      console.log("Enviando ulceraHealthHistoryData com os seguintes dados:");
-      // console.log({
-      //   "hypertension": ulceraHealthHistoryData.hypertension,
-      //   "diabetes": ulceraHealthHistoryData.diabetes,
-      //   "deep_vein_thrombosis": ulceraHealthHistoryData.deep_vein_thrombosis,
-      //   "chronic_venous_insufficiency": ulceraHealthHistoryData.chronic_venous_insufficiency,
-      //   "compression_stockings_use": ulceraHealthHistoryData.compression_stockings_use,
-      // });
-
-      const ulceraHealthHistoryResponse = await api.post(
-        `/patients/${patientId}/forms/clinical-history/`,
-        {
-          "hypertension": ulceraHealthHistoryData.hypertension,
-          "diabetes": ulceraHealthHistoryData.diabetes,
-          "deep_vein_thrombosis": ulceraHealthHistoryData.deep_vein_thrombosis,
-          "chronic_venous_insufficiency": ulceraHealthHistoryData.chronic_venous_insufficiency,
-          "compression_stockings_use": ulceraHealthHistoryData.compression_stockings_use,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("ulceraHealthHistoryData enviado com sucesso:", ulceraHealthHistoryResponse.data);
-
-      setUlceraHealthHistoryData({});
-
-      //------
-
-      // 2. Envia Fatores de risco e estilo de vida
-
-      console.log("Enviando ulceraRiskLifestyleData com os seguintes dados:");
-      // console.log({
-      //   "long_periods_posture": ulceraRiskLifestyleData.long_periods_posture,
-      //   "leg_foot_trauma": ulceraRiskLifestyleData.leg_foot_trauma,
-      //   "smoking": ulceraRiskLifestyleData.smoking,
-      //   "physical_activity": ulceraRiskLifestyleData.physical_activity,
-      // });
-
-      const ulceraRiskLifestyleResponse = await api.post(
-        `/patients/${patientId}/forms/lifestyle-risk/`,
-        {
-          "long_periods_posture": ulceraRiskLifestyleData.long_periods_posture,
-        "leg_foot_trauma": ulceraRiskLifestyleData.leg_foot_trauma,
-        "smoking": ulceraRiskLifestyleData.smoking,
-        "physical_activity": ulceraRiskLifestyleData.physical_activity,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("ulceraRiskLifestyleData enviado com sucesso:", ulceraRiskLifestyleResponse.data);
-
-      setUlceraRiskLifestyleData({});
-
-      // //------
-
-      // // 3. Envia Historico familiar
-
-      console.log("Enviando ulceraFamilyHistoryData com os seguintes dados:");
-      // console.log({
-      //   "family_leg_ulcers": ulceraFamilyHistoryData.family_leg_ulcers,
-      //   "family_varicose_or_circulatory": ulceraFamilyHistoryData.family_varicose_or_circulatory
-      // });
-
-      const ulceraFamilyHistoryResponse = await api.post(
-        `/patients/${patientId}/forms/family-vascular-history/`,
-        {
-          "family_leg_ulcers": ulceraFamilyHistoryData.family_leg_ulcers,
-          "family_varicose_or_circulatory": ulceraFamilyHistoryData.family_varicose_or_circulatory
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("ulceraFamilyHistoryData enviado com sucesso:", ulceraFamilyHistoryResponse.data);
-
-      setUlceraFamilyHistoryData({});
-
-      // //------
-
-      // // 4. Envia Informações sobre a ulcera atual
-
-      console.log("Enviando ulceraUlcerInfoData com os seguintes dados:");
-      // console.log({
-      //   "how_long": ulceraUlcerInfoData.how_long,
-      //   "treated_elsewhere": ulceraUlcerInfoData.treated_elsewhere,
-      //   "used_antibiotics": ulceraUlcerInfoData.used_antibiotics,
-      // });
-
-      const ulceraUlcerInfoResponse = await api.post(
-        `/patients/${patientId}/forms/current-ulcer-info/`,
-        {
-          "how_long": ulceraUlcerInfoData.how_long,
-          "treated_elsewhere": ulceraUlcerInfoData.treated_elsewhere,
-          "used_antibiotics": ulceraUlcerInfoData.used_antibiotics,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("ulceraUlcerInfoData enviado com sucesso:", ulceraUlcerInfoResponse.data);
-
-      setUlceraUlcerInfoData({});
-
-      //------
-
-      // 5. Envia Acesso a cuidados e suporte
-
-      console.log("Enviando ulceraCareSupportData com os seguintes dados:");
-      // console.log({
-      //   "has_dressings_available": ulceraCareSupportData.has_dressings_available,
-      //   "has_help_at_home": ulceraCareSupportData.has_help_at_home
-      // });
-
-      const ulceraCareSupportResponse = await api.post(
-        `/patients/${patientId}/forms/care-access-support/`,
-        {
-          "has_dressings_available": ulceraCareSupportData.has_dressings_available,
-          "has_help_at_home": ulceraCareSupportData.has_help_at_home
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("ulceraCareSupportData enviado com sucesso:", ulceraCareSupportResponse.data);
-
-      setUlceraCareSupportData({});
-
-      
-
+      await sendAnamnesisUlceraCareSupport(patientId);
+      await sendAnamnesisUlceraFamilyHistory(patientId);
+      await sendAnamnesisUlceraHealthHistory(patientId);
+      await sendAnamnesisUlceraRiskLifestyle(patientId);
+      await sendAnamnesisUlceraUlcerInfo(patientId);
       router.push("/(app)/(patient)/register-lesao/ulcera/anamnesis/success")
-     
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
     }
-  }
  
   
   const handleCancel = () => {

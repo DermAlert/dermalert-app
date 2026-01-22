@@ -4,10 +4,10 @@ import Header from "@/components/Header";
 import ModalTagSearch from "@/components/ModalTagSearch";
 import ProgressBar from "@/components/ProgressBar";
 import RadioButton from "@/components/RadioButton";
+import { useFormLists } from "@/hooks/api/useFormLists";
 import { useFamilyHistoryForm } from "@/hooks/Oncodermato/useFamilyHistoryForm";
 import { useLesionType } from "@/hooks/useLesionType";
 import { useTagListModal } from "@/hooks/useTagListModal";
-import { api } from "@/services/api";
 import { PersonalFamilyHistoryProps } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon, XIcon } from "phosphor-react-native";
@@ -42,8 +42,8 @@ export default function PersonalFamilyHistoryStep1() {
   const [notEmpty, setNotEmpty] = useState(false);
   const [isOtherOpen, setIsOtherOpen] = useState(false);
   const [modalSearchOpen, setModalSearchOpen] = useState(false);  
-  const [relativesList, setRelativesList] = useState<string[]>([]);
   
+  const { relativesList, loadRelatives } = useFormLists();
   const { familyHistoryData, setFamilyHistoryData, updateFamilyHistoryData  } = useFamilyHistoryForm();
   const { setLesionType } = useLesionType();
 
@@ -70,23 +70,6 @@ export default function PersonalFamilyHistoryStep1() {
       }
     }
   );
-
-
-  const loadRelatives = async () => {
-    try {
-      const { data } = await api.get('/relatives/');
-
-      if (data) {
-        const onlyNames: string[] = data.map((item: { name: string }) => item.name);
-        setRelativesList(onlyNames);
-        //console.log(relativesList);
-        //console.log(data);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const fixedOptions = ["Mãe", "Pai", "Avô/Avó", "Irmão/Irmã", "Não"];
 
