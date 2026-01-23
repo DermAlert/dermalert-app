@@ -4,7 +4,7 @@ import Icon from "@/components/Icon";
 import Input from '@/components/Input';
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditSUSData } from "@/types/forms";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { formatCNS, isValidCNS } from "@/utils/CNS";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
@@ -18,20 +18,27 @@ export default function PatientEditSUS() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const { updatePatientData } = usePatientAPI();
+  
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditSUSData>()
+  } = useForm<{sus_number?: string;}>()
 
 
-  const onSubmit = (data: FormPatientEditSUSData): void => {
-    console.log(data);
+  const onSubmit = async (data: {sus_number?: string;}) => {
+    const formattedData = (data?.sus_number ?? '').replace(/\D/g, '');
+    const userData = { sus_number: formattedData };
+    console.log(userData)
+    setIsLoading(true);
+    await updatePatientData(userData, id);
     reset();
     setStep1(false)
-  };
+    setIsLoading(false)
+  }
 
   const inputFocus = useRef<TextInput>(null);
 
@@ -68,10 +75,10 @@ export default function PatientEditSUS() {
 
           <Input 
             ref={inputFocus} 
-            error={errors.sus?.message}
+            error={errors.sus_number?.message}
             formProps={{
               control,
-              name: "sus",
+              name: "sus_number",
               rules: {
                 required: "O campo é obrigatório.",
                 validate: value =>

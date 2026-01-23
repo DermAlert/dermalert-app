@@ -6,7 +6,6 @@ import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
 import { usePatientAPI } from "@/hooks/api/usePatientAPI";
-import { FormPatientEditPhoneData } from "@/types/forms";
 import { formatPhone } from "@/utils/formatPhone";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
@@ -20,19 +19,19 @@ export default function PatientEditPhone() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
-  const { updatePatientPhone } = usePatientAPI();
+  const { updatePatientData } = usePatientAPI();
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditPhoneData>()
+  } = useForm<{phone_number?: string;}>()
 
 
-  const onSubmit = async (data: FormPatientEditPhoneData) => {
+  const onSubmit = async (data: {phone_number?: string;}) => {
       setIsLoading(true);
-      await updatePatientPhone(data, id);
+      await updatePatientData(data, id);
       reset();
       setStep1(false)
       setIsLoading(false)

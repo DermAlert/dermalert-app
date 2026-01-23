@@ -31,7 +31,7 @@ export default function RegisterProfissionalStep2() {
   const handleNext = (data: ProfissionalProps) => {
     console.log(data);
     updateProfissionalData(data);
-    router.push('/(app)/(profissional)/register-profissional/step3');
+    router.push('/(app)/(profissional)/register-profissional/success');
   }
 
   const handleCancel = () => {

@@ -5,7 +5,7 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditNameData } from "@/types/forms";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
@@ -18,19 +18,23 @@ export default function PatientEditName() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const { updatePatientData } = usePatientAPI();
+  
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditNameData>()
+  } = useForm<{user?: { name?: string; }}>()
 
 
-  const onSubmit = (data: FormPatientEditNameData): void => {
-    console.log(data);
+  const onSubmit = async (data: {user?: { name?: string; }}) => {
+    setIsLoading(true);
+    await updatePatientData(data, id);
     reset();
     setStep1(false)
+    setIsLoading(false)
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -69,10 +73,10 @@ export default function PatientEditName() {
 
           <Input 
             ref={inputFocus} 
-            error={errors.name?.message}
+            error={errors.user?.name?.message}
             formProps={{
               control,
-              name: "name",
+              name: "user.name",
               rules: {
                 required: "O nome é obrigatório."
               }

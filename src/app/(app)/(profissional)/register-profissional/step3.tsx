@@ -1,36 +1,40 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
+import { Loading } from "@/components/Loading";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { TitleText } from "@/components/TitleText";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
 import { useProfissionalForm } from "@/hooks/useProfissionalForm";
-import { ProfissionalProps } from "@/types/forms";
 import { formatCPF } from "@/utils/formatCPF";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon, StethoscopeIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { BackHandler, InteractionManager, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterProfissionalStep3() {
+  const [isLoading, setIsLoading] = useState(true);
   const [modalAlert, setModalAlert] = useState(false);
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
-
-  const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
-    {
-      defaultValues: {
-        user: {
-          email: profissionalData.user?.email ?? ''
-        }
-      }
-    }
-  );
+  const { cpf } = useLocalSearchParams();
+  const { getProfessionalByCPF, professional } = useProfessionalAPI();
   
-  const handleNext = (data: ProfissionalProps) => {
-    console.log(data);
-    updateProfissionalData(data);
+
+  // const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
+  //   {
+  //     defaultValues: {
+  //       user: {
+  //         email: profissionalData.user?.email ?? ''
+  //       }
+  //     }
+  //   }
+  // );
+  
+  const handleNext = () => {
+    // console.log(data);
+    // updateProfissionalData(data);
     router.push('/(app)/(profissional)/register-profissional/success');
   }
 
@@ -42,6 +46,17 @@ export default function RegisterProfissionalStep3() {
 
   const scrollRef = useRef<KeyboardAwareScrollView>(null);
   const inputFocus = useRef<TextInput>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!cpf) return;
+  
+      (async () => {
+        await getProfessionalByCPF(cpf);
+        setIsLoading(false)
+      })();
+    }, [cpf])
+  );
 
   useEffect(() => {
     const task = InteractionManager.runAfterInteractions(() => {
@@ -73,10 +88,13 @@ export default function RegisterProfissionalStep3() {
       return () => subscription.remove();
     }, [])
   );
-
-  useEffect(() => {
-      console.log(profissionalData)
-    }, []);
+  if(isLoading){
+    return (
+      <View className="flex-1 bg-white p-safe justify-center items-center">
+        <Loading />
+      </View>
+    )
+  }
 
   return (
     <Animated.View 
@@ -117,8 +135,8 @@ export default function RegisterProfissionalStep3() {
                   <StethoscopeIcon size={25} color="#FF765E" weight="bold" />
                 </View>
                 <View>
-                  <Text allowFontScaling={false} className='font-semibold text-base text-neutral-900'>Gustavo Andrade de Souza</Text>
-                  <Text allowFontScaling={false} className='text-sm mt-1 text-neutral-600'>{formatCPF(profissionalData.user?.cpf || "")}</Text>
+                  <Text allowFontScaling={false} className='font-semibold text-base text-neutral-900'>{professional?.user?.name}</Text>
+                  <Text allowFontScaling={false} className='text-sm mt-1 text-neutral-600'>{formatCPF(professional?.user?.cpf || "")}</Text>
                 </View>
               </View>
 
@@ -132,11 +150,11 @@ export default function RegisterProfissionalStep3() {
                 iconLeft 
                 secondary 
                 icon={(<ArrowLeftIcon size={24} color="#4052A1" />)} 
-                onPress={()=> router.push("/(app)/(profissional)/register-profissional/step2")} 
+                onPress={()=> router.push("/(app)/(profissional)/register-profissional/step1")} 
                 style={{ flexGrow: 1, width: '47%' }}
               />
               <Button title="Concluir" 
-                onPress={handleSubmit(handleNext)} 
+                onPress={handleNext} 
                 style={{ flexGrow: 1, width: '47%' }}
               />
             </View>

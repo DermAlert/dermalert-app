@@ -6,7 +6,6 @@ import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
 import { usePatientAPI } from "@/hooks/api/usePatientAPI";
-import { FormPatientEditEmailData } from "@/types/forms";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
@@ -19,18 +18,18 @@ export default function PatientEditEmail() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
-  const { updatePatientEmail } = usePatientAPI();
+  const { updatePatientData } = usePatientAPI();
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditEmailData>()
+  } = useForm<{user?: { email?: string; }}>()
 
-  const onSubmit = async (data: FormPatientEditEmailData) => {
+  const onSubmit = async (data: {user?: { email?: string; }}) => {
     setIsLoading(true);
-    await updatePatientEmail(data, id);
+    await updatePatientData(data, id);
     reset();
     setStep1(false)
     setIsLoading(false)

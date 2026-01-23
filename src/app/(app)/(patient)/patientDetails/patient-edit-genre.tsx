@@ -5,7 +5,7 @@ import Input from "@/components/Input";
 import { Loading } from "@/components/Loading";
 import RadioButton from "@/components/RadioButton";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditGenreData } from "@/types/forms";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
@@ -19,13 +19,15 @@ export default function PatientEditGenre() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const { updatePatientData } = usePatientAPI();
+  
 
-  const {
+  const { 
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditGenreData>()
+  } = useForm<{ gender?: string, other_gender?: string | null }>()
 
   const genderValue = useWatch({ control, name: "gender" });
 
@@ -42,16 +44,19 @@ export default function PatientEditGenre() {
   }));
 
 
-  const onSubmit = (data: FormPatientEditGenreData): void => {
+  const onSubmit = async (data: { gender?: string, other_gender?: string | null }) => {
     if (data.gender && notEmpty) {
-      const cleanedData: FormPatientEditGenreData = {
+      const cleanedData: {gender?: string, other_gender?: string | null} = {
         ...data,
         gender: data.gender,
         other_gender: data.gender === 'O' ? data.other_gender : null
       };
       console.log(cleanedData);
+      setIsLoading(true);
+      await updatePatientData(cleanedData, id);
       reset();
       setStep1(false)
+      setIsLoading(false)
     }
   };
 

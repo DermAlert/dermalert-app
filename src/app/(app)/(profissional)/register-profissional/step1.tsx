@@ -4,6 +4,7 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
 import { useProfissionalForm } from "@/hooks/useProfissionalForm";
 import { ProfissionalProps } from "@/types/forms";
 import { formatCPF, isValidCPF } from "@/utils/formatCPF";
@@ -18,6 +19,7 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterProfissionalStep1() {
   const [modalAlert, setModalAlert] = useState(false);
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
+  const { searchProfessional } = useProfessionalAPI();
 
   const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
     {
@@ -29,12 +31,21 @@ export default function RegisterProfissionalStep1() {
     }
   );
   
-  const handleNext = (data: ProfissionalProps) => {
+  const handleNext = async (data: ProfissionalProps) => {
     const formattedData = (data.user?.cpf ?? '').replace(/\D/g, '');
-    const userData = { user: { cpf: formattedData } };
-    console.log(userData);
-    updateProfissionalData(userData);
-    router.push('/(app)/(profissional)/register-profissional/step2');
+    // console.log(formattedData)
+    const exists = await searchProfessional(formattedData);
+    // console.log(exists)
+
+    if (exists) {
+      router.push({pathname: '/(app)/(profissional)/register-profissional/step3', params: { cpf: formattedData }})
+    } else {
+      const userData = { user: { cpf: formattedData } };
+      console.log(userData);
+      updateProfissionalData(userData);
+      router.push('/(app)/(profissional)/register-profissional/step2');
+    }
+    
   }
 
   const handleCancel = () => {

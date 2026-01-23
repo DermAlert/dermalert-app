@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { FormPatientEditEmailData, FormPatientEditPhoneData, PatientProps } from "@/types/forms";
+import { PatientProps } from "@/types/forms";
 import axios from "axios";
 import { useState } from "react";
 import { useGeneralHealthForm } from "../useGeneralHealthForm";
@@ -344,12 +344,10 @@ export function usePatientAPI() {
   }
 
 
-
-
   /////// PUT ///////
 
-  //update patient email
-  const updatePatientEmail = async (data: FormPatientEditEmailData, id: string | string[]) => {
+  //update patient data
+  const updatePatientData = async (data: any, id: string | string[]) => {
     try {
       const response = await api.patch(`/patients/${id}/`, data);
 
@@ -364,23 +362,6 @@ export function usePatientAPI() {
       } 
     }
   };
-
-  //update patient phone
-  const updatePatientPhone = async (data: FormPatientEditPhoneData, id: string | string[]) => {
-    try {
-      const response = await api.patch(`/patients/${id}/`, data);
-
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
-    }
-  };
-
 
 
   return {
@@ -404,7 +385,6 @@ export function usePatientAPI() {
     allergiesDataList,
     loadAllergies,
     sendRegisterPatient,
-    updatePatientEmail,
-    updatePatientPhone
+    updatePatientData
   };
 }

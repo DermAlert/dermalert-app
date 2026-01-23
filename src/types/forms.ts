@@ -17,33 +17,6 @@ export type FormUserEditPassData = {
   confirmNewPassword?: string;
 }
 
-export type FormPatientEditEmailData = {
-  user?: {
-    email?: string;
-  }
-}
-
-export type FormPatientEditPhoneData = {
-  phone_number?: string;
-}
-
-export type FormPatientEditNameData = {
-  name?: string;
-}
-
-export type FormPatientEditCPFData = {
-  cpf?: string;
-}
-
-export type FormPatientEditSUSData = {
-  sus?: string;
-}
-
-export type FormPatientEditGenreData = {
-  gender?: string,
-  other_gender?: string | null,
-}
-
 export type PatientProps = {
   sus_number?: string,
   phone_number?: string,
@@ -63,7 +36,8 @@ export type ProfissionalProps = {
   user?: {
     id?: number,
     cpf?: string,
-    email?: string
+    email?: string,
+    name?: string
   }
 }
 

@@ -5,7 +5,7 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditCPFData } from "@/types/forms";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { formatCPF, isValidCPF } from "@/utils/formatCPF";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
@@ -19,19 +19,26 @@ export default function PatientEditCPF() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const { updatePatientData } = usePatientAPI();
+  
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditCPFData>()
+  } = useForm<{user?: { cpf?: string; }}>()
 
 
-  const onSubmit = (data: FormPatientEditCPFData): void => {
-    console.log(data);
+  const onSubmit = async (data: {user?: { cpf?: string; }}) => {
+    const formattedData = (data.user?.cpf ?? '').replace(/\D/g, '');
+    const userData = { user: { cpf: formattedData } };
+    //console.log(userData);
+    setIsLoading(true);
+    await updatePatientData(userData, id);
     reset();
     setStep1(false)
+    setIsLoading(false)
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -70,10 +77,10 @@ export default function PatientEditCPF() {
 
           <Input 
             ref={inputFocus} 
-            error={errors.cpf?.message}
+            error={errors.user?.cpf?.message}
             formProps={{
               control,
-              name: "cpf",
+              name: "user.cpf",
               rules: {
                 required: "O CPF é obrigatório.",
                 pattern: {
