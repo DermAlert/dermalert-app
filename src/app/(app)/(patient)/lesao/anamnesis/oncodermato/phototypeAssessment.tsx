@@ -16,14 +16,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function PhototypeAssessmentDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { patientId } = usePatientId();
   const { phototype, loadPhototype } = useOncodermatoAnamnesisAPI()
 
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadPhototype(patientId);
         setIsLoading(false);

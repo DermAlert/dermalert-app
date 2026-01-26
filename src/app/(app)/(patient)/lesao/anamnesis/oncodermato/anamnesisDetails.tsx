@@ -10,7 +10,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function OncodermatoAnamnesisDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { patientId } = usePatientId();
 
@@ -18,7 +18,6 @@ export default function OncodermatoAnamnesisDetails() {
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadPhototype(patientId);
         setIsLoading(false);

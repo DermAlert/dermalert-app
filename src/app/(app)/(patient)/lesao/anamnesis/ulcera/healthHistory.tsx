@@ -16,14 +16,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function HealthHistoryDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { patientId } = usePatientId();
   const { healthHistory, loadHealthHistory } = useUlceraAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadHealthHistory(patientId);
         setIsLoading(false);

@@ -20,7 +20,7 @@ import Animated, {
 
 
 export default function LesaoRegistroDetail() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { type, registroId } = useLocalSearchParams();
   
@@ -53,7 +53,6 @@ export default function LesaoRegistroDetail() {
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadLesionsRegisterById(type, patientId, lesionId, registroId);
         setIsLoading(false);

@@ -11,7 +11,7 @@ import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 
 export default function GeneralHealth() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { patientId } = usePatientId();
 
@@ -22,7 +22,6 @@ export default function GeneralHealth() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        setIsLoading(true)
         await loadGeneralHealthById(patientId)
         setIsLoading(false)
       })();

@@ -16,14 +16,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function CareSupportDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { patientId } = usePatientId();
   const { careSupport, loadCareSupport } = useUlceraAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadCareSupport(patientId);
         setIsLoading(false);

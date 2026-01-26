@@ -16,13 +16,12 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function CancerResearchDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { patientId } = usePatientId();
   const { cancerResearch, loadCancerResearch } = useOncodermatoAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadCancerResearch(patientId);
         setIsLoading(false);

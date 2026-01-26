@@ -16,14 +16,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function RiskLifestyleDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { patientId } = usePatientId();
   const { riskLifestyle, loadRiskLifestyle } = useUlceraAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadRiskLifestyle(patientId);
         setIsLoading(false);

@@ -136,6 +136,17 @@ export function usePatientAPI() {
     }
   }
 
+  // Check if patient already exists
+  const checkIfPatientExists = async (search: any): Promise<boolean> => {
+    try {
+      const { data } = await api.get(`/patients/?search=${search}`);
+      return data.results.length > 0;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
 
   // load chronic diseases
   const loadChronicDiseases = async () => {
@@ -374,6 +385,7 @@ export function usePatientAPI() {
     isLoading, 
     loadPatientsSearch,
     loadPatients,
+    checkIfPatientExists,
     patient,
     loadPatientById,
     loadAllPatients,

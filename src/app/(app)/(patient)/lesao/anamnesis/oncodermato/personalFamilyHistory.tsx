@@ -17,13 +17,12 @@ import Animated, {
 
 export default function PersonalFamilyHistoryDetails() {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { patientId } = usePatientId();
   const { loadPersonalFamilyHistory, personalFamilyHistory } = useOncodermatoAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadPersonalFamilyHistory(patientId);
         setIsLoading(false);

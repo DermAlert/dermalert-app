@@ -11,7 +11,7 @@ import { useCallback, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProfissionalDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [modalAlert, setModalAlert] = useState(false);
   // const [patient, setPatient] = useState<PatientProps>();
 
@@ -22,7 +22,6 @@ export default function ProfissionalDetails() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        setIsLoading(true)
         await loadPatientById(patientId as string);
         setIsLoading(false)
       })();

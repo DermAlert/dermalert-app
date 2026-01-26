@@ -26,7 +26,6 @@ export default function PatientDetails() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        setIsLoading(true)
         await loadPatientById(id as string);
         setIsLoading(false)
       })();

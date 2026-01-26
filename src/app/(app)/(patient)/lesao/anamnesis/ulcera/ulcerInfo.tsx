@@ -16,14 +16,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function UlcerInfoDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { patientId } = usePatientId();
   const { ulcerInfo, loadUlcerInfo } = useUlceraAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadUlcerInfo(patientId);
         setIsLoading(false);

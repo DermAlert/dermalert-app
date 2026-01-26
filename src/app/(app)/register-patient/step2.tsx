@@ -4,6 +4,7 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
+import { usePatientAPI } from "@/hooks/api/usePatientAPI";
 import { usePatientForm } from "@/hooks/usePatientForm";
 import { PatientProps } from "@/types/forms";
 import { formatCPF, isValidCPF } from "@/utils/formatCPF";
@@ -18,8 +19,9 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterPatientStep2() {
   const [modalAlert, setModalAlert] = useState(false);
   const { patientData, updatePatientData, setPatientData, setImages } = usePatientForm();
+  const { checkIfPatientExists } = usePatientAPI();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<PatientProps>(
+  const { control, handleSubmit, formState: { errors }, setError } = useForm<PatientProps>(
     {
       defaultValues: {
         user: {
@@ -29,12 +31,22 @@ export default function RegisterPatientStep2() {
     }
   );
 
-  const handleNext = (data: PatientProps) => {
+  const handleNext = async (data: PatientProps) => {
+
     const formattedData = (data.user?.cpf ?? '').replace(/\D/g, '');
-    const userData = { user: { cpf: formattedData } };
-    console.log(userData);
-    updatePatientData(userData);
-    router.push('/(app)/register-patient/step3');
+    const patientExists = await checkIfPatientExists(formattedData);
+    if (patientExists) {
+      console.log("paciente já existe");
+      setError("user.cpf", {
+        type: "manual",
+        message: "Paciente já cadastrado"
+      });
+    } else {
+      const userData = { user: { cpf: formattedData } };
+      console.log(userData);
+      updatePatientData(userData);
+      router.push('/(app)/register-patient/step3');
+    }
   }
   
   const handleCancel = () => {

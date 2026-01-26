@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 export default function TermoConsentimentoDetails() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { id } = useLocalSearchParams();
   const { patientId } = usePatientId();
@@ -19,7 +19,6 @@ export default function TermoConsentimentoDetails() {
   useEffect(() => {
     if (!patientId) return;
 
-    setIsLoading(true);
     const timeout = setTimeout(() => {
       loadTermsById(patientId);
     }, 300);

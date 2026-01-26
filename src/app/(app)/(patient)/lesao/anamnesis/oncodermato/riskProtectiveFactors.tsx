@@ -17,13 +17,12 @@ import Animated, {
 
 export default function RiskProtectiveFactorsDetails() {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { patientId } = usePatientId();
   const { riskProtectiveFactors, loadRiskProtectiveFactors } = useOncodermatoAnamnesisAPI();
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       const timeout = setTimeout(() => {
         loadRiskProtectiveFactors(patientId);
         setIsLoading(false);

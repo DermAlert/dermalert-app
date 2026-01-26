@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lesao() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { type } = useLocalSearchParams<{ type: string }>();
 
@@ -28,7 +28,6 @@ export default function Lesao() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        setIsLoading(true)
         await loadLesionsById(patientId, type, lesionId);
         setIsLoading(false)
       })();
