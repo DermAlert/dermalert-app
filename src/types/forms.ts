@@ -163,7 +163,7 @@ export type LesionProps = {
   type: string,
   created_at: string,
   updated_at: string,
-  wounds: [],
+  wounds: LesionUlcerProps[],
   cancer_forms: LesionOncoProps[]
 }
 

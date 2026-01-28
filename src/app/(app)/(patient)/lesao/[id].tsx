@@ -3,26 +3,33 @@ import Header from '@/components/Header';
 import LesaoRegistroCard from '@/components/LesaoRegistroCard';
 import { Loading } from '@/components/Loading';
 import { usePatientLesion } from '@/hooks/api/usePatientLesion';
+import { useGeneratePDF } from '@/hooks/useGeneratePDF';
 import { useLesionId } from '@/hooks/useLesionId';
 import { useLesionType } from '@/hooks/useLesionType';
 import { usePatientId } from '@/hooks/usePatientId';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { CaretRightIcon, FilePdfIcon, PlusIcon } from 'phosphor-react-native';
+import { CaretRightIcon, FilePdfIcon, PlusIcon, SpinnerIcon } from 'phosphor-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lesao() {
   const [isLoading, setIsLoading] = useState(true);
 
-  const { type } = useLocalSearchParams<{ type: string }>();
+  const { type, patient } = useLocalSearchParams<{
+    type: string;
+    patient?: string;
+  }>();
+
+  const patientParsed = patient ? JSON.parse(patient) : null;
 
   const { patientId } = usePatientId();
   const { setLesionId, lesionId } = useLesionId();
   const { updateLesionType, setLesionType } = useLesionType();
 
   const { registro, loadLesionsById, lesion} = usePatientLesion()
+  const { generatePdf, isLoadingPDF } = useGeneratePDF({lesion, patient: patientParsed});
 
 
   useFocusEffect(
@@ -37,6 +44,12 @@ export default function Lesao() {
   useEffect(() => {
     updateLesionType(null);
   }, []);
+
+  // useEffect(() => {
+  //   if (!lesion || !lesion.cancer_forms) return;
+
+  //   console.log(lesion.cancer_forms[0]);
+  // }, [lesion]);
 
   if(isLoading){
     return (
@@ -112,10 +125,12 @@ export default function Lesao() {
           <View className="border-b border-neutral-300">
             <TouchableOpacity 
               className="flex-row justify-start px-4 py-[10] items-center gap-5"
+              onPress={generatePdf}
             >
               <FilePdfIcon size={24} color="#6775B4" />
               <Text allowFontScaling={false} className='text-base text-neutral-900 flex-1'>Gerar PDF</Text>
-              <CaretRightIcon size={16} color="#7D83A0" />
+              {isLoadingPDF ? <View className="animate-spin"><SpinnerIcon size={16} weight={'bold'} color="#FF765E" /></View> : <CaretRightIcon size={16} color="#7D83A0" />}
+              
             </TouchableOpacity>
           </View>
 

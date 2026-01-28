@@ -174,7 +174,7 @@ if(isLoading){
           <FlatList
             data={lesion}
             keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => <LesaoCard activeOpacity={1} title={item.location} type={item.type} lesionId={item.id} />}
+            renderItem={({item}) => <LesaoCard activeOpacity={1} title={item.location} type={item.type} lesionId={item.id} patient={patient} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom:50,

@@ -179,7 +179,16 @@ export default function LesaoRegistroDetail() {
 
             <View>
               <SummaryQuestion question="Dimensão da lesão">
-                Área = entre 16cm² e 36cm²
+                {
+                registroUlcer.width_mm === 0 ? 'Área = 0m²' :
+                registroUlcer.width_mm === 17 ? 'Área < 4cm²' :
+                registroUlcer.width_mm === 20 ? 'Área = entre 4cm² e 16cm²' :
+                registroUlcer.width_mm === 40 ? 'Área = entre 16cm² e 36cm²' :
+                registroUlcer.width_mm === 60 ? 'Área = entre 36cm² e 64cm²' :
+                registroUlcer.width_mm === 80 ? 'Área = entre 64cm² e 100cm²' :
+                registroUlcer.width_mm === 100 ? 'Área > 100cm²' :
+                'Não informado'
+              }
               </SummaryQuestion>
             </View>
 

@@ -1,4 +1,5 @@
 import { useLesionId } from '@/hooks/useLesionId';
+import { PatientProps } from '@/types/forms';
 import { router } from 'expo-router';
 import { DiceFiveIcon } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
@@ -7,9 +8,10 @@ type LesaoCardProps = TouchableOpacityProps & {
   title: string;
   type: string;
   lesionId: number;
+  patient?: PatientProps;
 }
 
-export default function LesaoCard({title, type, lesionId, ...rest}: LesaoCardProps) {
+export default function LesaoCard({title, type, lesionId, patient, ...rest}: LesaoCardProps) {
 
   const { updateLesionId } = useLesionId();
 
@@ -19,7 +21,7 @@ export default function LesaoCard({title, type, lesionId, ...rest}: LesaoCardPro
       activeOpacity={0.6}
       onPress={()=> {
         updateLesionId(lesionId.toString());
-        router.push({pathname: '/(app)/(patient)/lesao/[id]', params: { id: lesionId, type }});
+        router.push({pathname: '/(app)/(patient)/lesao/[id]', params: { id: lesionId, type, patient: patient ? JSON.stringify(patient) : null }});
       }}
       {...rest}
     >
