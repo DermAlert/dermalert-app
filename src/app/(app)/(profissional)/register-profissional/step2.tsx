@@ -4,8 +4,9 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
 import { useProfissionalForm } from "@/hooks/useProfissionalForm";
-import { ProfissionalProps } from "@/types/forms";
+import { ProfissionalPropsForm } from "@/types/forms";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -17,20 +18,21 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterProfissionalStep2() {
   const [modalAlert, setModalAlert] = useState(false);
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
+  const { createProfessional } = useProfessionalAPI();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
+  const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalPropsForm>(
     {
       defaultValues: {
-        user: {
-          email: profissionalData.user?.email ?? ''
-        }
+        email: profissionalData?.email ?? '',
+        name: profissionalData?.name ?? '',
       }
     }
   );
   
-  const handleNext = (data: ProfissionalProps) => {
-    console.log(data);
+  const onSubmit = async (data: ProfissionalPropsForm) => {
+    //console.log(data);
     updateProfissionalData(data);
+    await createProfessional();
     router.push('/(app)/(profissional)/register-profissional/success');
   }
 
@@ -74,9 +76,9 @@ export default function RegisterProfissionalStep2() {
     }, [])
   );
 
-  useEffect(() => {
-      console.log(profissionalData)
-    }, []);
+  // useEffect(() => {
+  //     console.log(profissionalData)
+  //   }, []);
 
   return (
     <Animated.View 
@@ -109,27 +111,49 @@ export default function RegisterProfissionalStep2() {
             <ProgressBar step={2} totalSteps={2} />
 
             <View className="flex-1">
-              <Label title="E-mail" text="Informe o e-mail do profissional."/>
 
-              <Input 
-                ref={inputFocus} 
-                error={errors.user?.email?.message}
-                formProps={{
-                  control,
-                  name: "user.email",
-                  rules: {
-                    required: "O e-mail é obrigatório.",
-                    pattern: {
-                      value: /^\S+@\S+\.\S+$/,
-                      message: "E-mail inválido."
+              <Label title="Nome" text="Informe o nome do profissional."/>
+
+                <Input 
+                  error={errors.name?.message}
+                  formProps={{
+                    control,
+                    name: "name",
+                    rules: {
+                      required: "O nome é obrigatório."
                     }
-                  }
-                }}
-                inputProps={{
-                  placeholder: "Endereço de e-mail",
-                  returnKeyType: "next",
-                }}
-              />
+                  }}
+                  inputProps={{
+                    placeholder: "Nome completo"
+                  }}
+                />
+              
+
+              <View className="mt-8">
+                <Label title="E-mail" text="Informe o e-mail do profissional."/>
+
+                <Input 
+                  ref={inputFocus} 
+                  error={errors.email?.message}
+                  formProps={{
+                    control,
+                    name: "email",
+                    rules: {
+                      required: "O e-mail é obrigatório.",
+                      pattern: {
+                        value: /^\S+@\S+\.\S+$/,
+                        message: "E-mail inválido."
+                      }
+                    }
+                  }}
+                  inputProps={{
+                    placeholder: "Endereço de e-mail",
+                    returnKeyType: "next",
+                  }}
+                />
+              </View>
+
+              
             </View>
 
 
@@ -142,7 +166,7 @@ export default function RegisterProfissionalStep2() {
                 style={{ flexGrow: 1, width: '47%' }}
               />
               <Button title="Concluir" 
-                onPress={handleSubmit(handleNext)} 
+                onPress={handleSubmit(onSubmit)}
                 style={{ flexGrow: 1, width: '47%' }}
               />
             </View>

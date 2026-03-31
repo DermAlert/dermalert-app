@@ -17,9 +17,10 @@ import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 export default function RegisterProfissionalStep3() {
   const [isLoading, setIsLoading] = useState(true);
   const [modalAlert, setModalAlert] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
   const { cpf } = useLocalSearchParams();
-  const { getProfessionalByCPF, professional } = useProfessionalAPI();
+  const { getProfessionalByCPF, professional, inviteProfessional } = useProfessionalAPI();
   
 
   // const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
@@ -32,10 +33,14 @@ export default function RegisterProfissionalStep3() {
   //   }
   // );
   
-  const handleNext = () => {
+  const handleNext = async () => {
     // console.log(data);
-    // updateProfissionalData(data);
-    router.push('/(app)/(profissional)/register-profissional/success');
+    const response = await inviteProfessional();
+    if (response?.status === 400) {
+      setErrorMsg("Este profissional já foi convidado para esta unidade de saúde. Verifique a lista de profissionais vinculados para mais detalhes.");
+      return;
+    }
+    //router.push('/(app)/(profissional)/register-profissional/success2');
   }
 
   const handleCancel = () => {
@@ -139,6 +144,12 @@ export default function RegisterProfissionalStep3() {
                   <Text allowFontScaling={false} className='text-sm mt-1 text-neutral-600'>{formatCPF(professional?.user?.cpf || "")}</Text>
                 </View>
               </View>
+
+              {errorMsg && (
+                <Text allowFontScaling={false} className="text-base text-danger-600 font-semibold mt-12">
+                  {errorMsg}
+                </Text>
+              )}
 
             </View>
 

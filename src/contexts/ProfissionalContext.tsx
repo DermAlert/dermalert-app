@@ -1,29 +1,27 @@
-import { ProfissionalProps } from '@/types/forms';
+import { ProfissionalPropsForm } from '@/types/forms';
 import React, { createContext, useState } from 'react';
 
 type ProfissionalContextDataProps = {
-  profissionalData: ProfissionalProps;
-  setProfissionalData: React.Dispatch<React.SetStateAction<ProfissionalProps>>;
-  updateProfissionalData: (value: ProfissionalProps) => void;
+  profissionalData: ProfissionalPropsForm;
+  setProfissionalData: React.Dispatch<React.SetStateAction<ProfissionalPropsForm>>;
+  updateProfissionalData: (value: ProfissionalPropsForm) => void;
 
-  // profissionalData: Partial<ProfissionalProps>;
-  // updateProfissionalData: (data: Partial<ProfissionalProps>) => void;
-  // setProfissionalData: (data: Partial<ProfissionalProps>) => void;
+  // profissionalData: Partial<ProfissionalPropsForm>;
+  // updateProfissionalData: (data: Partial<ProfissionalPropsForm>) => void;
+  // setProfissionalData: (data: Partial<ProfissionalPropsForm>) => void;
 }
 
 const ProfissionalContext = createContext<ProfissionalContextDataProps>({} as ProfissionalContextDataProps);
 
 function ProfissionalProvider({ children }: { children: React.ReactNode; }) {
-  const [profissionalData, setProfissionalData] = useState<ProfissionalProps>({} as ProfissionalProps);
+  const [profissionalData, setProfissionalData] = useState<ProfissionalPropsForm>({} as ProfissionalPropsForm);
 
-  const updateProfissionalData = (newData: ProfissionalProps) => {
+  const updateProfissionalData = (newData: ProfissionalPropsForm) => {
     setProfissionalData((prev) =>
       ({
-        user: {
-          ...prev.user,
-          ...newData.user,
-        },
-      } as ProfissionalProps)
+        ...prev,
+        ...newData,
+      } as ProfissionalPropsForm)
     );
   };
 

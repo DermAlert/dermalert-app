@@ -89,6 +89,13 @@ export type ProfissionalProps = {
     email?: string
   }
 }
+export type ProfissionalPropsForm = {
+  name?: string,
+  cpf?: string,
+  email?: string,
+  health_unit?: number,
+  permission_role?: string
+}
 
 export type HealthCenterProps = {
   id: number,

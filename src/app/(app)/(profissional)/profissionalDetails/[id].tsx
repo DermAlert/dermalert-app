@@ -60,7 +60,7 @@ if(isLoading){
           <UserCheckIcon size={24} color="#6775B4" />
           <View className="flex-1">
             <Text allowFontScaling={false} className='text-xs font-semibold text-neutral-600'>Status</Text>
-            <Text allowFontScaling={false} className='text-base text-neutral-900'>Ativo</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{professional?.is_active ? "Ativo" : "Inativo"}</Text>
           </View>
         </View>
 
@@ -106,13 +106,15 @@ if(isLoading){
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity 
+        { professional?.is_active &&  (
+          <TouchableOpacity 
           className="px-5 w-full justify-start flex-row my-7 items-center gap-2"
           onPress={() => setModalAlert(!modalAlert)}
         >
           <MinusCircleIcon size={24} color="#4052A1" />
           <Text allowFontScaling={false} className="text-base font-semibold text-primary-600">Desvincular profissional da unidade</Text>
         </TouchableOpacity>
+        )}
 
         
         

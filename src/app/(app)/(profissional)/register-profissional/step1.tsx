@@ -6,7 +6,7 @@ import ModalAlert from "@/components/ModalAlert";
 import ProgressBar from "@/components/ProgressBar";
 import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
 import { useProfissionalForm } from "@/hooks/useProfissionalForm";
-import { ProfissionalProps } from "@/types/forms";
+import { ProfissionalPropsForm } from "@/types/forms";
 import { formatCPF, isValidCPF } from "@/utils/formatCPF";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowRightIcon } from "phosphor-react-native";
@@ -21,27 +21,25 @@ export default function RegisterProfissionalStep1() {
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
   const { searchProfessional } = useProfessionalAPI();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
+  const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalPropsForm>(
     {
       defaultValues: {
-        user: {
-          cpf: formatCPF(profissionalData.user?.cpf || ''),
-        }
+        cpf: formatCPF(profissionalData?.cpf || '')
       }
     }
   );
   
-  const handleNext = async (data: ProfissionalProps) => {
-    const formattedData = (data.user?.cpf ?? '').replace(/\D/g, '');
+  const handleNext = async (data: ProfissionalPropsForm) => {
+    const formattedData = (data.cpf ?? '').replace(/\D/g, '');
     // console.log(formattedData)
     const exists = await searchProfessional(formattedData);
-    // console.log(exists)
+    console.log(exists)
 
     if (exists) {
       router.push({pathname: '/(app)/(profissional)/register-profissional/step3', params: { cpf: formattedData }})
     } else {
-      const userData = { user: { cpf: formattedData } };
-      console.log(userData);
+      const userData = { cpf: formattedData } as ProfissionalPropsForm;
+      console.log({ cpf: formattedData });
       updateProfissionalData(userData);
       router.push('/(app)/(profissional)/register-profissional/step2');
     }
@@ -126,11 +124,11 @@ export default function RegisterProfissionalStep1() {
               <Label title="CPF" text="Informe o CPF do profissional."  />
 
               <Input 
-                error={errors.user?.cpf?.message}
+                error={errors?.cpf?.message}
                 ref={inputFocus} 
                 formProps={{
                   control,
-                  name: "user.cpf",
+                  name: "cpf",
                   rules: {
                     required: "O CPF é obrigatório.",
                     pattern: {

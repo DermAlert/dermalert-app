@@ -10,7 +10,7 @@ import { BackHandler, InteractionManager, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
-export default function RegisterProfissionalSuccess() {
+export default function RegisterProfissionalSuccess2() {
   const [modalAlert, setModalAlert] = useState(false);
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
 
@@ -82,7 +82,7 @@ export default function RegisterProfissionalSuccess() {
       
         <Icon iconName="UserCirclePlusIcon" />
 
-        <TitleText title="Cadastro concluído!" description="O profissional receberá um e-mail com um link para concluir o cadastro e começar a atuar nesta unidade." />
+        <TitleText title="Cadastro concluído!" description="O profissional foi vinculado à esta unidade e pode começar a atuar na mesma." />
 
 
         <Button title="Voltar" secondary style={{ alignSelf: "flex-start" }} full={false} onPress={handleCancel} iconLeft 
