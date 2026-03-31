@@ -1,4 +1,6 @@
 //import { Roboto_400Regular, useFonts } from '@expo-google-fonts/roboto';
+import { AuthProvider } from "@/contexts/AuthContext";
+import { HealthCenterIdProvider } from "@/contexts/HealthCenterIdContext";
 import { LoginIdProvider } from '@/contexts/LoginIdContext';
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { Stack } from 'expo-router';
@@ -48,11 +50,15 @@ export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" translucent />
-      <LoginIdProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-        </Stack>
-      </LoginIdProvider>
+      <AuthProvider>
+        <HealthCenterIdProvider>
+          <LoginIdProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(auth)" />
+            </Stack>
+          </LoginIdProvider>
+        </HealthCenterIdProvider>
+      </AuthProvider>
     </GestureHandlerRootView>
     
   );

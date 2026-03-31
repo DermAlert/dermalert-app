@@ -1,33 +1,30 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import Icon from "@/components/Icon";
+import Icon from '@/components/Icon';
 import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
 import { useUserAPI } from "@/hooks/api/useUserAPI";
-import { FormUserEditPassData } from "@/types/forms";
-import { router } from "expo-router";
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from 'phosphor-react-native';
+import { FormUserResetPassData } from "@/types/forms";
+import { router, useLocalSearchParams } from "expo-router";
+import { ArrowLeftIcon, CheckIcon } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Text, TextInput, View } from 'react-native';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import Animated, { SlideInUp, SlideOutDown } from 'react-native-reanimated';
 
-export default function EditPassword() {
+export default function ResetPassword() {
   const [step1, setStep1] = useState(true);
-  const [step2, setStep2] = useState(false);
-  const [step3, setStep3] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  
-  const [password, setPassword] = useState('');
-
   const [isLoading, setIsLoading] = useState(false);
-  
 
-  const { changePassword } = useUserAPI();
+  const { resetPassword } = useUserAPI();
 
-  const {
+  const { uid, token } = useLocalSearchParams()
+
+    const {
       control,
       handleSubmit,
       reset,
@@ -35,60 +32,41 @@ export default function EditPassword() {
       trigger,
       watch,
       formState: { errors },
-    } = useForm<FormUserEditPassData>()
+    } = useForm<FormUserResetPassData>()
 
-  const newPasswordValue = watch('newPassword', '');
+    const newPasswordValue = watch('newPassword', '');
+    
+      function validatePasswordConfirmation(passwordConfirmation: string) {
+        const { newPassword } = getValues();
+        return newPassword === passwordConfirmation || 'As senhas devem ser iguais';
+      };
+    
+      const inputFocus = useRef<TextInput>(null);
+      const confirmPass = useRef<TextInput>(null);
 
-  function validatePasswordConfirmation(passwordConfirmation: string) {
-    const { newPassword } = getValues();
-    return newPassword === passwordConfirmation || 'As senhas devem ser iguais';
-  };
+    const onSubmit = async (data: FormUserResetPassData): Promise<void> => {
+      //console.log(data, uid, token);
 
-  const inputFocus = useRef<TextInput>(null);
-  const confirmPass = useRef<TextInput>(null);
+      setIsLoading(true);
+      const response = await resetPassword(data, uid as string, token as string);
+      setIsLoading(false)
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      inputFocus.current?.focus();
-    }, 300);
-  
-    return () => clearTimeout(timeout);
-  }, []);
+      if (response?.status === 400) {
+        setPasswordError("Ocorreu algum erro, tente novamente.");
+        return;
+      }
 
-  const handleValidateStep1 = async () => {
-    const isValid = await trigger('actualPassword');
-    if (isValid) {
-      handleStep2();
-    }
-  };
+      reset();
+      setStep1(false)
+    };
 
-  const handleStep2 = ()=> {
-    setStep1(false)
-    setStep2(true)
-    setStep3(false)
-  }
+    useEffect(() => {
+      if (uid && token) {
+        console.log("UID:", uid);
+        console.log("Token:", token);
+      }
+    }, [uid, token]);
 
-  const handleStep3 = ()=> {
-    setStep1(false)
-    setStep2(false)
-    setStep3(true)
-  }
-
-  const onSubmit = async (data: FormUserEditPassData): Promise<void> => {
-    console.log(data);
-
-    setIsLoading(true);
-    const passResponse = await changePassword(data);
-    setIsLoading(false)
-
-    if (passResponse?.status === 400) {
-      setPasswordError("Senha atual não confere");
-      return;
-    }
-
-    reset();
-    handleStep3()
-  };
 
 
   if(isLoading){
@@ -101,43 +79,19 @@ export default function EditPassword() {
 
   return (
     <Animated.View 
-      entering={SlideInDown} 
+      entering={SlideInUp} 
       exiting={SlideOutDown} 
       className="flex-1 bg-white p-safe justify-start items-center"
     >
-      <Header title="Alterar senha" onPress={() => router.push('/(app)/meus-dados')} />
+      <Header title="Redefinir senha" onPress={() => {
+        router.push('/(auth)')
+        setStep1(true)
+        }} />
 
       {step1 && (
         <View className="p-8 w-full justify-start flex-1 gap-8">
 
-          <TitleText title="Senha atual" description="Informe sua senha atual" />
-
-
-          <Input ref={inputFocus} 
-            error={errors.actualPassword?.message}
-            formProps={{
-              control,
-              name: "actualPassword",
-              rules: {
-                required: "A senha é obrigatória."
-              }
-            }}
-            inputProps={{
-              placeholder: "Senha atual",
-              returnKeyType: "send",
-            }}
-            password 
-          />
-
-          <Button title="Criar nova senha" iconRight icon={(<ArrowRightIcon size={20} color="white" weight="bold" />)} onPress={handleValidateStep1} />
-
-        </View>
-      )}
-
-      {step2 && (
-        <View className="p-8 w-full justify-start flex-1 gap-8">
-
-          <TitleText title="Nova senha" description="Crie uma senha que siga os padrões indicados abaixo para maior segurança." />
+          <TitleText title="Redefinir senha" description="Crie uma nova senha que siga os padrões indicados abaixo para maior segurança." />
 
           <View>
 
@@ -223,20 +177,22 @@ export default function EditPassword() {
         </View>
       )}
 
-      {step3 && (
+      {!step1 && (
         <View className="p-8 w-full justify-start flex-1 gap-10">
 
           <Icon iconName="CheckCircleIcon" />
 
-          <TitleText title="Senha criada com sucesso" description="Sua nova senha foi criada com sucesso."/>
+          <TitleText title="Senha redefinida" description="Sua nova senha foi criada com sucesso."/>
 
-          <Button title="Voltar" secondary style={{ alignSelf: "flex-start" }} full={false} onPress={() => router.push('/(app)/meus-dados')} iconLeft 
+          <Button title="Voltar" secondary style={{ alignSelf: "flex-start" }} full={false} onPress={() => {
+            router.push('/(auth)')
+            setStep1(true)
+            }} 
+          iconLeft 
           icon={(<ArrowLeftIcon size={18} color="#4052A1"/>)}  />
 
         </View>
       )}
-
-      
 
       
       

@@ -1,3 +1,4 @@
+import { useLoginId } from '@/hooks/useLoginId';
 import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
 import UnidadeCard from './UnidadeCard';
 
@@ -7,6 +8,8 @@ type Props ={
 }
 
 export default function ModalUnidades({ modalUnidadesVisible, setModalUnidadesVisible }: Props) {
+
+  const { loginId } = useLoginId();
 
   return (
     <Modal
@@ -26,9 +29,9 @@ export default function ModalUnidades({ modalUnidadesVisible, setModalUnidadesVi
           </View>
 
           <FlatList
-            data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}
+            data={loginId?.user.health_unit_ids ?? []}
             keyExtractor={item => item.toString()}
-            renderItem={({item}) => <UnidadeCard />}
+            renderItem={({item}) => <UnidadeCard unitId={item} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               marginBottom: 0,

@@ -7,12 +7,50 @@ export type FormLoginData = {
   password?: string;
 }
 
+export type UserInfoProps = {
+  token: string, 
+  user: {
+    cpf: string, 
+    email: string, 
+    health_unit_ids: number[], 
+    id: number, 
+    is_active: boolean, 
+    is_staff: boolean, 
+    name: string, 
+    permission_roles: string[]
+  }
+}
+export type UserDataProps = {
+  cpf: string,
+  email: string,
+  name: string,
+  password: string,
+  address?: {
+    cep: string,
+    country: string,
+    state: string,
+    city: string,
+    neighborhood: string,
+    street: string,
+    number: number,
+    longitude: number,
+    latitude: number
+  }
+}
+
 export type FormUserEditEmailData = {
   email?: string;
 }
 
 export type FormUserEditPassData = {
   actualPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
+}
+
+export type FormUserResetPassData = {
+  uid?: string;
+  token?: string;
   newPassword?: string;
   confirmNewPassword?: string;
 }
@@ -33,12 +71,43 @@ export type PatientProps = {
 }
 
 export type ProfissionalProps = {
+  id?: number,
+  permission_role?: string,
+  start_date?: string,
+  end_date?: string,
+  is_active?: boolean,
+  registration_pending?: string,
   user?: {
     id?: number,
     cpf?: string,
     email?: string,
     name?: string
+  },
+  health_unit?: {
+    id?: number,
+    name?: string,
+    email?: string
   }
+}
+
+export type HealthCenterProps = {
+  id: number,
+  name: string,
+  email: string,
+  address: {
+    id: number,
+    cep: string,
+    country: string,
+    state: string,
+    city: string,
+    neighborhood: string,
+    street: string,
+    number: number,
+    longitude: number,
+    latitude: number
+  },
+  patient_count: number,
+  professional_count: number
 }
 
 

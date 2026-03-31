@@ -1,8 +1,8 @@
 import Header from '@/components/Header';
 import { Loading } from '@/components/Loading';
 import ModalAlert from '@/components/ModalAlert';
-import { usePatientAPI } from '@/hooks/api/usePatientAPI';
-import { usePatientId } from '@/hooks/usePatientId';
+import { useProfessionalAPI } from '@/hooks/api/useProfessionalAPI';
+import { useProfessionalId } from '@/hooks/useProfessionalId';
 import { formatCPF } from '@/utils/formatCPF';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from "expo-router";
@@ -13,16 +13,15 @@ import { Text, TouchableOpacity, View } from 'react-native';
 export default function ProfissionalDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [modalAlert, setModalAlert] = useState(false);
-  // const [patient, setPatient] = useState<PatientProps>();
 
-  const { patientId } = usePatientId();
-  const { patient, loadPatientById } = usePatientAPI();
+  const { professionalId } = useProfessionalId();
+  const { professional, loadProfessionalById } = useProfessionalAPI();
     
   
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        await loadPatientById(patientId as string);
+        await loadProfessionalById(professionalId as string);
         setIsLoading(false)
       })();
     },[])
@@ -69,10 +68,10 @@ if(isLoading){
           <UserIcon size={24} color="#6775B4" />
           <View className="flex-1">
             <Text allowFontScaling={false} className='text-xs font-semibold text-neutral-600'>Nome completo</Text>
-            <Text allowFontScaling={false} className='text-base text-neutral-900'>{patient?.user?.name}</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{professional?.user?.name}</Text>
           </View>
           <TouchableOpacity 
-              onPress={()=> router.push({pathname: "/(app)/(profissional)/profissionalDetails/profissional-edit-nome", params: { patientId }})}
+              onPress={()=> router.push({pathname: "/(app)/(profissional)/profissionalDetails/profissional-edit-nome", params: { professionalId }})}
               className="h-10 w-10 justify-center items-center"
             >
               <PencilSimpleLineIcon size={24} color="#4052A1" />
@@ -83,10 +82,10 @@ if(isLoading){
           <IdentificationCardIcon size={24} color="#6775B4" />
           <View className="flex-1">
             <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>CPF</Text>
-            <Text allowFontScaling={false} className='text-base text-neutral-900'>{formatCPF(patient?.user?.cpf || '')}</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{formatCPF(professional?.user?.cpf || '')}</Text>
           </View>
           <TouchableOpacity 
-            onPress={()=> router.push({pathname: "/(app)/(profissional)/profissionalDetails/profissional-edit-cpf", params: { patientId }})}
+            onPress={()=> router.push({pathname: "/(app)/(profissional)/profissionalDetails/profissional-edit-cpf", params: { professionalId }})}
             className="h-10 w-10 justify-center items-center"
           >
             <PencilSimpleLineIcon size={24} color="#4052A1" />
@@ -97,10 +96,10 @@ if(isLoading){
           <EnvelopeSimpleIcon size={24} color="#6775B4" />
           <View className='flex-1'>
             <Text allowFontScaling={false} className='text-xs text-neutral-600 font-semibold'>E-mail para retorno</Text>
-            <Text allowFontScaling={false} className='text-base text-neutral-900'>{patient?.user?.email}</Text>
+            <Text allowFontScaling={false} className='text-base text-neutral-900'>{professional?.user?.email}</Text>
           </View>
           <TouchableOpacity 
-            onPress={()=> router.push({ pathname: "/(app)/(profissional)/profissionalDetails/profissional-edit-email", params: { patientId }})}
+            onPress={()=> router.push({ pathname: "/(app)/(profissional)/profissionalDetails/profissional-edit-email", params: { professionalId }})}
             className="h-10 w-10 justify-center items-center"
           >
             <PencilSimpleLineIcon size={24} color="#4052A1" />

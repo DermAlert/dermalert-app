@@ -3,7 +3,10 @@ import Header from "@/components/Header";
 import Icon from "@/components/Icon";
 import Input from '@/components/Input';
 import { Label } from "@/components/Label";
+import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
+import { useUserAPI } from "@/hooks/api/useUserAPI";
+import { useLoginId } from "@/hooks/useLoginId";
 import { FormUserEditEmailData } from "@/types/forms";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from 'phosphor-react-native';
@@ -14,6 +17,11 @@ import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 export default function EditEmail() {
   const [step1, setStep1] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { loginId } = useLoginId();
+
+  const { updateUserData } = useUserAPI();
 
   const {
     control,
@@ -22,10 +30,19 @@ export default function EditEmail() {
     formState: { errors },
   } = useForm<FormUserEditEmailData>()
 
-  const onSubmit = (data: FormUserEditEmailData): void => {
-    console.log(data);
+  const onSubmit = async (data: FormUserEditEmailData) => {
+    setIsLoading(true);
+    const userId = loginId?.user.id?.toString();
+
+    if (!userId) {
+      setIsLoading(false);
+      return;
+    }
+
+    await updateUserData(data, userId);
     reset();
     setStep1(false)
+    setIsLoading(false)
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -37,6 +54,14 @@ export default function EditEmail() {
   
     return () => clearTimeout(timeout);
   }, []);
+
+  if(isLoading){
+    return (
+      <View className="flex-1 p-safe justify-center items-center">
+        <Loading />
+      </View>
+    )
+  }
 
   return (
     <Animated.View 

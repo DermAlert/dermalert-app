@@ -1,5 +1,5 @@
 import Input from '@/components/Input';
-import { usePatientAPI } from '@/hooks/api/usePatientAPI';
+import { useProfessionalAPI } from '@/hooks/api/useProfessionalAPI';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeftIcon, MagnifyingGlassIcon } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
@@ -14,17 +14,13 @@ type Props = {
   setModalVisible: (modalVisible: boolean) => void,
 }
 
-export default function PatientSearch({ modalVisible, setModalVisible }: Props) {
+export default function ProfessionalSearch({ modalVisible, setModalVisible }: Props) {
   const [searchText, setSearchText] = useState("");
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [hasMore, setHasMore] = useState(true);
-  // const [page, setPage] = useState(1);
-  // const [patients, setPatients] = useState<PatientProps[]>([]);
 
   const searchInputRef = useRef<TextInput>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { patients, setPatients, page, setPage, hasMore, setHasMore, loadPatientsSearch, isLoading } = usePatientAPI();
+  const { professionals, setProfessionals, page, setPage, hasMore, setHasMore, loadProfessionalsSearch, isLoading } = useProfessionalAPI();
 
   const {
     control,
@@ -35,9 +31,9 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
 
     searchTimeoutRef.current = setTimeout(() => {
       setPage(1);
-      setPatients([]);
+      setProfessionals([]);
       setHasMore(true);
-      loadPatientsSearch(1, searchText);
+      loadProfessionalsSearch(1, searchText);
     }, 400);
 
     return () => {
@@ -45,33 +41,6 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
     };
   }, [searchText]);
 
-  // const loadPatients = async (pageNumber: number, search: string) => {
-  //   if (isLoading || (!hasMore && search.length === 0)) return;
-  //   setIsLoading(true);
-
-  //   try {
-  //     const endpoint = search.length > 0
-  //       ? `/patients/?search=${encodeURIComponent(search)}`
-  //       : `/patients/?page=${pageNumber}`;
-
-  //     const { data } = await api.get(endpoint);
-  //     const newPatients = data.results || [];
-
-  //     setPatients(prev => pageNumber === 1 ? newPatients : [...prev, ...newPatients]);
-
-  //     if (search.length === 0 && data.next) {
-  //       setHasMore(true);
-  //       setPage(prev => prev + 1);
-  //     } else if (search.length === 0) {
-  //       setHasMore(false);
-  //     }
-      
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -110,7 +79,7 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
                 name: "patient",
               }}
               inputProps={{
-                placeholder: "Buscar paciente",
+                placeholder: "Buscar profissional",
                 returnKeyType: "send",
                 onChangeText: handleSearch,
                 value: searchText,
@@ -122,7 +91,7 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
 
         <View className="flex-1 w-full px-4 mt-6">
           <FlatList
-            data={patients}
+            data={professionals}
             keyExtractor={(item) => `${item.user?.cpf}-${item.user?.id}`}
             renderItem={({ item }) =>
               <PatientCard
@@ -135,12 +104,12 @@ export default function PatientSearch({ modalVisible, setModalVisible }: Props) 
             contentContainerStyle={{ marginBottom: 0, gap: 10 }}
             onEndReached={() => {
               if (!isLoading && hasMore && searchText.length === 0) {
-                loadPatientsSearch(page, "");
+                loadProfessionalsSearch(page, "");
               }
             }}
             onEndReachedThreshold={0.3}
             ListFooterComponent={() => isLoading ? <Loading /> : null}
-            ListEmptyComponent={() => !isLoading && <EmptyPatients title={`${"Nenhum paciente encontrado"}`} description="Nenhum resultado encontrado para esta busca." />}
+            ListEmptyComponent={() => !isLoading && <EmptyPatients title={`${"Nenhum profissional encontrado"}`} description="Nenhum resultado encontrado para esta busca." />}
             initialNumToRender={7}
           />
           <LinearGradient

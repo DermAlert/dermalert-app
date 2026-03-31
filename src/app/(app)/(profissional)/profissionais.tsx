@@ -3,9 +3,12 @@ import { EmptyPatients } from "@/components/EmptyPatients";
 import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import PatientCard from "@/components/PatientCard";
-import PatientSearch from "@/components/PatientSearch";
-import { usePatientAPI } from "@/hooks/api/usePatientAPI";
-import { PatientProps } from "@/types/forms";
+import ProfessionalSearch from "@/components/ProfessionalSearch";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
+import { useHealthCenterId } from "@/hooks/useHealthCenterId";
+import { useLoginId } from "@/hooks/useLoginId";
+import { ProfissionalProps } from "@/types/forms";
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
@@ -14,34 +17,27 @@ import { useCallback, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Profissionais() {
-  // const { loggedIn } = useLocalSearchParams();
-
-  // if (!loggedIn) {
-  //   return <Redirect href="/(auth)/login" />;
-  // }
 
   const [modalVisible, setModalVisible] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [patients, setPatients] = useState<PatientProps[]>([]);
-  // const [page, setPage] = useState(1);
-  // const [hasMore, setHasMore] = useState(true);
+  const { loginId } = useLoginId();
+  const { loadingAuth } = useAuth();
+  const { healthCenterId } = useHealthCenterId();
 
-  // const { loginId } = useLoginId();
-  const { hasMore, loadPatients, patients, isLoading} = usePatientAPI();
-
-
+  const { hasMore, professionals, isLoading, loadProfessionalsByHealthUnity} = useProfessionalAPI();
 
   useFocusEffect(
     useCallback(() => {
-      loadPatients()
+      console.log('Health Center ID:', healthCenterId);
+      if (!healthCenterId) return;
+      loadProfessionalsByHealthUnity(healthCenterId.toString());
     },[])
   )
 
-  const renderPatient = useCallback(({ item }: { item: PatientProps }) => (
+  const renderPatient = useCallback(({ item }: { item: ProfissionalProps }) => (
     <PatientCard
       name={item.user?.name || ''}
       cpf={item.user?.cpf || ''}
-      id={item.user?.id?.toString() || ''}
+      id={item?.id?.toString() || ''}
       profissional
     />
   ), []);
@@ -60,7 +56,7 @@ export default function Profissionais() {
   return (
     <View className="flex-1 bg-primary-50 p-safe relative">
 
-      <PatientSearch profissional modalVisible={ modalVisible} setModalVisible={setModalVisible} />
+      <ProfessionalSearch modalVisible={ modalVisible} setModalVisible={setModalVisible} />
 
       <Header icon="back" title="Profissionais da saúde" onPress={()=> router.push('/(app)/(supervisor)/supervisor')} />
 
@@ -80,7 +76,7 @@ export default function Profissionais() {
 
         <View className="flex-1">
           <FlatList
-            data={patients}
+            data={professionals}
             keyExtractor={item => item.user?.id?.toString() || ''}
             renderItem={renderPatient}
             showsVerticalScrollIndicator={false}
@@ -90,7 +86,7 @@ export default function Profissionais() {
             }}
             onEndReached={()=> {
               if (!isLoading && hasMore) {
-                loadPatients();
+                loadProfessionalsByHealthUnity(healthCenterId?.toString() || null);
               } 
             }}
             onEndReachedThreshold={0.3}

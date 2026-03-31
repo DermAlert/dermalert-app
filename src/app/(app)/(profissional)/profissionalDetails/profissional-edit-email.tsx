@@ -5,8 +5,9 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditEmailData } from "@/types/forms";
-import { router, useLocalSearchParams } from "expo-router";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
+import { useProfessionalId } from "@/hooks/useProfessionalId";
+import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,19 +18,22 @@ export default function ProfissionalEditEmail() {
   const [step1, setStep1] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { id } = useLocalSearchParams();
+  const { professionalId } = useProfessionalId();
+  const { updateProfessionalData } = useProfessionalAPI();
+  
+    const {
+      control,
+      handleSubmit,
+      reset,
+      formState: { errors },
+    } = useForm<{ email?: string; }>()
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormPatientEditEmailData>()
-
-  const onSubmit = async (data: FormPatientEditEmailData): Promise<void> => {
-    console.log(data);
+  const onSubmit = async (data: { email?: string; }): Promise<void> => {
+    setIsLoading(true);
+    await updateProfessionalData(data, professionalId as string);
     reset();
     setStep1(false)
+    setIsLoading(false)
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -70,10 +74,10 @@ export default function ProfissionalEditEmail() {
 
             <Input 
               ref={inputFocus} 
-              error={errors.user?.email?.message}
+              error={errors?.email?.message}
               formProps={{
                 control,
-                name: "user.email",
+                name: "email",
                 rules: {
                   required: "O e-mail é obrigatório.",
                   pattern: {

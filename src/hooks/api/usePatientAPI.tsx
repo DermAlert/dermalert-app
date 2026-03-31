@@ -3,6 +3,7 @@ import { PatientProps } from "@/types/forms";
 import axios from "axios";
 import { useState } from "react";
 import { useGeneralHealthForm } from "../useGeneralHealthForm";
+import { useHealthCenterId } from "../useHealthCenterId";
 import { usePatientForm } from "../usePatientForm";
 import { usePatientId } from "../usePatientId";
 
@@ -34,6 +35,8 @@ export function usePatientAPI() {
   const { updatePatientId } = usePatientId();
   const { setPatientData, patientData, setImages } = usePatientForm();
 
+  const { healthCenterId } = useHealthCenterId();
+
   
 
   ////// GET ///////
@@ -46,6 +49,7 @@ export function usePatientAPI() {
     setIsLoading(true);
 
     try {
+      //console.log("HEADER AUTH:", api.defaults.headers.Authorization);
       const { data } = await api.get(`/patients/?page=${page}`);
 
       if (data.results) {
@@ -59,6 +63,38 @@ export function usePatientAPI() {
       } else {
         setHasMore(false);
         //console.log("has more false");
+      }
+
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  
+  // Function to load patients by health unity with pagination
+  async function loadPatientsByHealthUnity(id: string | null) {
+
+    
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+
+    try {
+      const { data } = await api.get(`/health-units/${id}/patients/?page=${page}`);
+
+      if (data) {
+        setPatientsCount(data.count);
+      }
+
+      if (data.results) {
+        const newPatients = data.results;
+        setPatients(prev => [...prev, ...newPatients]);
+      }
+
+      if(data.next){
+        setPage(prev => prev + 1);
+      } else {
+        setHasMore(false);
       }
 
     } catch (error) {
@@ -198,6 +234,24 @@ export function usePatientAPI() {
   }
 
 
+  // Function to load a health centers by ID
+  async function loadHealthCenterById(id: string | null) {
+    try {
+      const response = await api.get(`/health-center/${id}`);
+
+      return response.data
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log('AXIOS ERROR', error.message);
+        console.log('CONFIG', error.config?.url);
+      } else {
+        console.log('UNKNOWN ERROR', error);
+      }
+    }
+  }
+
+
 
   ///// POST ///////
 
@@ -216,6 +270,7 @@ export function usePatientAPI() {
           "other_gender": patientData.other_gender, 
           "phone_number": patientData.phone_number, 
           "sus_number": patientData.sus_number, 
+          "health_unit": healthCenterId,
           "user": {
             "cpf": patientData.user?.cpf, 
             "email": patientData.user?.email, 
@@ -375,6 +430,23 @@ export function usePatientAPI() {
   };
 
 
+  ///// DELETE /////
+
+  // delete patient by ID
+  const deletePatientById = async (id: string | string[]) => {
+    try {
+      const response = await api.delete(`/patients/${id}/`);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        console.log('STATUS:', error.response?.status);
+        console.log('HEADERS:', error.response?.headers);
+        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
+      }
+    }
+  };
+
+
   return {
     patients, 
     setPatients, 
@@ -385,6 +457,7 @@ export function usePatientAPI() {
     isLoading, 
     loadPatientsSearch,
     loadPatients,
+    loadPatientsByHealthUnity,
     checkIfPatientExists,
     patient,
     loadPatientById,
@@ -397,6 +470,8 @@ export function usePatientAPI() {
     allergiesDataList,
     loadAllergies,
     sendRegisterPatient,
-    updatePatientData
+    updatePatientData,
+    loadHealthCenterById,
+    deletePatientById
   };
 }

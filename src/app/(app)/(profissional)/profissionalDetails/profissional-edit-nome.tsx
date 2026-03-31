@@ -5,8 +5,9 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditNameData } from "@/types/forms";
-import { router, useLocalSearchParams } from "expo-router";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
+import { useProfessionalId } from "@/hooks/useProfessionalId";
+import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,20 +18,24 @@ export default function ProfissionalEditName() {
   const [step1, setStep1] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { id } = useLocalSearchParams();
+  const { professionalId } = useProfessionalId();
+  const { updateProfessionalData } = useProfessionalAPI();
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditNameData>()
+  } = useForm<{ name?: string; }>()
 
 
-  const onSubmit = (data: FormPatientEditNameData): void => {
-    console.log(data);
+  const onSubmit = async (data: { name?: string; }): Promise<void> => {
+
+    setIsLoading(true);
+    await updateProfessionalData(data, professionalId as string);
     reset();
     setStep1(false)
+    setIsLoading(false)
   };
 
   const inputFocus = useRef<TextInput>(null);

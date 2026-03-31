@@ -4,6 +4,7 @@ import Icon from '@/components/Icon';
 import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { TitleText } from "@/components/TitleText";
+import { useAuthAPI } from "@/hooks/api/useAuthAPI";
 import { FormForgotPassData } from "@/types/forms";
 import { formatCPF } from "@/utils/formatCPF";
 import { router } from "expo-router";
@@ -15,6 +16,9 @@ import Animated, { SlideInUp, SlideOutDown } from 'react-native-reanimated';
 
 export default function ForgotPasswordEmail() {
   const [step1, setStep1] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { forgotPassword, searchUser } = useAuthAPI();
 
     const {
       control,
@@ -23,8 +27,22 @@ export default function ForgotPasswordEmail() {
       formState: { errors },
     } = useForm<FormForgotPassData>()
 
-    const onSubmit = (data: FormForgotPassData): void => {
-      console.log(data);
+    const onSubmit = async (data: FormForgotPassData): Promise<void> => {
+      const formattedData = (data.cpf ?? '').replace(/\D/g, '');
+      const result = await searchUser(formattedData);
+      if (result?.status === 400 || result.results.length === 0) {
+        setErrorMessage("CPF não encontrado. Verifique o número e tente novamente.");
+        return;
+      }
+      const response = await forgotPassword(result.results[0].email);
+      console.log("response:", response);
+
+      if (response?.status === 400) {
+        setErrorMessage("Erro ao enviar e-mail de recuperação. Tente novamente mais tarde.");
+        return;
+      }
+
+      setErrorMessage("");
       reset();
       setStep1(false)
     };
@@ -71,6 +89,9 @@ export default function ForgotPasswordEmail() {
               }}
               onChangeTextFormat={formatCPF}
             />
+
+            {errorMessage && <Text className="text-danger-700 text-sm mt-4 font-semibold tracking-wide">{errorMessage}</Text>}
+
             <Button title="Enviar" style={{ marginTop: 32 }} onPress={handleSubmit(onSubmit)} />
           </View>
 

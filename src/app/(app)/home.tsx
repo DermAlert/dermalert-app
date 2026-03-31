@@ -6,7 +6,9 @@ import { Loading } from "@/components/Loading";
 import PatientCard from "@/components/PatientCard";
 import PatientSearch from "@/components/PatientSearch";
 import { TitleText } from "@/components/TitleText";
+import { useAuth } from "@/contexts/AuthContext";
 import { usePatientAPI } from "@/hooks/api/usePatientAPI";
+import { useHealthCenterId } from "@/hooks/useHealthCenterId";
 import { useLoginId } from "@/hooks/useLoginId";
 import { PatientProps } from "@/types/forms";
 import { useFocusEffect } from '@react-navigation/native';
@@ -24,17 +26,27 @@ export default function Home() {
   // }
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
 
   const { loginId } = useLoginId();
+  const { loadingAuth } = useAuth();
+  const { healthCenterId } = useHealthCenterId();
 
-  const { hasMore, loadPatients, patients, isLoading} = usePatientAPI();
+  const { hasMore, loadPatients, patients, isLoading, loadPatientsByHealthUnity} = usePatientAPI();
 
 
 
   useFocusEffect(
     useCallback(() => {
-      loadPatients()
+      if(loginId?.user.permission_roles[0] === "supervisor"){
+        console.log('pacientes da unidade:', healthCenterId);
+        if (!healthCenterId) return;
+        loadPatientsByHealthUnity(healthCenterId.toString());
+      } else {
+        console.log("todos os pacientes")
+        loadPatients();
+      }
+      
     },[])
   )
 
@@ -46,14 +58,20 @@ export default function Home() {
     />
   ), []);
 
-
+if(loadingAuth){
+  return (
+    <View className="flex-1 p-safe justify-center items-center">
+      <Loading />
+    </View>
+  )
+}
 
   return (
     <View className="flex-1 bg-primary-50 p-safe relative">
 
       <PatientSearch modalVisible={ modalVisible} setModalVisible={setModalVisible} />
 
-      {loginId === "supervisor" ? (
+      {loginId?.user.permission_roles[0] === "supervisor" ? (
         <Header icon="back" title="Pacientes" onPress={()=> router.push('/(app)/(supervisor)/supervisor')} />
       ) : (
         <HeaderHome />
@@ -63,7 +81,7 @@ export default function Home() {
 
       <View className="flex-1 pt-6 pr-6 pl-6 pb-0">
 
-        {loginId !== "supervisor" && (
+        {loginId?.user.permission_roles[0] !== "supervisor" && (
           <TitleText title="Pacientes" className="mb-[18]" />
         )}
 
@@ -91,7 +109,7 @@ export default function Home() {
             }}
             onEndReached={()=> {
               if (!isLoading && hasMore) {
-                loadPatients();
+                loadPatientsByHealthUnity(healthCenterId?.toString() || null);
               } 
             }}
             onEndReachedThreshold={0.3}

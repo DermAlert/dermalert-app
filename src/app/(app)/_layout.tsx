@@ -5,7 +5,9 @@ import { LesionTypeProvider } from '@/contexts/LesionTypeContext';
 import { RegisterLesionProvider } from '@/contexts/Oncodermato/RegisterLesionContext';
 import { PatientProvider } from '@/contexts/PatientContext';
 import { PatientIdProvider } from '@/contexts/PatientIdContext';
+import { ProfessionalIdProvider } from '@/contexts/ProfessionalIdContext';
 import { RegisterLesionUlceraProvider } from '@/contexts/Ulcera/RegisterLesionUlceraContext';
+import { UserProvider } from '@/contexts/UserContext';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -24,19 +26,24 @@ export default function AppLayout() {
   
   return (
     <PatientProvider>
-      <RegisterLesionUlceraProvider>
-       <RegisterLesionProvider>
-          <GeneralHealthProvider>
-            <PatientIdProvider>
-              <LesionTypeProvider>
-                <LesionIdProvider>
-                  <Stack screenOptions={{ headerShown: false}} />
-                </LesionIdProvider>
-              </LesionTypeProvider>
-            </PatientIdProvider>
-          </GeneralHealthProvider>
-       </RegisterLesionProvider>
-      </RegisterLesionUlceraProvider>
+      <UserProvider>
+        
+          <RegisterLesionUlceraProvider>
+            <RegisterLesionProvider>
+                <GeneralHealthProvider>
+                  <PatientIdProvider>
+                    <ProfessionalIdProvider>
+                      <LesionTypeProvider>
+                        <LesionIdProvider>
+                          <Stack screenOptions={{ headerShown: false}} />
+                        </LesionIdProvider>
+                      </LesionTypeProvider>
+                    </ProfessionalIdProvider>
+                  </PatientIdProvider>
+                </GeneralHealthProvider>
+            </RegisterLesionProvider>
+          </RegisterLesionUlceraProvider>
+      </UserProvider>
     </PatientProvider>
   );
 }

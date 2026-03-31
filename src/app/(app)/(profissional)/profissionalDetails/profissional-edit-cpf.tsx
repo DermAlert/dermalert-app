@@ -5,7 +5,8 @@ import Input from '@/components/Input';
 import { Label } from "@/components/Label";
 import { Loading } from "@/components/Loading";
 import { TitleText } from "@/components/TitleText";
-import { FormPatientEditCPFData } from "@/types/forms";
+import { useProfessionalAPI } from "@/hooks/api/useProfessionalAPI";
+import { useProfessionalId } from "@/hooks/useProfessionalId";
 import { formatCPF, isValidCPF } from "@/utils/formatCPF";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
@@ -19,19 +20,26 @@ export default function ProfissionalEditCPF() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const { professionalId } = useProfessionalId();
+
+  const { updateProfessionalData } = useProfessionalAPI();
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormPatientEditCPFData>()
+  } = useForm<{ cpf?: string; }>()
 
 
-  const onSubmit = (data: FormPatientEditCPFData): void => {
-    console.log(data);
+  const onSubmit = async (data: { cpf?: string; }) => {
+    const formattedData = (data.cpf ?? '').replace(/\D/g, '');
+    const userData = { cpf: formattedData };
+    setIsLoading(true);
+    await updateProfessionalData(userData, professionalId as string);
     reset();
     setStep1(false)
+    setIsLoading(false)
   };
 
   const inputFocus = useRef<TextInput>(null);
@@ -58,7 +66,7 @@ export default function ProfissionalEditCPF() {
       exiting={SlideOutDown} 
       className="flex-1 bg-white p-safe justify-start items-center"
     >
-      <Header title="Editar cartão SUS" onPress={() => router.push('/(app)/(profissional)/profissionalDetails/[id]')} />
+      <Header title="Editar CPF" onPress={() => router.push('/(app)/(profissional)/profissionalDetails/[id]')} />
 
       {step1 && (
         <View className="p-8 w-full justify-start flex-1 gap-8">
@@ -70,7 +78,7 @@ export default function ProfissionalEditCPF() {
 
           <Input 
             ref={inputFocus} 
-            error={errors.cpf?.message}
+            error={errors?.cpf?.message}
             formProps={{
               control,
               name: "cpf",
