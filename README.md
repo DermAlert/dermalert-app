@@ -36,7 +36,7 @@ Dermalert é uma aplicação móvel desenvolvida com React Native e Expo para au
 
 1. Clone o repositório:
    ```bash
-   git clone <url-do-repositorio>
+   git clone https://github.com/DermAlert/dermalert-app.git
    cd dermalert-app
    ```
 
@@ -47,7 +47,7 @@ Dermalert é uma aplicação móvel desenvolvida com React Native e Expo para au
 
 3. Inicie o servidor de desenvolvimento:
    ```bash
-   npm start
+   npx expo start --clear
    ```
 
 ## Como Usar
