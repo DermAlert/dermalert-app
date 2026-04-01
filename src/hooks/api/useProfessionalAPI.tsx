@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { ProfissionalProps } from "@/types/forms";
+import { ProfissionalProps, ProfissionalPropsForm } from "@/types/forms";
 import axios from "axios";
 import { useState } from "react";
 import { useHealthCenterId } from "../useHealthCenterId";
@@ -215,16 +215,16 @@ export function useProfessionalAPI() {
   ///// POST ///////
 
   // Create a new professional
-  const createProfessional = async () => {
+  const createProfessional = async (data: ProfissionalPropsForm) => {
 
-    console.log(profissionalData)
+    console.log("dados enviados:", data)
 
     try {
       const response = await api.post(`/professionals/`, 
         {
-          "name": profissionalData.name, 
-          "email": profissionalData.email,
-          "cpf": profissionalData.cpf,
+          "name": data.name, 
+          "email": data.email,
+          "cpf": data.cpf,
           "health_unit": healthCenterId,
           "permission_role": "technician"
         }, 
@@ -235,6 +235,7 @@ export function useProfessionalAPI() {
       });
       
       console.log("profissional cadastrado com sucesso:", response.data);
+      return response;
       setProfissionalData({});
 
     } catch (error) {

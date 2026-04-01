@@ -6,10 +6,11 @@ import { useCallback, useState } from 'react';
 import { Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 
 type Props = TouchableOpacityProps & {
-  unitId: number
+  unitId: number;
+  close: () => void;
 }
 
-export default function UnidadeCard({ unitId, ...rest }: Props) {
+export default function UnidadeCard({ unitId, close, ...rest }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [healthCenter, setHealthCenter] = useState(false);
 
@@ -19,6 +20,7 @@ export default function UnidadeCard({ unitId, ...rest }: Props) {
   const handleChangeCenter = () => {
     updateHealthCenterId(unitId);
     console.log('unidade selecionada:', unitId);
+    close();
   }
 
   useFocusEffect(

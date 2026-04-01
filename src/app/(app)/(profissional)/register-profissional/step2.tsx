@@ -19,6 +19,7 @@ export default function RegisterProfissionalStep2() {
   const [modalAlert, setModalAlert] = useState(false);
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
   const { createProfessional } = useProfessionalAPI();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalPropsForm>(
     {
@@ -30,10 +31,22 @@ export default function RegisterProfissionalStep2() {
   );
   
   const onSubmit = async (data: ProfissionalPropsForm) => {
-    //console.log(data);
-    updateProfissionalData(data);
-    await createProfessional();
-    router.push('/(app)/(profissional)/register-profissional/success');
+    console.log(data);
+    
+    const mergedData = {
+      ...profissionalData,
+      ...data
+    };
+
+    updateProfissionalData(mergedData);
+    setIsLoading(true);
+
+    const response = await createProfessional(mergedData);
+    if(response?.data.status === "invited") {
+      router.push('/(app)/(profissional)/register-profissional/success');
+    } else if (response?.data.status === "linked") {
+      router.push('/(app)/(profissional)/register-profissional/success2');
+    }
   }
 
   const handleCancel = () => {
@@ -115,6 +128,7 @@ export default function RegisterProfissionalStep2() {
               <Label title="Nome" text="Informe o nome do profissional."/>
 
                 <Input 
+                  ref={inputFocus} 
                   error={errors.name?.message}
                   formProps={{
                     control,
@@ -133,7 +147,6 @@ export default function RegisterProfissionalStep2() {
                 <Label title="E-mail" text="Informe o e-mail do profissional."/>
 
                 <Input 
-                  ref={inputFocus} 
                   error={errors.email?.message}
                   formProps={{
                     control,

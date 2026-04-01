@@ -31,7 +31,7 @@ export default function ModalUnidades({ modalUnidadesVisible, setModalUnidadesVi
           <FlatList
             data={loginId?.user.health_unit_ids ?? []}
             keyExtractor={item => item.toString()}
-            renderItem={({item}) => <UnidadeCard unitId={item} />}
+            renderItem={({item}) => <UnidadeCard unitId={item} close={() => setModalUnidadesVisible(!modalUnidadesVisible)} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               marginBottom: 0,

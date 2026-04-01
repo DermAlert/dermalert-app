@@ -121,7 +121,7 @@ export default function MeusDados() {
           <FlatList
             data={loginId?.user.health_unit_ids ?? []}
             keyExtractor={item => item.toString()}
-            renderItem={({item}) => <UnidadeCard unitId={item} activeOpacity={1} />}
+            renderItem={({item}) => <UnidadeCard unitId={item} activeOpacity={1} close={()=> {}} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               marginBottom: 0,
