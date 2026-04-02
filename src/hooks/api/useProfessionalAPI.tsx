@@ -3,6 +3,7 @@ import { ProfissionalProps, ProfissionalPropsForm } from "@/types/forms";
 import axios from "axios";
 import { useState } from "react";
 import { useHealthCenterId } from "../useHealthCenterId";
+import { useProfessionalId } from "../useProfessionalId";
 import { useProfissionalForm } from "../useProfissionalForm";
 
 
@@ -15,6 +16,7 @@ export function useProfessionalAPI() {
   const [professionalsCount, setProfessionalsCount] = useState<number>(0);
 
   const { profissionalData, setProfissionalData } = useProfissionalForm();
+  const { professionalId } = useProfessionalId();
 
 
   // loading
@@ -188,7 +190,7 @@ export function useProfessionalAPI() {
   const getProfessionalByCPF = async (cpf: string | string[]) => {
     try {
       const { data } = await api.get(`/professionals/?search=${cpf}`);
-      console.log(data.results[0])
+      // console.log(data.results[0])
       setProfessional(data.results[0])
     } catch (error) {
       console.log(error);
@@ -235,8 +237,8 @@ export function useProfessionalAPI() {
       });
       
       console.log("profissional cadastrado com sucesso:", response.data);
-      return response;
       setProfissionalData({});
+      return response;
 
     } catch (error) {
       console.log(error);
@@ -248,39 +250,6 @@ export function useProfessionalAPI() {
     }
   };
 
-  // Create a new professional
-  const inviteProfessional = async () => {
-
-    console.log(professional)
-
-    try {
-      const response = await api.post(`/professionals/`, 
-        {
-          "name": professional?.user?.name, 
-          "email": professional?.user?.email,
-          "cpf": professional?.user?.cpf,
-          "health_unit": healthCenterId
-        }, 
-        {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      });
-      
-      console.log("profissional vinculado com sucesso:", response.data);
-
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error)) {
-        console.log('STATUS:', error.response?.status);
-        console.log('HEADERS:', error.response?.headers);
-        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-        if (error.response?.status === 400) {
-          return { error: true, status: 400 };
-        }
-      } 
-    }
-  };
 
   // complete professional registration (set password)
   const completeProfessionalRegistration = async (data: any, token: string) => {
@@ -322,6 +291,27 @@ export function useProfessionalAPI() {
       } 
     }
   };
+
+
+  ///// DELETE /////
+
+  // remove professional from health unit
+  const removeProfessionalFromHealthUnit = async () => {
+    // console.log("professionalId:", professionalId);
+    
+    try {
+      const response = await api.delete(`/professional-assignments/${professionalId}/`);
+      console.log("profissional desvinculado com sucesso:", response.data);
+      return response;
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        console.log('STATUS:', error.response?.status);
+        console.log('HEADERS:', error.response?.headers);
+        console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
+      }
+    }
+  };
   
 
 
@@ -348,6 +338,6 @@ export function useProfessionalAPI() {
     createProfessional,
     completeProfessionalRegistration,
     getInvitationTokenData,
-    inviteProfessional
+    removeProfessionalFromHealthUnit
   };
 }

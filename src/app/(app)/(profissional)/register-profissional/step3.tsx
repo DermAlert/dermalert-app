@@ -20,7 +20,7 @@ export default function RegisterProfissionalStep3() {
   const [errorMsg, setErrorMsg] = useState("");
   const { updateProfissionalData, profissionalData, setProfissionalData } = useProfissionalForm();
   const { cpf } = useLocalSearchParams();
-  const { getProfessionalByCPF, professional, inviteProfessional } = useProfessionalAPI();
+  const { getProfessionalByCPF, professional } = useProfessionalAPI();
   
 
   // const { control, handleSubmit, formState: { errors } } = useForm<ProfissionalProps>(
@@ -35,11 +35,11 @@ export default function RegisterProfissionalStep3() {
   
   const handleNext = async () => {
     // console.log(data);
-    const response = await inviteProfessional();
-    if (response?.status === 400) {
-      setErrorMsg("Este profissional já foi convidado para esta unidade de saúde. Verifique a lista de profissionais vinculados para mais detalhes.");
-      return;
-    }
+    //const response = await inviteProfessional();
+    // if (response?.status === 400) {
+    //   setErrorMsg("Este profissional já foi convidado para esta unidade de saúde. Verifique a lista de profissionais vinculados para mais detalhes.");
+    //   return;
+    // }
     //router.push('/(app)/(profissional)/register-profissional/success2');
   }
 

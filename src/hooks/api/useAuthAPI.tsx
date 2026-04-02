@@ -24,16 +24,16 @@ export function useAuthAPI() {
 
   const loginUser = async (data: FormLoginData) => {
     try {
-      console.log("dados para login:", data);
+      // console.log("dados para login:", data);
       const response = await api.post(`/auth/login/`, data);
 
-      console.log("fez login");
+      // console.log("fez login");
 
       return response.data;
 
     } catch (error) {
 
-      console.log("erro ao fazer login:", error);
+      // console.log("erro ao fazer login:", error);
 
       if (axios.isAxiosError(error)) {
         console.log('AXIOS ERROR', error.message);

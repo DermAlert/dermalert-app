@@ -75,7 +75,7 @@ export default function EditPassword() {
   }
 
   const onSubmit = async (data: FormUserEditPassData): Promise<void> => {
-    console.log(data);
+    // console.log(data);
 
     setIsLoading(true);
     const passResponse = await changePassword(data);

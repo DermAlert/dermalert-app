@@ -32,7 +32,7 @@ export default function PatientEditSUS() {
   const onSubmit = async (data: {sus_number?: string;}) => {
     const formattedData = (data?.sus_number ?? '').replace(/\D/g, '');
     const userData = { sus_number: formattedData };
-    console.log(userData)
+    // console.log(userData)
     setIsLoading(true);
     await updatePatientData(userData, id);
     reset();

@@ -51,7 +51,7 @@ export default function PatientEditGenre() {
         gender: data.gender,
         other_gender: data.gender === 'O' ? data.other_gender : null
       };
-      console.log(cleanedData);
+      // console.log(cleanedData);
       setIsLoading(true);
       await updatePatientData(cleanedData, id);
       reset();

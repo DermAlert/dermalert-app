@@ -57,7 +57,7 @@ export function useUserAPI() {
 
   // function to change password
   const changePassword = async (data: FormUserEditPassData) => {
-       console.log(data);
+      //  console.log(data);
   
       try {
         // 1. Envia patientData
@@ -72,7 +72,7 @@ export function useUserAPI() {
           },
         });
   
-        console.log("senha alterada com sucesso! novo token", response.data.token);
+        // console.log("senha alterada com sucesso! novo token", response.data.token);
 
         await login(response.data.token)
   
@@ -110,7 +110,7 @@ export function useUserAPI() {
   };
 
   const resetPassword = async (data: FormUserEditPassData, uid: string, token: string) => {
-    console.log(data, uid, token);
+    // console.log(data, uid, token);
     try {
       const response = await api.post(`/auth/reset-password/`, 
         {"uid": uid, "token": token, "new_password": data.newPassword}, 

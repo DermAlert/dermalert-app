@@ -39,11 +39,11 @@ export default function Home() {
   useFocusEffect(
     useCallback(() => {
       if(loginId?.user.permission_roles[0] === "supervisor"){
-        console.log('pacientes da unidade:', healthCenterId);
+        // console.log('pacientes da unidade:', healthCenterId);
         if (!healthCenterId) return;
         loadPatientsByHealthUnity(healthCenterId.toString());
       } else {
-        console.log("todos os pacientes")
+        // console.log("todos os pacientes")
         loadPatients();
       }
       

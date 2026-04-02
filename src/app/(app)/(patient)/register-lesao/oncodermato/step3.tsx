@@ -39,7 +39,7 @@ export default function RegisterLesaoOncodermatoStep3() {
 
   const handleNext = (data: LesaoOncodermatoProps) => {
     if (data.asymmetry && data.asymmetry.length > 0 && notEmpty) {
-      console.log(data);
+      // console.log(data);
       updateRegisterLesionData(data);
       router.push('/(app)/(patient)/register-lesao/oncodermato/step4');
     } else {

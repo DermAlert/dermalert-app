@@ -23,7 +23,7 @@ export default function EditName() {
   } = useForm<FormUserEditEmailData>()
 
   const onSubmit = (data: FormUserEditEmailData): void => {
-    console.log(data);
+    // console.log(data);
     reset();
     setStep1(false)
   };

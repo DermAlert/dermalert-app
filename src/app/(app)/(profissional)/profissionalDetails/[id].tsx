@@ -15,7 +15,13 @@ export default function ProfissionalDetails() {
   const [modalAlert, setModalAlert] = useState(false);
 
   const { professionalId } = useProfessionalId();
-  const { professional, loadProfessionalById } = useProfessionalAPI();
+  const { professional, loadProfessionalById, removeProfessionalFromHealthUnit } = useProfessionalAPI();
+
+  const handleDesvincularProfissional = async () => {
+    await removeProfessionalFromHealthUnit();
+    setModalAlert(!modalAlert);
+    router.push("/(app)/(profissional)/profissionais");
+  }
     
   
   useFocusEffect(
@@ -43,10 +49,7 @@ if(isLoading){
         setModalAlert={setModalAlert} 
         description="Ao desvincular este profissional, ele não terá mais acesso à atendimento nesta unidade."
         title="Deseja desvincular o profissional desta unidade?"
-        handleCancel={()=> {
-          setModalAlert(!modalAlert);
-          router.push("/(app)/(profissional)/profissionais");
-        }}
+        handleCancel={handleDesvincularProfissional}
         btnNoText="Cancelar"
         btnYesText="Sim, desvincular"
       />
@@ -108,12 +111,12 @@ if(isLoading){
 
         { professional?.is_active &&  (
           <TouchableOpacity 
-          className="px-5 w-full justify-start flex-row my-7 items-center gap-2"
-          onPress={() => setModalAlert(!modalAlert)}
-        >
-          <MinusCircleIcon size={24} color="#4052A1" />
-          <Text allowFontScaling={false} className="text-base font-semibold text-primary-600">Desvincular profissional da unidade</Text>
-        </TouchableOpacity>
+            className="px-5 w-full justify-start flex-row my-7 items-center gap-2"
+            onPress={() => setModalAlert(!modalAlert)}
+          >
+            <MinusCircleIcon size={24} color="#4052A1" />
+            <Text allowFontScaling={false} className="text-base font-semibold text-primary-600">Desvincular profissional da unidade</Text>
+          </TouchableOpacity>
         )}
 
         

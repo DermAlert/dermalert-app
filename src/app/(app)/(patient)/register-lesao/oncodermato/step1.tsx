@@ -43,7 +43,7 @@ export default function RegisterLesaoOncodermatoStep1() {
 
   const handleNext = (data: LesaoOncodermatoProps) => {
     if (data.lesion_local && data.lesion_local !== undefined && notEmpty) {
-      console.log(data);
+      // console.log(data);
       updateRegisterLesionData(data);
       router.push('/(app)/(patient)/register-lesao/oncodermato/step2');
     } else {

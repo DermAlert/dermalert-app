@@ -27,7 +27,7 @@ export default function Profissionais() {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('Health Center ID:', healthCenterId);
+      // console.log('Health Center ID:', healthCenterId);
       if (!healthCenterId) return;
       loadProfessionalsByHealthUnity(healthCenterId.toString());
     },[])

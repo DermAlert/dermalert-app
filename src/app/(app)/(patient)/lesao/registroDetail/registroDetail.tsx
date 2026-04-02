@@ -68,7 +68,7 @@ export default function LesaoRegistroDetail() {
 
   useEffect(()=> {
     //console.log(photos.map(item=> item.image))
-    console.log(photos)
+    // console.log(photos)
   }, [photos])
 
   if(isLoading){
