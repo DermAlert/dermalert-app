@@ -20,9 +20,18 @@ export function usePatientDataById() {
   // Ulcera Anamnesis
   const [hasUlceraAnamnesis, setHasUlceraAnamnesis] = useState(false);
 
+  const isValidPatientId = (id: string | null) => {
+    return Boolean(id && id !== "null" && id !== "undefined");
+  };
+
  
   // Function to check if General Health form exists
   async function checkGeneralHealth(id: string | null) {
+    if (!isValidPatientId(id)) {
+      setHasGeneralHealth(false);
+      return;
+    }
+
     try {
       const response = await api.get(`/patients/${id}/forms/general-health/`);
 
@@ -35,6 +44,11 @@ export function usePatientDataById() {
   }
   // Function to load General Health form by ID
   async function loadGeneralHealthById(id: string | null) {
+    if (!isValidPatientId(id)) {
+      setGeneralHealth(undefined);
+      return;
+    }
+
     try {
       const { data } = await api.get(`/patients/${id}/forms/general-health/`);
 
@@ -48,6 +62,11 @@ export function usePatientDataById() {
 
   // Function to check if Terms exist
   async function checkTermsById(id: string | null) {
+    if (!isValidPatientId(id)) {
+      setHasTerms(false);
+      return;
+    }
+
     try {
       const response = await api.get(`/patients/${id}/consent/signed-terms/`);
       const hasAnySigned = response.data.some((term: any) => term.has_signed);
@@ -63,6 +82,11 @@ export function usePatientDataById() {
   }
   // Function to load Terms by ID
   async function loadTermsById(id: string | null) {
+    if (!isValidPatientId(id)) {
+      setPhotos([]);
+      return;
+    }
+
     try {
       const termsResponse = await api.get(`/patients/${id}/consent/signed-terms/`);
 
@@ -97,6 +121,11 @@ export function usePatientDataById() {
 
   // Function to check if Oncodermato Anamnesis exists
   async function checkOncodermatoAnamnesisById(id: string | null) {
+    if (!isValidPatientId(id)) {
+      setHasOncodermatoAnamnesis(false);
+      return;
+    }
+
     try {
       const response = await api.get(`/patients/${id}/forms/family-history/`);
 
@@ -111,6 +140,11 @@ export function usePatientDataById() {
 
   // Function to check if Ulcera Anamnesis exists
   async function checkUlceraAnamnesisById(id: string | null) {
+    if (!isValidPatientId(id)) {
+      setHasUlceraAnamnesis(false);
+      return;
+    }
+
     try {
       const response = await api.get(`/patients/${id}/forms/clinical-history/`);
 
