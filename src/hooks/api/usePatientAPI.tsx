@@ -37,6 +37,52 @@ export function usePatientAPI() {
 
   const { healthCenterId } = useHealthCenterId();
 
+  const extractErrorMessage = (data: unknown) => {
+    if (typeof data === "string") {
+      return data;
+    }
+
+    if (Array.isArray(data) && data.length > 0) {
+      return String(data[0]);
+    }
+
+    if (!data || typeof data !== "object") {
+      return "Revise os dados do paciente e tente novamente.";
+    }
+
+    const detail = (data as Record<string, unknown>).detail;
+    if (typeof detail === "string") {
+      return detail;
+    }
+    if (Array.isArray(detail) && detail.length > 0) {
+      return String(detail[0]);
+    }
+
+    for (const value of Object.values(data as Record<string, unknown>)) {
+      if (typeof value === "string") {
+        return value;
+      }
+
+      if (Array.isArray(value) && value.length > 0) {
+        return String(value[0]);
+      }
+
+      if (value && typeof value === "object") {
+        for (const nestedValue of Object.values(value as Record<string, unknown>)) {
+          if (typeof nestedValue === "string") {
+            return nestedValue;
+          }
+
+          if (Array.isArray(nestedValue) && nestedValue.length > 0) {
+            return String(nestedValue[0]);
+          }
+        }
+      }
+    }
+
+    return "Revise os dados do paciente e tente novamente.";
+  };
+
   
 
   ////// GET ///////
@@ -257,7 +303,10 @@ export function usePatientAPI() {
 
   // register patient
 
-  const sendRegisterPatient = async () => {
+  const sendRegisterPatient = async (): Promise<
+    | { success: true; userId: string }
+    | { success: false; errorMessage: string }
+  > => {
      console.log(patientData);
     // console.log(generalHealthData)
 
@@ -294,7 +343,10 @@ export function usePatientAPI() {
 
       if (!userId) {
         console.error("ID do usuário não encontrado na resposta");
-        return;
+        return {
+          success: false,
+          errorMessage: "ID do paciente nao encontrado na resposta do servidor.",
+        };
       }
 
       if (userId){
@@ -345,7 +397,10 @@ export function usePatientAPI() {
 
         if (!termVersion) {
           console.error("ID do termo não encontrado na resposta");
-          return;
+          return {
+            success: false,
+            errorMessage: "Versao do termo de consentimento nao encontrada.",
+          };
         }
 
         if(termVersion) {
@@ -390,14 +445,19 @@ export function usePatientAPI() {
 
           updatePatientId(userId.toString());
 
-          // router.push("/(app)/(patient)/patient/[id]")
-
-
+          return {
+            success: true,
+            userId: userId.toString(),
+          };
         }
 
 
       }
       
+      return {
+        success: false,
+        errorMessage: "Nao foi possivel concluir o cadastro do paciente.",
+      };
 
     } catch (error) {
       console.log(error);
@@ -405,7 +465,16 @@ export function usePatientAPI() {
         console.log('STATUS:', error.response?.status);
         console.log('HEADERS:', error.response?.headers);
         console.log('DATA:', JSON.stringify(error.response?.data, null, 2));
-      } 
+        return {
+          success: false,
+          errorMessage: extractErrorMessage(error.response?.data),
+        };
+      }
+
+      return {
+        success: false,
+        errorMessage: "Nao foi possivel cadastrar o paciente agora.",
+      };
     }
   }
 

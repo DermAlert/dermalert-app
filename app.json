@@ -56,8 +56,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "9fe1d8c2-460b-42c1-912d-3c8a92ff6f45"
+        "projectId": "a3e43b80-6687-407e-afa3-0350070be991"
       }
-    }
+    },
+    "owner": "hannanhunny01"
   }
 }

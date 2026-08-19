@@ -11,7 +11,7 @@ import { usePatientForm } from "@/hooks/usePatientForm";
 import { router } from "expo-router";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 export default function RegisterPatientStep9() {
@@ -26,8 +26,22 @@ export default function RegisterPatientStep9() {
 
   const handleSendtoServer = async () => {
     setIsLoading(true);
-    await sendRegisterPatient();
-    router.push("/(app)/(patient)/patient/[id]")
+    const result = await sendRegisterPatient();
+
+    setIsLoading(false);
+
+    if (result.success) {
+      router.push({
+        pathname: "/(app)/(patient)/patient/[id]",
+        params: { id: result.userId }
+      });
+      return;
+    }
+
+    Alert.alert(
+      "Nao foi possivel concluir o cadastro",
+      result.errorMessage || "Revise os dados informados e tente novamente."
+    );
   }
   
   const handleCancel = () => {
